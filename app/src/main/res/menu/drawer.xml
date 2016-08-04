@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/navigation_home"
+            android:icon="@drawable/drawer_icon_mes"
+            android:title="测试1" />
+        <item
+            android:id="@+id/navigation_cal"
+            android:icon="@drawable/drawer_icon_cal"
+            android:title="测试2" />
+        <item
+            android:id="@+id/navigation_about"
+            android:icon="@drawable/drawer_icon_home"
+            android:title="测试2" />
+        <item
+            android:id="@+id/navigation_setting"
+            android:icon="@drawable/drawer_icon_setting"
+            android:title="测试3" />
+    </group>
+</menu>
