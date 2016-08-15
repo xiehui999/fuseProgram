@@ -9,7 +9,7 @@
     </style>
     <style name="MenuTextStyle">
         <item name="android:textColor">@android:color/white</item>
-        <item name="android:textSize">25sp</item>
+        <item name="android:textSize">22sp</item>
     </style>
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>

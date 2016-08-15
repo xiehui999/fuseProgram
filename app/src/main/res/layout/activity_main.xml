@@ -37,11 +37,11 @@
     <android.support.design.widget.NavigationView
         android:id="@+id/navigation_view"
         android:fitsSystemWindows="true"
-        android:layout_width="500dp"
+        android:layout_width="wrap_content"
         app:theme="@style/MenuTextStyle"
         android:backgroundTint="@android:color/darker_gray"
         android:layout_height="match_parent"
-        android:layout_gravity="start|center_horizontal"
+        android:layout_gravity="start"
         app:headerLayout="@layout/navigation_header"
         app:menu="@menu/drawer" />
 </android.support.v4.widget.DrawerLayout>
