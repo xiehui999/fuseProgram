@@ -2,6 +2,8 @@ package com.example.xh;
 
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
@@ -11,6 +13,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.xh.ui.BaseActivity;
+import com.example.xh.ui.UpLoadFileFragment;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 import butterknife.BindView;
@@ -66,6 +69,7 @@ public class MainActivity extends BaseActivity {
                 item.setChecked(true);
                 switch (item.getItemId()) {
                     case R.id.navigation_home:
+                        selectNavigation(0);
                         break;
                     case R.id.navigation_cal:
                         break;
@@ -78,8 +82,22 @@ public class MainActivity extends BaseActivity {
                 return true;
             }
         });
+        selectNavigation(0);
     }
 
+    public void selectNavigation(int position){
+        Fragment fragment=null;
+        switch (position){
+            case 0:
+                fragment=new UpLoadFileFragment();
+                break;
+        }
+        if (fragment!=null){
+            FragmentManager fragmentManager=getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.frame_content,fragment).commit();
+            setTitle("文件上传");
+        }
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

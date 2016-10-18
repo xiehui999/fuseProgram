@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity" >
+
+    <Button
+        android:id="@+id/btn_chooseFile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="选择文件" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+        <TextView
+            android:id="@+id/tv_fileName"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity = "center_horizontal"
+            android:layout_gravity = "center_horizontal"
+            android:textSize="20dp"
+            >
+        </TextView>
+        <TextView
+            android:id="@+id/tv_filemd5"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity = "center_horizontal"
+            android:layout_gravity = "center_horizontal"
+            android:textSize="20dp"
+            android:text="md5"
+            >
+        </TextView>
+    </LinearLayout>
+    <Button
+        android:id="@+id/btn_upLoadFile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="上传文件" />
+    <Button
+        android:id="@+id/btn_getmd5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="获取文件MD5" />
+</LinearLayout>
