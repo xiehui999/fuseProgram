@@ -24,6 +24,7 @@
      App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
         <activity android:name=".uploadfile.SelectFileActivity"></activity>
         <activity android:name=".rxjava.NormalRxActivity"></activity>
+        <activity android:name=".rxjava.RxConnetActivity"></activity>
         <service android:name="com.example.xh.uploadfile.UploadService"></service>
 
         <meta-data

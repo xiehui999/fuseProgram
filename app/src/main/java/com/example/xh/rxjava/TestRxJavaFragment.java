@@ -262,6 +262,8 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
                 startActivity(intent);
                 break;
             case R.id.btn2:
+                intent.setClass(getContext(), RxConnetActivity.class);
+                startActivity(intent);
                 break;
             case R.id.btn3:
                 break;
