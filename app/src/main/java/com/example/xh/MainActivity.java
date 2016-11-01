@@ -12,8 +12,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.xh.rxjava.TestRxJavaFragment;
 import com.example.xh.ui.BaseActivity;
-import com.example.xh.ui.UpLoadFileFragment;
+import com.example.xh.uploadfile.UpLoadFileFragment;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 import butterknife.BindView;
@@ -72,6 +73,7 @@ public class MainActivity extends BaseActivity {
                         selectNavigation(0);
                         break;
                     case R.id.navigation_cal:
+                        selectNavigation(1);
                         break;
                     case R.id.navigation_about:
                         break;
@@ -90,6 +92,9 @@ public class MainActivity extends BaseActivity {
         switch (position){
             case 0:
                 fragment=new UpLoadFileFragment();
+                break;
+            case 1:
+                fragment=new TestRxJavaFragment();
                 break;
         }
         if (fragment!=null){
