@@ -1,6 +1,7 @@
 package com.example.xh.rxjava;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -29,6 +30,8 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
     private String TAG = "RXJAVA";
     private Button btn1, btn2, btn3, btn4;
 
+    //a library for composing asynchronous and event-based programs using observable sequences for the Java VM"
+    // （一个在 Java VM 上使用可观测的序列来组成异步的、基于事件的程序的库）
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -251,8 +254,12 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
 
     @Override
     public void onClick(View view) {
+        Intent intent = new Intent();
         switch (view.getId()) {
+
             case R.id.btn1:
+                intent.setClass(getContext(), NormalRxActivity.class);
+                startActivity(intent);
                 break;
             case R.id.btn2:
                 break;

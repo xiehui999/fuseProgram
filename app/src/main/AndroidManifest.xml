@@ -23,6 +23,7 @@
         </activity><!-- ATTENTION: This was auto-generated to add Google Play services to your project for
      App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
         <activity android:name=".uploadfile.SelectFileActivity"></activity>
+        <activity android:name=".rxjava.NormalRxActivity"></activity>
         <service android:name="com.example.xh.uploadfile.UploadService"></service>
 
         <meta-data
