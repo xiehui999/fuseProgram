@@ -6,11 +6,11 @@
         <item
             android:id="@+id/navigation_home"
             android:icon="@drawable/drawer_icon_mes"
-            android:title="测试1" />
+            android:title="文件上传" />
         <item
             android:id="@+id/navigation_cal"
             android:icon="@drawable/drawer_icon_cal"
-            android:title="测试2" />
+            android:title="RxJava" />
         <item
             android:id="@+id/navigation_about"
             android:icon="@drawable/drawer_icon_home"

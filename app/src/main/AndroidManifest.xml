@@ -25,6 +25,7 @@
         <activity android:name=".uploadfile.SelectFileActivity"></activity>
         <activity android:name=".rxjava.NormalRxActivity"></activity>
         <activity android:name=".rxjava.RxConnetActivity"></activity>
+        <activity android:name=".rxjava.RxFilterActivity"></activity>
         <service android:name="com.example.xh.uploadfile.UploadService"></service>
 
         <meta-data
