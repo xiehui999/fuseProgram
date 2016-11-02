@@ -17,7 +17,9 @@ import android.widget.TextView;
 
 import com.example.xh.R;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -28,6 +30,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import rx.schedulers.Timestamped;
 
 /**
  * Created by xiehui on 2016/10/31.
@@ -35,7 +38,7 @@ import rx.schedulers.Schedulers;
 public class TestRxJavaFragment extends Fragment implements View.OnClickListener {
 
     private String TAG = "RXJAVA";
-    private Button btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn10;
+    private Button btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn10 ,btn11, btn12;
     private LinearLayout layout;
     private TextView tv;
     private StringBuffer stringBuffer;
@@ -61,6 +64,8 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
         btn8.setOnClickListener(this);
         btn9.setOnClickListener(this);
         btn10.setOnClickListener(this);
+        btn11.setOnClickListener(this);
+        btn12.setOnClickListener(this);
     }
 
     @Nullable
@@ -82,6 +87,8 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
         btn8 = (Button) view.findViewById(R.id.btn8);
         btn9 = (Button) view.findViewById(R.id.btn9);
         btn10 = (Button) view.findViewById(R.id.btn10);
+        btn11 = (Button) view.findViewById(R.id.btn11);
+        btn12 = (Button) view.findViewById(R.id.btn12);
         layout = (LinearLayout) view.findViewById(R.id.layout);
         tv = (TextView) view.findViewById(R.id.tv);
 
@@ -315,6 +322,31 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
             case R.id.btn10:
                 executeInterval();
                 break;
+            case R.id.btn11:
+                executeUnsubscribe();
+                break;
+            case R.id.btn12:
+                executeTimestamp();
+                break;
+        }
+    }
+
+    private void executeTimestamp() {
+        Integer[] number = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+        tv.setText("输入数据：1, 2, 3, 4, 5, 6, 7, 8, 9, 10\n");
+        Observable.from(number).timestamp().subscribe(new Action1<Timestamped<Integer>>() {
+            @Override
+            public void call(Timestamped<Integer> integerTimestamped) {
+                SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss");
+                tv.append("value: "+integerTimestamped.getValue()+"       time:   ");
+                tv.append(sdf.format(new Date(integerTimestamped.getTimestampMillis()))+"\n");
+            }
+        });
+    }
+
+    private void executeUnsubscribe() {
+        if (subscription!=null&&!subscription.isUnsubscribed()){
+            subscription.unsubscribe();
         }
     }
 
@@ -328,6 +360,7 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
                 tv.append(" "+aLong+"   ");
             }
         });
+
 
     }
 

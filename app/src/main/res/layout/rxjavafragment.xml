@@ -7,7 +7,8 @@
     <LinearLayout
         android:id="@+id/layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="50dp"
         android:orientation="vertical">
 
         <Button
@@ -38,6 +39,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="FlatMap将数字增大100并拼接FlatMap字符串" />
+        <TextView
+            android:id="@+id/tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="" />
         <Button
             android:id="@+id/btn6"
             android:layout_width="match_parent"
@@ -64,10 +70,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Interval" />
-        <TextView
-            android:id="@+id/tv"
+        <Button
+            android:id="@+id/btn11"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="" />
+            android:text="Unsubscribe" />
+        <Button
+            android:id="@+id/btn12"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Timestamp" />
+
     </LinearLayout>
 </ScrollView>
