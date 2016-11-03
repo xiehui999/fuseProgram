@@ -14,7 +14,7 @@
         <item
             android:id="@+id/navigation_about"
             android:icon="@drawable/drawer_icon_home"
-            android:title="测试2" />
+            android:title="Retrofit" />
         <item
             android:id="@+id/navigation_setting"
             android:icon="@drawable/drawer_icon_setting"

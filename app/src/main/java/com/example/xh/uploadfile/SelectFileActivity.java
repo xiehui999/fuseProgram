@@ -13,7 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.xh.R;
-import com.example.xh.rxjava.TestRxJavaFragment;
+import com.example.xh.ui.TestRxJavaFragment;
 
 import java.io.File;
 import java.io.IOException;

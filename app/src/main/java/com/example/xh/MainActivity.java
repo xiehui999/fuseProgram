@@ -12,9 +12,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.example.xh.rxjava.TestRxJavaFragment;
+import com.example.xh.ui.RetrofitFragment;
+import com.example.xh.ui.TestRxJavaFragment;
 import com.example.xh.ui.BaseActivity;
-import com.example.xh.uploadfile.UpLoadFileFragment;
+import com.example.xh.ui.UpLoadFileFragment;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 import butterknife.BindView;
@@ -76,6 +77,7 @@ public class MainActivity extends BaseActivity {
                         selectNavigation(1);
                         break;
                     case R.id.navigation_about:
+                        selectNavigation(2);
                         break;
                     case R.id.navigation_setting:
                         break;
@@ -95,6 +97,9 @@ public class MainActivity extends BaseActivity {
                 break;
             case 1:
                 fragment=new TestRxJavaFragment();
+                break;
+            case 2:
+                fragment=new RetrofitFragment();
                 break;
         }
         if (fragment!=null){

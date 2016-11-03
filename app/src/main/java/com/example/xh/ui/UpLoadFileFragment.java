@@ -1,4 +1,4 @@
-package com.example.xh.uploadfile;
+package com.example.xh.ui;
 
 import android.app.Activity;
 import android.content.Context;
@@ -15,6 +15,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.xh.R;
+import com.example.xh.uploadfile.FileInfo;
+import com.example.xh.uploadfile.Md5Utils;
+import com.example.xh.uploadfile.SelectFileActivity;
+import com.example.xh.uploadfile.UploadService;
 
 import java.io.File;
 

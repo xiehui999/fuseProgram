@@ -1,4 +1,4 @@
-package com.example.xh.rxjava;
+package com.example.xh.ui;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -16,6 +16,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.xh.R;
+import com.example.xh.rxjava.NormalRxActivity;
+import com.example.xh.rxjava.RxConnetActivity;
+import com.example.xh.rxjava.RxFilterActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
