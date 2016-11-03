@@ -38,7 +38,7 @@ import rx.schedulers.Timestamped;
 public class TestRxJavaFragment extends Fragment implements View.OnClickListener {
 
     private String TAG = "RXJAVA";
-    private Button btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn10 ,btn11, btn12;
+    private Button btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn10, btn11, btn12;
     private LinearLayout layout;
     private TextView tv;
     private StringBuffer stringBuffer;
@@ -250,7 +250,14 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
                 });
         //subscribeOn（）它指示Observable在一个指定的调度器上创建（只作用于被观察者创建阶段）。只能指定一次，如果指定多次则以第一次为准
         //observeOn（）指定在事件传递（加工变换）和最终被处理（观察者）的发生在哪一个调度器。可指定多次，每次指定完都在下一步生效。
-
+        //create     RxJava 最基本的创造事件序列的方法
+        //在不指定线程的情况下， RxJava 遵循的是线程不变的原则，即：在哪个线程调用 subscribe()，就在哪个线程生产事件；在哪个线程生产事件，
+        // 就在哪个线程消费事件。如果需要切换线程，就需要用到 Scheduler调度器
+        //Schedulers.immediate(): 直接在当前线程运行，相当于不指定线程。这是默认的 Scheduler
+        //Schedulers.newThread(): 总是启用新线程，并在新线程执行操作
+        //Schedulers.io(): I/O 操作（读写文件、读写数据库、网络信息交互等）所使用的 Scheduler。行为模式和 newThread() 差不多，区别在于
+        // io() 的内部实现是是用一个无数量上限的线程池，可以重用空闲的线程，因此多数情况下 io() 比 newThread() 更有效率。不要把计算工作放在 io()
+        // 中，可以避免创建不必要的线程
 
     }
 
@@ -288,7 +295,10 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
     public void onClick(View view) {
         Intent intent = new Intent();
         switch (view.getId()) {
-
+            // FuncX 包装的是有返回值的方法,ActionX 无
+            //Action0中call无参数，Action1有参数
+            //变换实质针对事件序列的处理和再发送
+            //lift() 是针对事件项和事件序列的，而 compose() 是针对 Observable 自身进行变换
             case R.id.btn1:
                 intent.setClass(getContext(), NormalRxActivity.class);
                 startActivity(intent);
@@ -302,9 +312,15 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
                 startActivity(intent);
                 break;
             case R.id.btn4:
+                //所谓变换，就是将事件序列中的对象或整个序列进行加工处理，转换成不同的事件或事件序列
+                //map() 是一对一的转化
                 executeMap();
                 break;
             case R.id.btn5:
+                //可以一对多
+                // flatMap() 中返回的是个 Observable 对象，并且这个 Observable 对象并不是被直接发送到了 Subscriber 的回调方法中
+                //
+
                 executeFlatMap();
                 break;
             case R.id.btn6:
@@ -337,29 +353,29 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
         Observable.from(number).timestamp().subscribe(new Action1<Timestamped<Integer>>() {
             @Override
             public void call(Timestamped<Integer> integerTimestamped) {
-                SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss");
-                tv.append("value: "+integerTimestamped.getValue()+"       time:   ");
-                tv.append(sdf.format(new Date(integerTimestamped.getTimestampMillis()))+"\n");
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss");
+                tv.append("value: " + integerTimestamped.getValue() + "       time:   ");
+                tv.append(sdf.format(new Date(integerTimestamped.getTimestampMillis())) + "\n");
             }
         });
     }
 
     private void executeUnsubscribe() {
-        if (subscription!=null&&!subscription.isUnsubscribed()){
+        if (subscription != null && !subscription.isUnsubscribed()) {
             subscription.unsubscribe();
         }
     }
 
     private void executeInterval() {
         tv.setText("定时器，每一秒发送打印一个数字\ninterval(1, TimeUnit.SECONDS)\n");
-        subscription=Observable.interval(1, TimeUnit.SECONDS)
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new Action1<Long>() {
-            @Override
-            public void call(Long aLong) {
-                tv.append(" "+aLong+"   ");
-            }
-        });
+        subscription = Observable.interval(1, TimeUnit.SECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Long>() {
+                    @Override
+                    public void call(Long aLong) {
+                        tv.append(" " + aLong + "   ");
+                    }
+                });
 
 
     }
@@ -370,12 +386,12 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
         //subscribeOn则是一次性的，无论在什么地方调用，总是从改变最原始的observable开始影响整个observable的处理
         //observeOn( )操作符可以改变Observable将事件发送到得线程，也就是Subscriber执行的线程,可多次执行
         //默认情况下，链上的操作符将会在调用.subsribeOn( )的那个线程上执行任务
-        stringBuffer=new StringBuffer();
+        stringBuffer = new StringBuffer();
         Observable.create(new Observable.OnSubscribe<Drawable>() {
             @Override
             public void call(Subscriber<? super Drawable> subscriber) {
                 //不能执行耗时操作，及更新ui
-                stringBuffer.append("\n"+"开始发送事件" + Thread.currentThread().getName()+"\n");
+                stringBuffer.append("\n" + "开始发送事件" + Thread.currentThread().getName() + "\n");
                 Drawable drawable = getResources().getDrawable(R.mipmap.dir);
                 subscriber.onNext(drawable);
                 subscriber.onCompleted();
@@ -396,7 +412,7 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
                 .subscribe(new Action1<ImageView>() {
                     @Override
                     public void call(ImageView imageView) {
-                        tv.append(stringBuffer.toString()+"接收信息事件" + Thread.currentThread().getName());
+                        tv.append(stringBuffer.toString() + "接收信息事件" + Thread.currentThread().getName());
                         layout.addView(imageView);
                     }
                 })
@@ -465,7 +481,7 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
                 .take(4)
                 ////取前四个中的后两个,每次调用是作用在前面的基础上的数据
                 .takeLast(2)
-                //doOnNext作用是啥
+                //doOnNext作用是啥?允许我们在每次输出一个元素之前做一些额外的事情
                 .doOnNext(new Action1<Integer>() {
                     @Override
                     public void call(Integer integer) {
