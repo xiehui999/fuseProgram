@@ -12,9 +12,22 @@
         android:id="@+id/click"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:padding="5dp"
-        android:text="点我"
+        android:text="Retrofit原生获取"
+        android:textSize="16sp"/>
+    <Button
+        android:id="@+id/click1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:text="Retrofit,RxJava结合"
+        android:textSize="16sp"/>
+    <Button
+        android:id="@+id/click2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:text="Retrofit,RxJava封装"
         android:textSize="16sp"/>
     <TextView
         android:id="@+id/result"
