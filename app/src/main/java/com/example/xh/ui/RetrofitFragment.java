@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,7 @@ import com.example.xh.retrofit.Subject;
 import java.util.List;
 
 import okhttp3.OkHttpClient;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -38,6 +40,7 @@ import rx.schedulers.Schedulers;
 
 /**
  * Created by xiehui on 2016/11/3.
+ * Retrifit a type-safe HTTP client for Android and Java;
  */
 public class RetrofitFragment extends Fragment implements View.OnClickListener {
 
@@ -103,6 +106,7 @@ public class RetrofitFragment extends Fragment implements View.OnClickListener {
     }
 
     private void getGitHubRepoObservable() {
+        //个别博客建议 Base URL: 总是以/结尾；- @Url: 不要以/开头
         result.setText("");
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://api.github.com")
@@ -157,6 +161,18 @@ public class RetrofitFragment extends Fragment implements View.OnClickListener {
 
             @Override
             public void onFailure(Call<List<Repo>> call, Throwable t) {
+
+            }
+        });
+        Call<ResponseBody> repoCall1 = gitHubService.listRepos1("xiehui999");
+        repoCall1.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                Log.e("Response",response.message().toString());
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
 
             }
         });
