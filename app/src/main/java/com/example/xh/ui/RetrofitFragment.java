@@ -18,6 +18,7 @@ import com.example.xh.retrofit.MovieService;
 import com.example.xh.retrofit.MovieServiceObservable;
 import com.example.xh.retrofit.Subject;
 
+import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -136,6 +137,19 @@ public class RetrofitFragment extends Fragment implements View.OnClickListener {
 
     }
 
+    /**
+     * 测试retrofit
+     */
+    public void testRetrofit(){
+        OkHttpClient okHttpClient=new OkHttpClient();
+        //okHttpClient.interceptors().add()
+        Retrofit retrofit=new Retrofit.Builder()
+                .baseUrl("")
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .build();
+
+    }
     /**
      * 原生使用
      */
