@@ -13,10 +13,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.xh.R;
+import com.example.xh.retrofit.GitHubService;
+import com.example.xh.retrofit.GitHubServiceObservable;
 import com.example.xh.retrofit.HttpMethods;
 import com.example.xh.retrofit.MovieService;
 import com.example.xh.retrofit.MovieServiceObservable;
+import com.example.xh.retrofit.Repo;
 import com.example.xh.retrofit.Subject;
+
+import java.util.List;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
@@ -25,8 +30,10 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -34,7 +41,7 @@ import rx.schedulers.Schedulers;
  */
 public class RetrofitFragment extends Fragment implements View.OnClickListener {
 
-    Button click, click1, click2;
+    Button click, click1, click2, click3,click4;
     TextView result;
 
     @Override
@@ -55,6 +62,8 @@ public class RetrofitFragment extends Fragment implements View.OnClickListener {
         click = (Button) view.findViewById(R.id.click);
         click1 = (Button) view.findViewById(R.id.click1);
         click2 = (Button) view.findViewById(R.id.click2);
+        click3 = (Button) view.findViewById(R.id.click3);
+        click4 = (Button) view.findViewById(R.id.click4);
     }
 
     @Override
@@ -63,6 +72,8 @@ public class RetrofitFragment extends Fragment implements View.OnClickListener {
         click.setOnClickListener(this);
         click1.setOnClickListener(this);
         click2.setOnClickListener(this);
+        click3.setOnClickListener(this);
+        click4.setOnClickListener(this);
     }
 
     @Override
@@ -82,7 +93,74 @@ public class RetrofitFragment extends Fragment implements View.OnClickListener {
             case R.id.click2:
                 getMovieHttp();
                 break;
+            case R.id.click3:
+                getGitHubRepo();
+                break;
+            case R.id.click4:
+                getGitHubRepo();
+                break;
         }
+    }
+
+    private void getGitHubRepoObservable() {
+        result.setText("");
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://api.github.com")
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .build();
+        GitHubServiceObservable gitHubServiceObservable = retrofit.create(GitHubServiceObservable.class);
+        gitHubServiceObservable.listRepos("xiehui")
+                .subscribeOn(Schedulers.io())
+                .flatMap(new Func1<List<Repo>, Observable<Repo>>() {
+                    @Override
+                    public Observable<Repo> call(List<Repo> repos) {
+                        return Observable.from(repos);
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Repo>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Repo repos) {
+                        result.append(repos.toString());
+                    }
+                });
+
+    }
+
+    private void getGitHubRepo() {
+        result.setText("");
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://api.github.com")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        GitHubService gitHubService = retrofit.create(GitHubService.class);
+        Call<List<Repo>> repoCall = gitHubService.listRepos("xiehui999");
+        repoCall.enqueue(new Callback<List<Repo>>() {
+            @Override
+            public void onResponse(Call<List<Repo>> call, Response<List<Repo>> response) {
+                List<Repo> repos = response.body();
+                for (Repo repo : repos) {
+                    result.append(repo.toString());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Repo>> call, Throwable t) {
+
+            }
+        });
+
     }
 
     private void getMovieHttp() {
@@ -102,7 +180,7 @@ public class RetrofitFragment extends Fragment implements View.OnClickListener {
                 result.setText(o.toString());
             }
         };
-        HttpMethods.getInstance().getTopMovie(subscriber,0,10);
+        HttpMethods.getInstance().getTopMovie(subscriber, 0, 10);
     }
 
     private void getMovieRxJava() {
@@ -140,16 +218,17 @@ public class RetrofitFragment extends Fragment implements View.OnClickListener {
     /**
      * 测试retrofit
      */
-    public void testRetrofit(){
-        OkHttpClient okHttpClient=new OkHttpClient();
+    public void testRetrofit() {
+        OkHttpClient okHttpClient = new OkHttpClient();
         //okHttpClient.interceptors().add()
-        Retrofit retrofit=new Retrofit.Builder()
+        Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("")
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .build();
 
     }
+
     /**
      * 原生使用
      */
