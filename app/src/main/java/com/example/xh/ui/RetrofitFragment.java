@@ -41,6 +41,7 @@ import rx.schedulers.Schedulers;
 /**
  * Created by xiehui on 2016/11/3.
  * Retrifit a type-safe HTTP client for Android and Java;
+ * Retrofit 1.x中没有直接取消正在进行中任务的方法
  */
 public class RetrofitFragment extends Fragment implements View.OnClickListener {
 
