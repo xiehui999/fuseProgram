@@ -142,11 +142,16 @@ public class UpLoadFileFragment extends Fragment implements View.OnClickListener
                 } else if (!file.exists()) {
                     Toast.makeText(getContext(), "文件不存在", Toast.LENGTH_LONG).show();
                 } else {
+                    long time1=System.currentTimeMillis();
                     String md5 = Md5Utils.getFileMd5(file);
-                    int i=1;
-                    if(i==2){
-                        md5 = Md5Utils.getFileMd51(file);
-                    }
+/*                    long time2=System.currentTimeMillis();
+                    System.out.println("FileInputStream执行时间："+(time2-time1));
+                    String md51= Md5Utils.getFileMd52(file);
+                    long time3=System.currentTimeMillis();
+                    System.out.println("FileChannel执行时间："+(time3-time2));
+                    String md52 = Md5Utils.getFileMd53(file);
+                    long time4=System.currentTimeMillis();
+                    System.out.println("RandomAccessFile执行时间："+(time4-time3));*/
                     tv_filemd5.setText(md5);
                 }
                 break;

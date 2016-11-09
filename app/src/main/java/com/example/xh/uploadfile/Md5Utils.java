@@ -15,19 +15,17 @@ import java.security.NoSuchAlgorithmException;
  * Created by xiehui on 2016/10/13.
  */
 public class Md5Utils {
+
     /**
      * 获取文件的MD5值
      *
-     * @param file
-     *            文件路径
+     * @param file 文件路径
      * @return md5
      */
     public static String getFileMd5(File file) {
         MessageDigest messageDigest;
         //MappedByteBuffer byteBuffer = null;
-        FileInputStream is = null;
-        RandomAccessFile randomAccessFile;
-        byte[] resultByteArray = null;
+        FileInputStream fis = null;
         try {
             messageDigest = MessageDigest.getInstance("MD5");
             if (file == null) {
@@ -36,30 +34,17 @@ public class Md5Utils {
             if (!file.exists()) {
                 return "";
             }
-            int i=0;
             int len = 0;
-            is = new FileInputStream(file);
+            fis = new FileInputStream(file);
             //普通流读取方式
             byte[] buffer = new byte[1024 * 1024 * 10];
-            while ((len = is.read(buffer)) >0) {
+            while ((len = fis.read(buffer)) > 0) {
                 //该对象通过使用 update（）方法处理数据
-                System.err.println(i++);
                 messageDigest.update(buffer, 0, len);
             }
-
-/*            FileChannel fileChannel = is.getChannel();
-            int size=1024 * 1024 * 10;
-            long part=file.length()/size+(file.length()%size>0 ?1:0);
-            System.err.println("文件分片数"+part);
-            for (int j = 0; j < part; j++) {
-                System.err.println(i++);
-                MappedByteBuffer byteBuffer = fileChannel.map(FileChannel.MapMode.READ_ONLY, j*size, j==part-1?file.length():(j+1)*size);
-                messageDigest.update(byteBuffer);
-            }
-            fileChannel.close();*/
             BigInteger bigInt = new BigInteger(1, messageDigest.digest());
             String md5 = bigInt.toString(16);
-            while(md5.length() < 32){
+            while (md5.length() < 32) {
                 md5 = "0" + md5;
             }
             return md5;
@@ -72,37 +57,89 @@ public class Md5Utils {
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        }finally {
+        } finally {
             try {
-                if (is!=null) {
-                    is.close();
-                    is=null;
+                if (fis != null) {
+                    fis.close();
+                    fis = null;
                 }
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
-        if (resultByteArray == null) {
-            return "";
-        }
-        return resultByteArray.toString();
+        return "";
     }
     /**
-     * 获取文件的MD5值
+     * FileChannel 获取文件的MD5值
      *
-     * @param file
-     *            文件路径
+     * @param file 文件路径
      * @return md5
      */
-    public static String getFileMd51(File file) {
+    public static String getFileMd52(File file) {
         MessageDigest messageDigest;
-        //MappedByteBuffer byteBuffer = null;
-        FileInputStream is = null;
-        RandomAccessFile randomAccessFile;
-        byte[] resultByteArray = null;
+        FileInputStream fis = null;
+        FileChannel ch=null;
         try {
-
+            messageDigest = MessageDigest.getInstance("MD5");
+            if (file == null) {
+                return "";
+            }
+            if (!file.exists()) {
+                return "";
+            }
+            fis = new FileInputStream(file);
+            ch = fis.getChannel();
+            int size = 1024 * 1024 * 10;
+            long part = file.length() / size + (file.length() % size > 0 ? 1 : 0);
+            System.err.println("文件分片数" + part);
+            for (int j = 0; j < part; j++) {
+                MappedByteBuffer byteBuffer = ch.map(FileChannel.MapMode.READ_ONLY, j * size, j == part - 1 ? file.length() : (j + 1) * size);
+                messageDigest.update(byteBuffer);
+                byteBuffer.clear();
+            }
+            BigInteger bigInt = new BigInteger(1, messageDigest.digest());
+            String md5 = bigInt.toString(16);
+            while (md5.length() < 32) {
+                md5 = "0" + md5;
+            }
+            return md5;
+        } catch (NoSuchAlgorithmException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } finally {
+            try {
+                if (fis != null) {
+                    fis.close();
+                    fis = null;
+                }
+                if (ch!=null){
+                    ch.close();
+                    ch=null;
+                }
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        return "";
+    }
+    /**
+     * RandomAccessFile 获取文件的MD5值
+     *
+     * @param file 文件路径
+     * @return md5
+     */
+    public static String getFileMd53(File file) {
+        MessageDigest messageDigest;
+        RandomAccessFile randomAccessFile = null;
+        try {
             messageDigest = MessageDigest.getInstance("MD5");
             if (file == null) {
                 return "";
@@ -111,22 +148,14 @@ public class Md5Utils {
                 return "";
             }
             randomAccessFile=new RandomAccessFile(file,"r");
-            int i=0;
-            int len = 0;
-            FileChannel fileChannel = randomAccessFile.getChannel();
-            int size=1024 * 1024 * 10;
-            long part=file.length()/size+(file.length()%size>0 ?1:0);
-            System.err.println("文件分片数"+part);
-            for (int j = 0; j < part; j++) {
-                System.err.println(i++);
-                MappedByteBuffer byteBuffer = fileChannel.map(FileChannel.MapMode.READ_ONLY, j*size, j==part-1?file.length():(j+1)*size);
-                messageDigest.update(byteBuffer);
-                byteBuffer.clear();
+            byte[] bytes=new byte[1024*1024*10];
+            int len=0;
+            while ((len=randomAccessFile.read(bytes))!=-1){
+                messageDigest.update(bytes,0, len);
             }
-            fileChannel.close();
             BigInteger bigInt = new BigInteger(1, messageDigest.digest());
             String md5 = bigInt.toString(16);
-            while(md5.length() < 32){
+            while (md5.length() < 32) {
                 md5 = "0" + md5;
             }
             return md5;
@@ -139,29 +168,79 @@ public class Md5Utils {
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        }finally {
+        } finally {
             try {
-                if (is!=null) {
-                    is.close();
-                    is=null;
+                if (randomAccessFile != null) {
+                    randomAccessFile.close();
+                    randomAccessFile = null;
                 }
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
-        if (resultByteArray == null) {
-            return "";
-        }
-        return resultByteArray.toString();
+        return "";
     }
-    private static String byteArrayToHex(byte[] resultByteArray) {
-        // TODO Auto-generated method stub
-        BigInteger bigInt = new BigInteger(1, resultByteArray);
-        String md5 = bigInt.toString(16);
-        while(md5.length() < 32){
-            md5 = "0" + md5;
+    /**
+     * 获取文件的MD5值
+     *
+     * @param file 文件路径
+     * @return md5
+     */
+    public static String getFileMd51(File file) {
+        MessageDigest messageDigest;
+        //MappedByteBuffer byteBuffer = null;
+        FileInputStream is = null;
+        RandomAccessFile randomAccessFile;
+        try {
+
+            messageDigest = MessageDigest.getInstance("MD5");
+            if (file == null) {
+                return "";
+            }
+            if (!file.exists()) {
+                return "";
+            }
+            randomAccessFile = new RandomAccessFile(file, "r");
+            int i = 0;
+            FileChannel fileChannel = randomAccessFile.getChannel();
+            int size = 1024 * 1024 * 10;
+            long part = file.length() / size + (file.length() % size > 0 ? 1 : 0);
+            System.err.println("文件分片数" + part);
+            for (int j = 0; j < part; j++) {
+                System.err.println(i++);
+                MappedByteBuffer byteBuffer = fileChannel.map(FileChannel.MapMode.READ_ONLY, j * size, j == part - 1 ? file.length() : (j + 1) * size);
+                messageDigest.update(byteBuffer);
+                byteBuffer.clear();
+            }
+            fileChannel.close();
+            BigInteger bigInt = new BigInteger(1, messageDigest.digest());
+            String md5 = bigInt.toString(16);
+            while (md5.length() < 32) {
+                md5 = "0" + md5;
+            }
+            return md5;
+        } catch (NoSuchAlgorithmException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } finally {
+            try {
+                if (is != null) {
+                    is.close();
+                    is = null;
+                }
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
-        return md5;
+        return "";
     }
+
 }
