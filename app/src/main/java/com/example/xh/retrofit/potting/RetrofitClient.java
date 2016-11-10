@@ -3,7 +3,6 @@ package com.example.xh.retrofit.potting;
 import android.content.Context;
 import android.text.TextUtils;
 
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -18,13 +17,14 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RetrofitClient {
     private static final int DEFAULT_TIMEOUT = 10;
     private static OkHttpClient okHttpClient;
-    private static String baseUrl = "";
+    private static String baseUrl = "https://api.douban.com/";
     private Context mContext;
     private static Retrofit retrofit;
     private static RetrofitClient retrofitClient;
 
-    private RetrofitClient(Context mContext, String url, Map<String, String> headers) {
+    private RetrofitClient(Context mContext, String url) {
         if (TextUtils.isEmpty(url)) {
+            //url为空，表示没有传url，则使用默认的url
             url = baseUrl;
         }
         /**
@@ -47,19 +47,26 @@ public class RetrofitClient {
 
     }
 
+    /**
+     * 初始化使用默认url
+     * @param context
+     * @return
+     */
     public static RetrofitClient getInstance(Context context) {
         return getInstance(context, baseUrl);
     }
 
+    /**
+     * 使用新的url
+     * @param context
+     * @param url
+     * @return
+     */
     public static RetrofitClient getInstance(Context context, String url) {
-        return getInstance(context, baseUrl, null);
-    }
-
-    public static RetrofitClient getInstance(Context context, String url, Map<String, String> headers) {
         if (retrofitClient == null) {
             synchronized (RetrofitClient.class) {
                 if (retrofitClient == null) {
-                    retrofitClient = new RetrofitClient(context, url, headers);
+                    retrofitClient = new RetrofitClient(context, url);
                 }
             }
         }
