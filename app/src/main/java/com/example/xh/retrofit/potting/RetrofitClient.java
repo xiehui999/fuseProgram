@@ -10,16 +10,21 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by xiehui on 2016/11/8.
  */
-public class RetrofitClient {
+public class RetrofitClient<T> {
     private static final int DEFAULT_TIMEOUT = 10;
     private static OkHttpClient okHttpClient;
     private static String baseUrl = "https://api.douban.com/";
     private Context mContext;
     private static Retrofit retrofit;
+    private ApiService apiService;
     private static RetrofitClient retrofitClient;
 
     private RetrofitClient(Context mContext, String url) {
@@ -36,9 +41,9 @@ public class RetrofitClient {
         okHttpClient = new OkHttpClient.Builder()
                 .addNetworkInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .connectTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS)
-                .writeTimeout(DEFAULT_TIMEOUT,TimeUnit.SECONDS)
+                .writeTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS)
                 .build();
-        retrofit=new Retrofit.Builder()
+        retrofit = new Retrofit.Builder()
                 .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
@@ -49,6 +54,7 @@ public class RetrofitClient {
 
     /**
      * 初始化使用默认url
+     *
      * @param context
      * @return
      */
@@ -58,6 +64,7 @@ public class RetrofitClient {
 
     /**
      * 使用新的url
+     *
      * @param context
      * @param url
      * @return
@@ -73,8 +80,37 @@ public class RetrofitClient {
         return retrofitClient;
     }
 
-    public RetrofitClient connectioToService(){
+    public RetrofitClient connectioToService() {
 
         return this;
+    }
+
+    public  RetrofitClient createApi() {
+        apiService=create(ApiService.class);
+        return this;
+    }
+
+    public Subscriber  getBookList(String id){
+
+        if(apiService==null)
+            throw new RuntimeException("apiService don't initialization");
+        apiService.getBookList(id);
+        return null;
+    }
+    private <T> T create(final Class<T> apiClass) {
+        if (apiClass == null) {
+            throw new RuntimeException("apiClass interface can not be null");
+        }
+        return retrofit.create(apiClass);
+    }
+
+    <T> Observable.Transformer<T, T> applySchedulers() {
+        return new Observable.Transformer<T, T>() {
+            @Override
+            public Observable<T> call(Observable<T> observable) {
+                return observable.subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread());
+            }
+        };
     }
 }
