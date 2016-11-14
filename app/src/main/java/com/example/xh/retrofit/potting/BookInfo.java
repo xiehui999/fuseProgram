@@ -56,6 +56,36 @@ public class BookInfo {
 
     private String price;
 
+    @Override
+    public String toString() {
+        return "BookInfo{" +
+                "rating=" + rating +
+                ", subtitle='" + subtitle + '\'' +
+                ", author=" + author +
+                ", pubdate='" + pubdate + '\'' +
+                ", tags=" + tags +
+                ", origin_title='" + origin_title + '\'' +
+                ", image='" + image + '\'' +
+                ", binding='" + binding + '\'' +
+                ", translator=" + translator +
+                ", catalog='" + catalog + '\'' +
+                ", pages='" + pages + '\'' +
+                ", images=" + images +
+                ", alt='" + alt + '\'' +
+                ", id='" + id + '\'' +
+                ", publisher='" + publisher + '\'' +
+                ", isbn10='" + isbn10 + '\'' +
+                ", isbn13='" + isbn13 + '\'' +
+                ", title='" + title + '\'' +
+                ", url='" + url + '\'' +
+                ", alt_title='" + alt_title + '\'' +
+                ", author_intro='" + author_intro + '\'' +
+                ", summary='" + summary + '\'' +
+                ", series=" + series +
+                ", price='" + price + '\'' +
+                '}';
+    }
+
     public void setRating(Rating rating){
         this.rating = rating;
     }

@@ -21,6 +21,9 @@ import com.example.xh.retrofit.MovieService;
 import com.example.xh.retrofit.MovieServiceObservable;
 import com.example.xh.retrofit.Repo;
 import com.example.xh.retrofit.Subject;
+import com.example.xh.retrofit.potting.BookInfo;
+import com.example.xh.retrofit.potting.BookList;
+import com.example.xh.retrofit.potting.RetrofitClient;
 
 import java.util.List;
 
@@ -34,6 +37,7 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -45,7 +49,7 @@ import rx.schedulers.Schedulers;
  */
 public class RetrofitFragment extends Fragment implements View.OnClickListener {
 
-    Button click, click1, click2, click3,click4;
+    Button click, click1, click2, click3,click4, click5,click6;
     TextView result;
 
     @Override
@@ -68,6 +72,8 @@ public class RetrofitFragment extends Fragment implements View.OnClickListener {
         click2 = (Button) view.findViewById(R.id.click2);
         click3 = (Button) view.findViewById(R.id.click3);
         click4 = (Button) view.findViewById(R.id.click4);
+        click5 = (Button) view.findViewById(R.id.click5);
+        click6 = (Button) view.findViewById(R.id.click6);
     }
 
     @Override
@@ -78,6 +84,8 @@ public class RetrofitFragment extends Fragment implements View.OnClickListener {
         click2.setOnClickListener(this);
         click3.setOnClickListener(this);
         click4.setOnClickListener(this);
+        click5.setOnClickListener(this);
+        click6.setOnClickListener(this);
     }
 
     @Override
@@ -103,6 +111,55 @@ public class RetrofitFragment extends Fragment implements View.OnClickListener {
             case R.id.click4:
                 getGitHubRepo();
                 break;
+            case R.id.click5:
+                getBookList();
+                break;
+            case R.id.click6:
+                getBookInfo();
+                break;
+        }
+    }
+
+    private void getBookInfo() {
+        result.setText("");
+        RetrofitClient.getInstance().createApi().getBookInfo(new Subscriber<BookInfo>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(BookInfo bookInfo) {
+                result.setText(bookInfo.toString());
+            }
+        },"1049180");
+    }
+
+    private void getBookList() {
+        result.setText("");
+       Subscription subscription= RetrofitClient.getInstance().createApi().getBookList(new Subscriber<BookList>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(BookList bookList) {
+                result.setText(bookList.toString());
+            }
+        },"6");
+        if (subscription.isUnsubscribed()){
+            subscription.unsubscribe();
         }
     }
 

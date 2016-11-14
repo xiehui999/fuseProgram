@@ -14,6 +14,16 @@ public class BookList {
 
     private List<BookInfo> books ;
 
+    @Override
+    public String toString() {
+        return "BookList{" +
+                "count=" + count +
+                ", start=" + start +
+                ", total=" + total +
+                ", books=" + books.toString() +
+                '}';
+    }
+
     public void setCount(int count){
         this.count = count;
     }

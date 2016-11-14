@@ -46,6 +46,20 @@
             android:padding="5dp"
             android:text="GetGitHub Observable"
             android:textSize="16sp" />
+        <Button
+            android:id="@+id/click5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:text="BookList"
+            android:textSize="16sp" />
+        <Button
+            android:id="@+id/click6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:text="BookInfo"
+            android:textSize="16sp" />
         <TextView
             android:id="@+id/result"
             android:layout_width="match_parent"

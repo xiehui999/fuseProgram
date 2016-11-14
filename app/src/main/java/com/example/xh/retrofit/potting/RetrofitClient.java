@@ -12,13 +12,14 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 /**
  * Created by xiehui on 2016/11/8.
  */
-public class RetrofitClient<T> {
+public class RetrofitClient {
     private static final int DEFAULT_TIMEOUT = 10;
     private static OkHttpClient okHttpClient;
     private static String baseUrl = "https://api.douban.com/";
@@ -51,7 +52,14 @@ public class RetrofitClient<T> {
                 .build();
 
     }
-
+    /**
+     * 初始化使用默认url
+     *
+     * @return
+     */
+    public static RetrofitClient getInstance() {
+        return getInstance(null, baseUrl);
+    }
     /**
      * 初始化使用默认url
      *
@@ -90,12 +98,15 @@ public class RetrofitClient<T> {
         return this;
     }
 
-    public Subscriber  getBookList(String id){
-
+    public Subscription getBookList(Subscriber<BookList> subscriber ,String id){
         if(apiService==null)
             throw new RuntimeException("apiService don't initialization");
-        apiService.getBookList(id);
-        return null;
+        return apiService.getBookList(id).compose(this.<BookList>applySchedulers()).subscribe(subscriber);
+    }
+    public Subscription getBookInfo(Subscriber<BookInfo> subscriber ,String id){
+        if(apiService==null)
+            throw new RuntimeException("apiService don't initialization");
+        return apiService.getBookInfo(id).compose(this.<BookInfo>applySchedulers()).subscribe(subscriber);
     }
     private <T> T create(final Class<T> apiClass) {
         if (apiClass == null) {
