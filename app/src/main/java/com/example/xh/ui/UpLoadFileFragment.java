@@ -1,8 +1,10 @@
 package com.example.xh.ui;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -15,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.xh.R;
+import com.example.xh.uploadfile.ChunkInfo;
 import com.example.xh.uploadfile.FileInfo;
 import com.example.xh.uploadfile.Md5Utils;
 import com.example.xh.uploadfile.SelectFileActivity;
@@ -30,7 +33,7 @@ public class UpLoadFileFragment extends Fragment implements View.OnClickListener
     private TextView tv_fileName;
 
     private TextView tv_filemd5;
-
+    private TextView tv_progress;
     private Button btn_chooseFile;
 
     private Button btn_upLoadFile;
@@ -75,9 +78,15 @@ public class UpLoadFileFragment extends Fragment implements View.OnClickListener
         super.onViewCreated(view, savedInstanceState);
         tv_fileName=(TextView)view.findViewById(R.id.tv_fileName);
         tv_filemd5=(TextView)view.findViewById(R.id.tv_filemd5);
+        tv_progress=(TextView)view.findViewById(R.id.tv_progress);
         btn_chooseFile=(Button)view.findViewById(R.id.btn_chooseFile);
         btn_getmd5=(Button)view.findViewById(R.id.btn_getmd5);
         btn_upLoadFile=(Button)view.findViewById(R.id.btn_upLoadFile);
+        // 注册广播接收器，接收下载进度信息和结束信息
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("ACTION_UPDATE");
+        filter.addAction("ACTION_FINISH");
+        getActivity().registerReceiver(mReceiver, filter);
     }
 
     @Override
@@ -88,7 +97,20 @@ public class UpLoadFileFragment extends Fragment implements View.OnClickListener
     @Override
     public void onDestroy() {
         super.onDestroy();
+        getActivity().unregisterReceiver(mReceiver);
     }
+    BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if ("ACTION_UPDATE".equals(intent.getAction())) {
+                ChunkInfo chunkInfo = (ChunkInfo) intent.getSerializableExtra("chunkIntent");
+                tv_progress.setText(chunkInfo.getChunk()+1+"/"+chunkInfo.getChunks() +"    "+chunkInfo.getProgress() +"KB");
+                //Log.e("chunkInfo:", chunkInfo.toString());
+            } else if ("ACTION_FINISH".equals(intent.getAction())) {
+
+            }
+        }
+    };
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

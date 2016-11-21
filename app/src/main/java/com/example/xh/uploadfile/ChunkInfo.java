@@ -1,11 +1,9 @@
 package com.example.xh.uploadfile;
 
-import java.io.Serializable;
-
 /**
  * Created by xiehui on 2016/10/21.
  */
-public class ChunkInfo extends FileInfo implements Serializable {
+public class ChunkInfo extends FileInfo{
     /**
      * 文件的当前分片值
      */

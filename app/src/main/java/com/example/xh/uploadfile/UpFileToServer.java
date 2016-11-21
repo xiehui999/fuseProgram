@@ -36,7 +36,7 @@ import java.util.Map;
 public class UpFileToServer {
 
     private Map<String, String> params = new HashMap<String, String>();
-   	private String actionUrl = "http://192.168.5.127:8080/";
+   	private String actionUrl = "http://192.168.5.127:8080/receive/";
 
     private Context context;
     private ChunkInfo chunkInfo;
@@ -54,11 +54,10 @@ public class UpFileToServer {
             params.put("chunk", chunkInfo.getChunk() + "");
             params.put("chunks", chunkInfo.getChunks() + "");
             params.put("id", chunkInfo.getMd5());
-            // actionUrl += "9898/receive/slicefiler";
-            actionUrl = "slicefiler";
+             actionUrl = "http://192.168.5.127:808/receive/slicefiler";
         } else if (upSort.equals("upchunk")) {
             params.put("gguid", chunkInfo.getGguid());
-            actionUrl += "fulfile";
+            actionUrl += "fulfilepath";
         }
         // 执行文件流上传
         String result = "";
