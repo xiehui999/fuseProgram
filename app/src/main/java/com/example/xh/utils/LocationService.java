@@ -44,7 +44,6 @@ public class LocationService {
     public LocationClientOption getDefaultLocationClientOption() {
         if (locationClientOption == null) {
             locationClientOption = new LocationClientOption();
-            locationClientOption.setOpenGps(true);//打开GPS定位，默认关闭
             locationClientOption.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);//可选，默认高精度，设置定位模式，高精度，低功耗，仅设备
             locationClientOption.setCoorType("bd09ll");//可选，默认gcj02，设置返回的定位结果坐标系，如果配合百度地图使用，建议设置为bd09ll;
             locationClientOption.setScanSpan(3000);//可选，默认0，即仅定位一次，设置发起定位请求的间隔需要大于等于1000ms才是有效的

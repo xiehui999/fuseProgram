@@ -15,7 +15,17 @@ fuseProgram
 ![Imitation QQ sliding menu](https://github.com/xiehui999/fuseProgram/blob/master/images/menu.gif)
 
 #实现大文件分片上传，分隔上传,由于获取了文件的md5值，可以实现秒传功能
+所在包：com.example.xh.uploadfile以及com.example.xh.UpLoadFileFragment
+
+![uploadfile](https://github.com/xiehui999/fuseProgram/blob/master/images/uploadfile.gif)
 
 #自学RxJava代码
 
+所在包：com.example.xh.rxjava以及com.example.xh.TestRxJavaFragment
+![uploadfile](https://github.com/xiehui999/fuseProgram/blob/master/images/rxjava.gif)
+
+
 #学习Retrofit
+
+所在包：com.example.xh.retrofit以及com.example.xh.RetrofitFragment
+![uploadfile](https://github.com/xiehui999/fuseProgram/blob/master/images/retrofit.gif)
