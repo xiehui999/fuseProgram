@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.xh.ui.BaiduLocationFragment;
 import com.example.xh.ui.RetrofitFragment;
 import com.example.xh.ui.TestRxJavaFragment;
 import com.example.xh.ui.BaseActivity;
@@ -80,6 +81,7 @@ public class MainActivity extends BaseActivity {
                         selectNavigation(2);
                         break;
                     case R.id.navigation_setting:
+                        selectNavigation(3);
                         break;
                 }
                 mDrawerLayout.closeDrawers();
@@ -100,6 +102,9 @@ public class MainActivity extends BaseActivity {
                 break;
             case 2:
                 fragment=new RetrofitFragment();
+                break;
+            case 3:
+                fragment=new BaiduLocationFragment();
                 break;
         }
         if (fragment!=null){
