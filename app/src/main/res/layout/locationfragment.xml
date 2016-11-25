@@ -1,24 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical"
-    tools:context=".MainActivity" >
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <Button
-        android:id="@+id/btn_getLocation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="获取位置" />
-    <TextView
-        android:id="@+id/tv_location"
+    <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:gravity = "center_horizontal"
-        android:layout_gravity = "center_horizontal"
-        android:textSize="20dp"
-        android:text="1"
-        >
-    </TextView>
-</LinearLayout>
+        android:layout_height="fill_parent"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/btn_getLocation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="开始定位" />
+
+        <TextView
+            android:id="@+id/tv_location"
+            android:paddingBottom="100dp"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:text="1"
+            android:textSize="20dp"></TextView>
+    </LinearLayout>
+</ScrollView>

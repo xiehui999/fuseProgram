@@ -83,9 +83,20 @@ public class BaiduLocationFragment extends Fragment implements View.OnClickListe
     @Override
     public void onClick(View v) {
 
+        String text=btn_getLocation.getText().toString();
+        tv_location.setText("");
         switch (v.getId()) {
             case R.id.btn_getLocation:
-                locationService.start();
+                if (text.equals("开始定位")){
+                    btn_getLocation.setText("停止定位");
+                    locationService.registerListener(mListener);
+                    locationService.start();
+                }else{
+                    btn_getLocation.setText("开始定位");
+                    locationService.stop();
+                    locationService.unRegisterListener(mListener);
+                }
+
                 break;
 
         }
@@ -101,7 +112,7 @@ public class BaiduLocationFragment extends Fragment implements View.OnClickListe
         @Override
         public void onReceiveLocation(BDLocation location) {
             // TODO Auto-generated method stub
-            if (null != location && location.getLocType() != BDLocation.TypeServerError) {
+            if (null != location ) {
                 StringBuffer sb = new StringBuffer(256);
                 sb.append("time : ");
                 /**
@@ -180,7 +191,10 @@ public class BaiduLocationFragment extends Fragment implements View.OnClickListe
                     sb.append("\ndescribe : ");
                     sb.append("无法获取有效定位依据导致定位失败，一般是由于手机的原因，处于飞行模式下一般会造成这种结果，可以试着重启手机");
                 }
-                tv_location.setText(sb);
+                tv_location.setText(sb+"\n定位结束");
+                locationService.stop();
+            }else{
+                tv_location.setText("\n定位失败");
             }
         }
 
