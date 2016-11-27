@@ -29,3 +29,9 @@ fuseProgram
 
 所在包：com.example.xh.retrofit以及com.example.xh.RetrofitFragment
 ![uploadfile](https://github.com/xiehui999/fuseProgram/blob/master/images/retrofit.gif)
+
+# 百度定位实现
+
+所在包：com.example.xh.utils以及com.example.xh.BaiduLocationFragment
+
+![BaiduLocation](https://github.com/xiehui999/fuseProgram/blob/master/images/baidulocation.png)

@@ -15,7 +15,7 @@ public class LocationService {
     private static LocationService locationService;
 
     /**
-     * 获取LocationClient实例
+     * 获取LocationService实例
      *
      * @param context
      * @return
