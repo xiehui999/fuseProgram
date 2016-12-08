@@ -21,13 +21,13 @@
             android:id="@+id/btn2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="测试2" />
+            android:text="使用connect" />
 
         <Button
         android:id="@+id/btn3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="测试3" />
+        android:text="过滤Filter" />
 
         <Button
             android:id="@+id/btn4"

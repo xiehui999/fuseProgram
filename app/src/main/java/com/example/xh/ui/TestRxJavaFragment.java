@@ -17,8 +17,6 @@ import android.widget.TextView;
 
 import com.example.xh.R;
 import com.example.xh.rxjava.NormalRxActivity;
-import com.example.xh.rxjava.RxConnetActivity;
-import com.example.xh.rxjava.RxFilterActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -32,6 +30,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.observables.ConnectableObservable;
 import rx.schedulers.Schedulers;
 import rx.schedulers.Timestamped;
 
@@ -307,12 +306,10 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
                 startActivity(intent);
                 break;
             case R.id.btn2:
-                intent.setClass(getContext(), RxConnetActivity.class);
-                startActivity(intent);
+                connect();
                 break;
             case R.id.btn3:
-                intent.setClass(getContext(), RxFilterActivity.class);
-                startActivity(intent);
+                executeFilter();
                 break;
             case R.id.btn4:
                 //所谓变换，就是将事件序列中的对象或整个序列进行加工处理，转换成不同的事件或事件序列
@@ -531,7 +528,63 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
             }
         });
     }
+    private void connect() {
+        String [] strs={"也许当初忙着微笑和哭泣","忙着追逐天空中的流星","人理所当然的忘记","是谁风里雨里一直默默守护在原地"};
 
+        tv.append("\n");
+        Observable observable=Observable.from(strs);
+        Action1 action0=new Action1<String>() {
+            @Override
+            public void call(String s) {
+                tv.append("观察者A 收到："+s+"\n");
+            }
+        };
+        Action1 action10=new Action1<String>() {
+            @Override
+            public void call(String s) {
+                tv.append("观察者B 收到："+s+"\n");
+            }
+        };
+        observable.subscribe(action0);
+        observable.subscribe(action10);
+
+
+        tv.append("\n");
+        //获得一个可连接的Observable对象，需调用publish()方法
+        ConnectableObservable connectableObservable=Observable.from(strs).publish();
+        Action1 action1=new Action1<String>(){
+            @Override
+            public void call(String s) {
+                tv.append("观察者A  收到:  "+s+"\n");
+            }
+        };
+        Action1 action11=new Action1<String>(){
+            @Override
+            public void call(String s) {
+                tv.append("观察者B  收到:  "+s+"\n");
+            }
+        };
+        connectableObservable.subscribe(action1);
+        connectableObservable.subscribe(action11);
+        connectableObservable.connect();
+    }
+    private void executeFilter() {
+        tv.setText("输入1-10,过滤掉能被2整除的数");
+        Integer []ints={1,2,3,4,5,6,7,8,9};
+        Observable observable=Observable.from(ints).filter(new Func1<Integer, Boolean>() {
+            @Override
+            public Boolean call(Integer integer) {
+                return integer%2!=0;//返回true，就不会过滤掉，过滤掉返回false的值
+            }
+        });
+        Action1 action1=new Action1<Integer>(){
+            @Override
+            public void call(Integer i) {
+                tv.append(i.toString()+",");
+            }
+        };
+        observable.subscribe(action1);
+    }
     private void executeMap() {
 
         tv.setText("输入参数： 0,0,6,4,2,8,2,1,9,0,23");
