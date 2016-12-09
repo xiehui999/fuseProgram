@@ -370,10 +370,10 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
                 executeDebounce();
                 break;
             case R.id.btn17:
-                executeConcatMap();
+                executeDistinct();
                 break;
             case R.id.btn18:
-                executeSwitchMap();
+                executeElementAt();
                 break;
         }
     }
@@ -772,6 +772,52 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
                         tv.append("\n"+s);
                     }
                 });
+    }
+    private void executeDistinct(){
+        tv.setText("Distinct去重数据源0, 0, 6, 4, 2, 8, 2, 1, 9, 0");
+        Observable.just(0, 0, 6, 4, 2, 8, 2, 1, 9, 0)
+                .distinct()
+                .subscribe(new Subscriber<Integer>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.e(TAG, "onCompleted:Distinct " );
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "onError:Distinct " );
+                    }
+
+                    @Override
+                    public void onNext(Integer integer) {
+                        Log.e(TAG, "onNext:Distinct "+integer);
+                        tv.append("\n"+integer);
+                    }
+                });
+
+    }
+    private void executeElementAt(){
+        tv.setText("ElementAt（i）取第i个值，此例i为4，数据源0, 0, 6, 4, 2, 8, 2, 1, 9, 0");
+        Observable.just(0, 0, 6, 4, 2, 8, 2, 1, 9, 0)
+                .elementAt(4)
+                .subscribe(new Subscriber<Integer>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.e(TAG, "onCompleted:ElementAt " );
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "onError:ElementAt " );
+                    }
+
+                    @Override
+                    public void onNext(Integer integer) {
+                        Log.e(TAG, "onNext:ElementAt "+integer);
+                        tv.append("\n"+integer);
+                    }
+                });
+
     }
     private void executeMap() {
 
