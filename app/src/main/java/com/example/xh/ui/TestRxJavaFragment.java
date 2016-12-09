@@ -43,7 +43,7 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
 
     private String TAG = "RXJAVA";
     private Button btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn10, btn11, btn12, btn13, btn14, btn15;
-    private Button btn16, btn17, btn18, btn19, btn20, btn21;
+    private Button btn16, btn17, btn18, btn19, btn20, btn21, btn22, btn23, btn24;
     private LinearLayout layout;
     private TextView tv;
     private StringBuffer stringBuffer;
@@ -80,6 +80,9 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
         btn19.setOnClickListener(this);
         btn20.setOnClickListener(this);
         btn21.setOnClickListener(this);
+        btn22.setOnClickListener(this);
+        btn23.setOnClickListener(this);
+        btn24.setOnClickListener(this);
     }
 
     @Nullable
@@ -112,6 +115,9 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
         btn19 = (Button) view.findViewById(R.id.btn19);
         btn20 = (Button) view.findViewById(R.id.btn20);
         btn21 = (Button) view.findViewById(R.id.btn21);
+        btn22 = (Button) view.findViewById(R.id.btn22);
+        btn23 = (Button) view.findViewById(R.id.btn23);
+        btn24 = (Button) view.findViewById(R.id.btn24);
         layout = (LinearLayout) view.findViewById(R.id.layout);
         tv = (TextView) view.findViewById(R.id.tv);
 
@@ -191,6 +197,15 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
                 executeLast();
                 break;
             case R.id.btn21:
+                executeSingle();
+                break;
+            case R.id.btn22:
+                executeIgnore();
+                break;
+            case R.id.btn23:
+                executeSample();
+                break;
+            case R.id.btn24:
                 executeSingle();
                 break;
         }
@@ -951,6 +966,54 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
                 tv.append("\n"+integer);
             }
         });
+    }
+    private void executeIgnore(){
+        tv.setText("ignoreElements不会执行onNext()数据源1,2,3");
+        Observable.just(1,2,3).ignoreElements().subscribe(new Subscriber<Integer>() {
+            @Override
+            public void onCompleted() {
+                tv.append("\nonCompleted");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                tv.append("\nonError");
+            }
+
+            @Override
+            public void onNext(Integer integer) {
+                tv.append("\nonNext");
+            }
+        });
+    }
+    private void executeSample(){
+        //定期扫描源Observable产生的结果，在指定的间隔周期内进行采样
+        //sample在线程中执行的，会默认开启一个新线程
+        tv.setText("Sample对数据进行采样,本例按1s时间对数据采样，数据源1,2,3.....500ms数据增加1");
+        Observable.interval(500,TimeUnit.MILLISECONDS)
+                .sample(1,TimeUnit.SECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Long>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.e(TAG, "onCompleted: Sample" );
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "onError: Sample"  );
+                    }
+
+                    @Override
+                    public void onNext(Long aLong) {
+                        Log.e(TAG, "onNext: Sample"  );
+                        tv.append("\n"+aLong);
+                        if (aLong>10){
+                            this.unsubscribe();
+                        }
+
+                    }
+                });
     }
     private void executeMap() {
 
