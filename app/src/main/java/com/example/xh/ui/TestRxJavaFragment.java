@@ -43,7 +43,7 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
 
     private String TAG = "RXJAVA";
     private Button btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn10, btn11, btn12, btn13, btn14, btn15;
-    private Button btn16,btn17,btn18;
+    private Button btn16, btn17, btn18, btn19, btn20, btn21;
     private LinearLayout layout;
     private TextView tv;
     private StringBuffer stringBuffer;
@@ -77,6 +77,9 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
         btn16.setOnClickListener(this);
         btn17.setOnClickListener(this);
         btn18.setOnClickListener(this);
+        btn19.setOnClickListener(this);
+        btn20.setOnClickListener(this);
+        btn21.setOnClickListener(this);
     }
 
     @Nullable
@@ -106,9 +109,91 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
         btn16 = (Button) view.findViewById(R.id.btn16);
         btn17 = (Button) view.findViewById(R.id.btn17);
         btn18 = (Button) view.findViewById(R.id.btn18);
+        btn19 = (Button) view.findViewById(R.id.btn19);
+        btn20 = (Button) view.findViewById(R.id.btn20);
+        btn21 = (Button) view.findViewById(R.id.btn21);
         layout = (LinearLayout) view.findViewById(R.id.layout);
         tv = (TextView) view.findViewById(R.id.tv);
 
+    }
+
+    @Override
+    public void onClick(View view) {
+        Intent intent = new Intent();
+        switch (view.getId()) {
+            // FuncX 包装的是有返回值的方法,ActionX 无
+            //Action0中call无参数，Action1有参数
+            //变换实质针对事件序列的处理和再发送
+            //lift() 是针对事件项和事件序列的，而 compose() 是针对 Observable 自身进行变换
+            case R.id.btn1:
+                intent.setClass(getContext(), NormalRxActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.btn2:
+                connect();
+                break;
+            case R.id.btn3:
+                executeFilter();
+                break;
+            case R.id.btn4:
+                //所谓变换，就是将事件序列中的对象或整个序列进行加工处理，转换成不同的事件或事件序列
+                //map() 是一对一的转化
+                executeMap();
+                break;
+            case R.id.btn5:
+                //可以一对多
+                // flatMap() 中返回的是个 Observable 对象，并且这个 Observable 对象并不是被直接发送到了 Subscriber 的回调方法中
+                executeFlatMap();
+                break;
+            case R.id.btn6:
+                executeSort();
+                break;
+            case R.id.btn7:
+                executeTake();
+                break;
+            case R.id.btn8:
+                executeMerge();
+                break;
+            case R.id.btn9:
+                executeSchedulers();
+                break;
+            case R.id.btn10:
+                executeInterval();
+                break;
+            case R.id.btn11:
+                executeUnsubscribe();
+                break;
+            case R.id.btn12:
+                executeTimestamp();
+                break;
+            case R.id.btn13:
+                executeZip();
+                break;
+            case R.id.btn14:
+                executeConcatMap();
+                break;
+            case R.id.btn15:
+                executeSwitchMap();
+                break;
+            case R.id.btn16:
+                executeDebounce();
+                break;
+            case R.id.btn17:
+                executeDistinct();
+                break;
+            case R.id.btn18:
+                executeElementAt();
+                break;
+            case R.id.btn19:
+                executeFirst();
+                break;
+            case R.id.btn20:
+                executeLast();
+                break;
+            case R.id.btn21:
+                executeSingle();
+                break;
+        }
     }
 
     @Override
@@ -308,75 +393,6 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
         super.onDetach();
     }
 
-    @Override
-    public void onClick(View view) {
-        Intent intent = new Intent();
-        switch (view.getId()) {
-            // FuncX 包装的是有返回值的方法,ActionX 无
-            //Action0中call无参数，Action1有参数
-            //变换实质针对事件序列的处理和再发送
-            //lift() 是针对事件项和事件序列的，而 compose() 是针对 Observable 自身进行变换
-            case R.id.btn1:
-                intent.setClass(getContext(), NormalRxActivity.class);
-                startActivity(intent);
-                break;
-            case R.id.btn2:
-                connect();
-                break;
-            case R.id.btn3:
-                executeFilter();
-                break;
-            case R.id.btn4:
-                //所谓变换，就是将事件序列中的对象或整个序列进行加工处理，转换成不同的事件或事件序列
-                //map() 是一对一的转化
-                executeMap();
-                break;
-            case R.id.btn5:
-                //可以一对多
-                // flatMap() 中返回的是个 Observable 对象，并且这个 Observable 对象并不是被直接发送到了 Subscriber 的回调方法中
-                executeFlatMap();
-                break;
-            case R.id.btn6:
-                executeSort();
-                break;
-            case R.id.btn7:
-                executeTake();
-                break;
-            case R.id.btn8:
-                executeMerge();
-                break;
-            case R.id.btn9:
-                executeSchedulers();
-                break;
-            case R.id.btn10:
-                executeInterval();
-                break;
-            case R.id.btn11:
-                executeUnsubscribe();
-                break;
-            case R.id.btn12:
-                executeTimestamp();
-                break;
-            case R.id.btn13:
-                executeZip();
-                break;
-            case R.id.btn14:
-                executeConcatMap();
-                break;
-            case R.id.btn15:
-                executeSwitchMap();
-                break;
-            case R.id.btn16:
-                executeDebounce();
-                break;
-            case R.id.btn17:
-                executeDistinct();
-                break;
-            case R.id.btn18:
-                executeElementAt();
-                break;
-        }
-    }
 
     private void executeTimestamp() {
         Integer[] number = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
@@ -593,23 +609,23 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
         Observable.from(integers).flatMap(new Func1<Integer, Observable<String>>() {
             @Override
             public Observable<String> call(Integer integer) {
-                Log.e(TAG, "call: FlatMap"+Thread.currentThread().getName());
+                Log.e(TAG, "call: FlatMap" + Thread.currentThread().getName());
                 return Observable.just((integer + 100) + "FlatMap");
             }
         }).subscribe(new Subscriber<String>() {
             @Override
             public void onCompleted() {
-                Log.e(TAG, "onCompleted: FlatMap" );
+                Log.e(TAG, "onCompleted: FlatMap");
             }
 
             @Override
             public void onError(Throwable e) {
-                Log.e(TAG, "onError: FlatMap" );
+                Log.e(TAG, "onError: FlatMap");
             }
 
             @Override
             public void onNext(String s) {
-                Log.e(TAG, "onNext: FlatMap" );
+                Log.e(TAG, "onNext: FlatMap");
                 tv.append("\n 转换后的内容：" + s + "\n");
             }
         });
@@ -625,23 +641,23 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
         Observable.from(integers).concatMap(new Func1<Integer, Observable<String>>() {
             @Override
             public Observable<String> call(Integer integer) {
-                Log.e(TAG, "call: ConcatMap"+Thread.currentThread().getName() );
+                Log.e(TAG, "call: ConcatMap" + Thread.currentThread().getName());
                 return Observable.just((integer + 100) + "ConcatMap");
             }
         }).subscribe(new Subscriber<String>() {
             @Override
             public void onCompleted() {
-                Log.e(TAG, "onCompleted: ConcatMap" );
+                Log.e(TAG, "onCompleted: ConcatMap");
             }
 
             @Override
             public void onError(Throwable e) {
-                Log.e(TAG, "onError: ConcatMap" );
+                Log.e(TAG, "onError: ConcatMap");
             }
 
             @Override
             public void onNext(String s) {
-                Log.e(TAG, "onNext: ConcatMap" );
+                Log.e(TAG, "onNext: ConcatMap");
                 tv.append("\n 转换后的内容：" + s + "\n");
             }
         });
@@ -655,29 +671,30 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
         Observable.from(integers).switchMap(new Func1<Integer, Observable<String>>() {
             @Override
             public Observable<String> call(Integer integer) {
-                Log.e(TAG, "call: SwitchMap"+Thread.currentThread().getName() );
+                Log.e(TAG, "call: SwitchMap" + Thread.currentThread().getName());
                 //如果不通过subscribeOn(Schedulers.newThread())在在子线程模拟并发操作，所有数据源依然会全部输出
                 return Observable.just((integer + 100) + "SwitchMap").subscribeOn(Schedulers.newThread());
             }
         }).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<String>() {
             @Override
             public void onCompleted() {
-                Log.e(TAG, "onCompleted: SwitchMap" );
+                Log.e(TAG, "onCompleted: SwitchMap");
             }
 
             @Override
             public void onError(Throwable e) {
-                Log.e(TAG, "onError: SwitchMap" );
+                Log.e(TAG, "onError: SwitchMap");
             }
 
             @Override
             public void onNext(String s) {
-                Log.e(TAG, "onNext: SwitchMap" );
+                Log.e(TAG, "onNext: SwitchMap");
                 tv.append("\n 转换后的内容：" + s + "\n");
             }
         });
 
     }
+
     private void connect() {
         String[] strs = {"也许当初忙着微笑和哭泣", "忙着追逐天空中的流星", "人理所当然的忘记", "是谁风里雨里一直默默守护在原地"};
 
@@ -736,6 +753,7 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
         };
         observable.subscribe(action1);
     }
+
     private void executeDebounce() {//debounce英文意思消抖
         //debounce操作符是对源Observable间隔期产生的结果进行过滤，如果在这个规定的间隔期内没有别的结果产生，
         // 则将这个结果提交给订阅者，否则忽略该结果，原理有点像光学防抖.
@@ -746,21 +764,22 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
             @Override
             public Observable<String> call(Integer integer) {
                 try {
-                    Thread.currentThread().sleep(200*integer);
+                    Thread.currentThread().sleep(200 * integer);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                return Observable.just(integer+"");
+                return Observable.just(integer + "");
             }
         });
         observable.subscribeOn(Schedulers.newThread())
-                .debounce(1,TimeUnit.SECONDS)
+                .debounce(1, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<String>() {
                     @Override
                     public void onCompleted() {
-                        Log.e(TAG, "onCompleted: " );
+                        Log.e(TAG, "onCompleted: ");
                     }
+
                     @Override
                     public void onError(Throwable e) {
                         Log.e(TAG, "onError: ");
@@ -768,56 +787,170 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
 
                     @Override
                     public void onNext(String s) {
-                        Log.e(TAG, "onNext: "+s );
-                        tv.append("\n"+s);
+                        Log.e(TAG, "onNext: " + s);
+                        tv.append("\n" + s);
                     }
                 });
     }
-    private void executeDistinct(){
+
+    private void executeDistinct() {
         tv.setText("Distinct去重数据源0, 0, 6, 4, 2, 8, 2, 1, 9, 0");
         Observable.just(0, 0, 6, 4, 2, 8, 2, 1, 9, 0)
                 .distinct()
                 .subscribe(new Subscriber<Integer>() {
                     @Override
                     public void onCompleted() {
-                        Log.e(TAG, "onCompleted:Distinct " );
+                        Log.e(TAG, "onCompleted:Distinct ");
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.e(TAG, "onError:Distinct " );
+                        Log.e(TAG, "onError:Distinct ");
                     }
 
                     @Override
                     public void onNext(Integer integer) {
-                        Log.e(TAG, "onNext:Distinct "+integer);
-                        tv.append("\n"+integer);
+                        Log.e(TAG, "onNext:Distinct " + integer);
+                        tv.append("\n" + integer);
                     }
                 });
 
     }
-    private void executeElementAt(){
+
+    private void executeElementAt() {
+        //i不能越界
         tv.setText("ElementAt（i）取第i个值，此例i为4，数据源0, 0, 6, 4, 2, 8, 2, 1, 9, 0");
         Observable.just(0, 0, 6, 4, 2, 8, 2, 1, 9, 0)
                 .elementAt(4)
                 .subscribe(new Subscriber<Integer>() {
                     @Override
                     public void onCompleted() {
-                        Log.e(TAG, "onCompleted:ElementAt " );
+                        Log.e(TAG, "onCompleted:ElementAt ");
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.e(TAG, "onError:ElementAt " );
+                        Log.e(TAG, "onError:ElementAt ");
                     }
 
                     @Override
                     public void onNext(Integer integer) {
-                        Log.e(TAG, "onNext:ElementAt "+integer);
-                        tv.append("\n"+integer);
+                        Log.e(TAG, "onNext:ElementAt " + integer);
+                        tv.append("\n" + integer);
                     }
                 });
 
+    }
+
+    private void executeOfType() {
+        //过滤某类型的数据,可与filter合用，过滤更复杂的数据
+        tv.setText("ofType（type）过滤某类型的数据，此例传的Integer.class，数据源0, \"one\", 6, 4, \"two\", 8, \"three\", 1, \"four\", 0");
+        Observable.just(0, "one", 6, 4, "two", 8, "three", 1, "four", 0)
+                .ofType(Integer.class)
+                .subscribe(new Subscriber<Integer>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.e(TAG, "onCompleted:ofType ");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "onError:ofType ");
+                    }
+
+                    @Override
+                    public void onNext(Integer integer) {
+                        Log.e(TAG, "onNext:ofType " + integer);
+                        tv.append("\n" + integer);
+                    }
+                });
+
+    }
+    private void executeFirst(){
+        //与ElementAt(0)作用相同
+        tv.setText("first过滤获得第一个数据此例数据源10,11,12,13");
+        Observable.just(10,11,12,13).first().subscribe(new Action1<Integer>() {
+            @Override
+            public void call(Integer integer) {
+                tv.append("\n"+integer);
+            }
+        });
+        tv.append("\nfist（Func1）传过滤参数条件大于12");
+        Observable.just(10,11,12,13).first(new Func1<Integer, Boolean>() {
+            @Override
+            public Boolean call(Integer integer) {
+                return integer>12;
+            }
+        }).subscribe(new Action1<Integer>() {
+            @Override
+            public void call(Integer integer) {
+                tv.append("\n"+integer);
+            }
+        });
+    }
+    private void executeLast(){
+        //与ElementAt(0)作用相同
+        tv.setText("last过滤获得第一个数据此例数据源10,11,12,13");
+        Observable.just(10,11,12,13).last().subscribe(new Action1<Integer>() {
+            @Override
+            public void call(Integer integer) {
+                tv.append("\n"+integer);
+            }
+        });
+        tv.append("\nlast（Func1）传过滤参数条件小于12");
+        Observable.just(10,11,12,13).last(new Func1<Integer, Boolean>() {
+            @Override
+            public Boolean call(Integer integer) {
+                return integer<12;
+            }
+        }).subscribe(new Action1<Integer>() {
+            @Override
+            public void call(Integer integer) {
+                tv.append("\n"+integer);
+            }
+        });
+    }
+
+    private void executeSingle(){
+        tv.setText("Single检测是不是只有一条数据，否则执行onError()此例数据源10,11,12,13");
+        Observable.just(10,11,12,13).single().subscribe(new Subscriber<Integer>() {
+            @Override
+            public void onCompleted() {
+                tv.append("\nonCompleted");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                tv.append("\nonError");
+            }
+
+            @Override
+            public void onNext(Integer integer) {
+                tv.append("\n"+integer);
+            }
+        });
+        tv.append("\nSingle（Func1）传过滤参数条件大于12");
+        Observable.just(10,11,12,13).last(new Func1<Integer, Boolean>() {
+            @Override
+            public Boolean call(Integer integer) {
+                return integer>12;
+            }
+        }).subscribe(new Subscriber<Integer>() {
+            @Override
+            public void onCompleted() {
+                tv.append("\nonCompleted");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                tv.append("\nonError");
+            }
+
+            @Override
+            public void onNext(Integer integer) {
+                tv.append("\n"+integer);
+            }
+        });
     }
     private void executeMap() {
 
