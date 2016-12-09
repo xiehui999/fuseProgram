@@ -562,7 +562,7 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
     }
 
     private void executeFlatMap() {
-        tv.setText("输入参数： 2,3,6,4,2,8,2,1,9");
+        tv.setText("输入参数： 2,3,6,4,2,8,2,1,9将数据增大100并拼接字符FlatMap");
         Integer[] integers = {2, 3, 6, 4, 2, 8, 2, 1, 9};
         Observable.from(integers).flatMap(new Func1<Integer, Observable<String>>() {
             @Override
@@ -635,7 +635,7 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
     }
     private void executeMap() {
 
-        tv.setText("输入参数： 0,0,6,4,2,8,2,1,9,0,23");
+        tv.setText("输入参数： 0,0,6,4,2,8,2,1,9,0,23大于5的数据用true表示");
         Integer[] integers = {0, 0, 6, 4, 2, 8, 2, 1, 9, 0, 23};
         Observable.from(integers).map(new Func1<Integer, Boolean>() {
             @Override

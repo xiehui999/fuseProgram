@@ -8,85 +8,135 @@
         android:id="@+id/layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="50dp"
-        android:orientation="vertical">
-
-        <Button
-            android:id="@+id/btn1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="测试1" />
-
-        <Button
-            android:id="@+id/btn2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="使用connect" />
-
-        <Button
-        android:id="@+id/btn3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="过滤Filter" />
-
-        <Button
-            android:id="@+id/btn4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Map判断大于5的数用true" />
-        <Button
-            android:id="@+id/btn5"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="FlatMap将数字增大100并拼接FlatMap字符串" />
+        android:orientation="vertical"
+        android:paddingBottom="50dp">
         <TextView
             android:id="@+id/tv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="" />
-        <Button
-            android:id="@+id/btn6"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="数字排序" />
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/btn1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="测试1" />
 
-        <Button
-            android:id="@+id/btn7"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="take用法" />
-        <Button
-            android:id="@+id/btn8"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Merge并发任务执行" />
+            <Button
+                android:id="@+id/btn2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="使用connect" />
+
+            <Button
+                android:id="@+id/btn3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="过滤Filter" />
+        </LinearLayout>
 
 
-        <Button
-            android:id="@+id/btn13"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="ZIP使用" />
-        <Button
-            android:id="@+id/btn9"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Schedulers运用" />
-        <Button
-            android:id="@+id/btn10"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Interval" />
-        <Button
-            android:id="@+id/btn11"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Unsubscribe" />
-        <Button
-            android:id="@+id/btn12"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Timestamp" />
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/btn4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Map判断大于5的数用true" />
+        </LinearLayout>
 
+
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn5"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="FlatMap" />
+
+            <Button
+                android:id="@+id/btn6"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="toSortedList" />
+
+            <Button
+                android:id="@+id/btn7"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="take" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn8"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Merge" />
+
+            <Button
+                android:id="@+id/btn13"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="ZIP使用" />
+
+            <Button
+                android:id="@+id/btn9"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Schedulers" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn10"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Interval" />
+
+            <Button
+                android:id="@+id/btn11"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Unsubscribe" />
+
+            <Button
+                android:id="@+id/btn12"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Timestamp" />
+
+        </LinearLayout>
     </LinearLayout>
 </ScrollView>
