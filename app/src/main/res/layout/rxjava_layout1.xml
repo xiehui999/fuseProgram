@@ -25,8 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="开始"
-            android:id="@+id/button"
-            android:layout_marginTop="31dp" />
+            android:id="@+id/button"/>
 
         <Button
             android:layout_width="match_parent"
@@ -36,7 +35,7 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Repeat使用"
+            android:text="Repeat,repeatWhen使用"
             android:id="@+id/button2" />
         <Button
             android:layout_width="match_parent"
@@ -46,8 +45,18 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Range实用"
+            android:text="Defer使用"
             android:id="@+id/button4"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="buffer使用"
+            android:id="@+id/button5"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Window使用"
+            android:id="@+id/button6"/>
 
         <TextView
             android:id="@+id/tv2"

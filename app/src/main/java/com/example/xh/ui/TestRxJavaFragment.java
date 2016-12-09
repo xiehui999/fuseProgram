@@ -367,6 +367,7 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
     }
 
     private void executeInterval() {
+        //Interval运行新的线程中
         tv.setText("定时器，每一秒发送打印一个数字\ninterval(1, TimeUnit.SECONDS)\n");
         subscription = Observable.interval(1, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
