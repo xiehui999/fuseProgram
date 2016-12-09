@@ -60,6 +60,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Merge并发任务执行" />
+
+
+        <Button
+            android:id="@+id/btn13"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="ZIP使用" />
         <Button
             android:id="@+id/btn9"
             android:layout_width="match_parent"

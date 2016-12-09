@@ -14,13 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/tv1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:text=""
-            />
+
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -52,11 +46,31 @@
             android:layout_height="wrap_content"
             android:text="buffer使用"
             android:id="@+id/button5"/>
+        <TextView
+            android:id="@+id/tv1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""/>
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Window使用"
             android:id="@+id/button6"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="GroupBy使用"
+            android:id="@+id/button7"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Window使用"
+            android:id="@+id/button8"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Window使用"
+            android:id="@+id/button9"/>
 
         <TextView
             android:id="@+id/tv2"

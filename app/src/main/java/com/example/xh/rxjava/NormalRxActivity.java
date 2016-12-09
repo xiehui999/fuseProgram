@@ -17,6 +17,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func0;
 import rx.functions.Func1;
+import rx.observables.GroupedObservable;
 
 /**
  * Created by xiehui on 2016/11/1.
@@ -24,7 +25,7 @@ import rx.functions.Func1;
 public class NormalRxActivity extends BaseActivity {
     private TextView tv1;
     private TextView tv2;
-    private Button btn,btn1,btn2,btn3,btn4,btn5,btn6;
+    private Button btn,btn1,btn2,btn3,btn4,btn5,btn6,btn7,btn8,btn9;
     String[] strs={"也许当初忙着微笑和哭泣","忙着追逐天空中的流星","人理所当然的忘记","是谁风里雨里一直默默守护在原地"};
     private String text;
     private String TAG="RxJava";
@@ -46,6 +47,9 @@ public class NormalRxActivity extends BaseActivity {
         btn4 = (Button) findViewById(R.id.button4);
         btn5 = (Button) findViewById(R.id.button5);
         btn6 = (Button) findViewById(R.id.button6);
+        btn7 = (Button) findViewById(R.id.button7);
+        btn8 = (Button) findViewById(R.id.button8);
+        btn9 = (Button) findViewById(R.id.button9);
         btn.setOnClickListener(this);
         btn1.setOnClickListener(this);
         btn2.setOnClickListener(this);
@@ -53,6 +57,9 @@ public class NormalRxActivity extends BaseActivity {
         btn4.setOnClickListener(this);
         btn5.setOnClickListener(this);
         btn6.setOnClickListener(this);
+        btn7.setOnClickListener(this);
+        btn8.setOnClickListener(this);
+        btn9.setOnClickListener(this);
     }
 
     @Override
@@ -77,6 +84,15 @@ public class NormalRxActivity extends BaseActivity {
                 executeBuffer();
                 break;
             case R.id.button6:
+                executeWindow();
+                break;
+            case R.id.button7:
+                executeGroupBy();
+                break;
+            case R.id.button8:
+                executeBuffer();
+                break;
+            case R.id.button9:
                 executeWindow();
                 break;
         }
@@ -317,6 +333,45 @@ public class NormalRxActivity extends BaseActivity {
                 });
             }
         });
-
     }
+    private void executeGroupBy() {
+        tv1.setText("GroupBy将1到10的数据按奇偶分组");
+        Observable.range(1,10).groupBy(new Func1<Integer, Boolean>() {
+            @Override
+            public Boolean call(Integer integer) {
+                return integer%2==0;
+            }
+        }).subscribe(new Subscriber<GroupedObservable<Boolean, Integer>>() {
+            @Override
+            public void onCompleted() {
+                Log.e(TAG, "onCompleted: " );
+            }
+            @Override
+            public void onError(Throwable e) {
+                Log.e(TAG, "onError: " );
+            }
+            @Override
+            public void onNext(GroupedObservable<Boolean, Integer> booleanIntegerGroupedObservable) {
+                Log.e(TAG, "onNext: ");
+                booleanIntegerGroupedObservable.toList().subscribe(new Subscriber<List<Integer>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(List<Integer> integers) {
+                        tv1.append("\n"+integers);
+                    }
+                });
+            }
+        });
+    }
+
+
 }

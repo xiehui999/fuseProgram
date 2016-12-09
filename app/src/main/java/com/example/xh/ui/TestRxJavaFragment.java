@@ -19,6 +19,7 @@ import com.example.xh.R;
 import com.example.xh.rxjava.NormalRxActivity;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -30,6 +31,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.functions.Func2;
 import rx.observables.ConnectableObservable;
 import rx.schedulers.Schedulers;
 import rx.schedulers.Timestamped;
@@ -40,7 +42,7 @@ import rx.schedulers.Timestamped;
 public class TestRxJavaFragment extends Fragment implements View.OnClickListener {
 
     private String TAG = "RXJAVA";
-    private Button btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn10, btn11, btn12;
+    private Button btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn10, btn11, btn12, btn13;
     private LinearLayout layout;
     private TextView tv;
     private StringBuffer stringBuffer;
@@ -68,6 +70,7 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
         btn10.setOnClickListener(this);
         btn11.setOnClickListener(this);
         btn12.setOnClickListener(this);
+        btn13.setOnClickListener(this);
     }
 
     @Nullable
@@ -91,6 +94,7 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
         btn10 = (Button) view.findViewById(R.id.btn10);
         btn11 = (Button) view.findViewById(R.id.btn11);
         btn12 = (Button) view.findViewById(R.id.btn12);
+        btn13 = (Button) view.findViewById(R.id.btn13);
         layout = (LinearLayout) view.findViewById(R.id.layout);
         tv = (TextView) view.findViewById(R.id.tv);
 
@@ -344,6 +348,9 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
             case R.id.btn12:
                 executeTimestamp();
                 break;
+            case R.id.btn13:
+                executeZip();
+                break;
         }
     }
 
@@ -421,8 +428,48 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
 
 
     }
+    private void executeZip() {
+        //zip和merage区别是zip是讲两个数据对应项同时输出，而merge是将对应项数据按顺序输出
+        //若zip中的两个数据源数据长度不一样时，输出数据取最小值，如下面会打印10项数据而不是11项）
+        tv.setText("zip使用");
+        List<String> names=new ArrayList<>();
+        List<Integer> ages=new ArrayList<>();
+        for (int i=0;i<10;i++){
+            names.add("张三"+i);
+            ages.add(20+i);
+        }
+        ages.add(15);
+        Observable observable1=Observable.from(names).subscribeOn(Schedulers.io());
+        Observable observable2=Observable.from(ages).subscribeOn(Schedulers.io());
+        //Func2第三个参数是返回值类型
+        Observable.zip(observable1, observable2, new Func2<String,Integer,String>() {
+            @Override
+            public String call(String name, Integer age) {
+                return name+": "+age;
+            }
+        }).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
+                Log.e(TAG, "onCompleted: ");
+            }
 
+            @Override
+            public void onError(Throwable e) {
+                Log.e(TAG, "onError: ");
+            }
+
+            @Override
+            public void onNext(String o) {
+                Log.e(TAG, "onNext: "+0 );
+                tv.append("\n"+o);
+            }
+        });
+
+
+    }
     private void executeMerge() {
+        //任一出错，都会打断合并，若不想中断可以是用mergeDelayError（）
+        // 它能从一个Observable中继续发射数据即便是其中有一个抛出了错误。当所有的Observables都完成时，mergeDelayError()将会发射onError()
         tv.setText("并发执行任务开始\n");
         Observable observable = Observable.create(new Observable.OnSubscribe<String>() {
             @Override
