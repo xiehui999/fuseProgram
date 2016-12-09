@@ -42,7 +42,7 @@ import rx.schedulers.Timestamped;
 public class TestRxJavaFragment extends Fragment implements View.OnClickListener {
 
     private String TAG = "RXJAVA";
-    private Button btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn10, btn11, btn12, btn13;
+    private Button btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn10, btn11, btn12, btn13, btn14, btn15;
     private LinearLayout layout;
     private TextView tv;
     private StringBuffer stringBuffer;
@@ -71,6 +71,8 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
         btn11.setOnClickListener(this);
         btn12.setOnClickListener(this);
         btn13.setOnClickListener(this);
+        btn14.setOnClickListener(this);
+        btn15.setOnClickListener(this);
     }
 
     @Nullable
@@ -95,6 +97,8 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
         btn11 = (Button) view.findViewById(R.id.btn11);
         btn12 = (Button) view.findViewById(R.id.btn12);
         btn13 = (Button) view.findViewById(R.id.btn13);
+        btn14 = (Button) view.findViewById(R.id.btn14);
+        btn15 = (Button) view.findViewById(R.id.btn15);
         layout = (LinearLayout) view.findViewById(R.id.layout);
         tv = (TextView) view.findViewById(R.id.tv);
 
@@ -351,6 +355,12 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
             case R.id.btn13:
                 executeZip();
                 break;
+            case R.id.btn14:
+                executeConcatMap();
+                break;
+            case R.id.btn15:
+                executeSwitchMap();
+                break;
         }
     }
 
@@ -428,24 +438,25 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
 
 
     }
+
     private void executeZip() {
         //zip和merage区别是zip是讲两个数据对应项同时输出，而merge是将对应项数据按顺序输出
         //若zip中的两个数据源数据长度不一样时，输出数据取最小值，如下面会打印10项数据而不是11项）
         tv.setText("zip使用");
-        List<String> names=new ArrayList<>();
-        List<Integer> ages=new ArrayList<>();
-        for (int i=0;i<10;i++){
-            names.add("张三"+i);
-            ages.add(20+i);
+        List<String> names = new ArrayList<>();
+        List<Integer> ages = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            names.add("张三" + i);
+            ages.add(20 + i);
         }
         ages.add(15);
-        Observable observable1=Observable.from(names).subscribeOn(Schedulers.io());
-        Observable observable2=Observable.from(ages).subscribeOn(Schedulers.io());
+        Observable observable1 = Observable.from(names).subscribeOn(Schedulers.io());
+        Observable observable2 = Observable.from(ages).subscribeOn(Schedulers.io());
         //Func2第三个参数是返回值类型
-        Observable.zip(observable1, observable2, new Func2<String,Integer,String>() {
+        Observable.zip(observable1, observable2, new Func2<String, Integer, String>() {
             @Override
             public String call(String name, Integer age) {
-                return name+": "+age;
+                return name + ": " + age;
             }
         }).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<String>() {
             @Override
@@ -460,13 +471,14 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
 
             @Override
             public void onNext(String o) {
-                Log.e(TAG, "onNext: "+0 );
-                tv.append("\n"+o);
+                Log.e(TAG, "onNext: " + 0);
+                tv.append("\n" + o);
             }
         });
 
 
     }
+
     private void executeMerge() {
         //任一出错，都会打断合并，若不想中断可以是用mergeDelayError（）
         // 它能从一个Observable中继续发射数据即便是其中有一个抛出了错误。当所有的Observables都完成时，mergeDelayError()将会发射onError()
@@ -544,7 +556,7 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
     }
 
     private void executeSort() {
-        tv.setText("输入参数： 2,3,6,4,2,8,2,1,9");
+        tv.setText("toSortedList 输入参数： 2,3,6,4,2,8,2,1,9");
         Integer[] integers = {2, 3, 6, 4, 2, 8, 2, 1, 9};
         Observable.from(integers)
                 .toSortedList()
@@ -562,35 +574,111 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
     }
 
     private void executeFlatMap() {
-        tv.setText("输入参数： 2,3,6,4,2,8,2,1,9将数据增大100并拼接字符FlatMap");
+        tv.setText("输入参数： 2,3,6,4,2,8,2,1,9将数据增大100并拼接字符FlatMap，没有保证数据的顺序性");
         Integer[] integers = {2, 3, 6, 4, 2, 8, 2, 1, 9};
         Observable.from(integers).flatMap(new Func1<Integer, Observable<String>>() {
             @Override
             public Observable<String> call(Integer integer) {
+                Log.e(TAG, "call: FlatMap"+Thread.currentThread().getName());
                 return Observable.just((integer + 100) + "FlatMap");
             }
-        }).subscribe(new Action1<String>() {
+        }).subscribe(new Subscriber<String>() {
             @Override
-            public void call(String s) {
+            public void onCompleted() {
+                Log.e(TAG, "onCompleted: FlatMap" );
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e(TAG, "onError: FlatMap" );
+            }
+
+            @Override
+            public void onNext(String s) {
+                Log.e(TAG, "onNext: FlatMap" );
                 tv.append("\n 转换后的内容：" + s + "\n");
             }
         });
     }
+
+    private void executeConcatMap() {
+        //concatMap保证结果的顺序性，顺序与输入一致
+        //输出是按（call: ConcatMap，onNext: ConcatMap)n  ，最后 onCompleted: ConcatMap，保证了数据源的顺序性
+        //而FlatMap是先所有call: ConcatMap，再所有onNext: ConcatMap，最后onCompleted: ConcatMap，是没有保证数据源的顺序性
+        tv.setText("输入参数： 2,3,6,4,2,8,2,1,9将数据增大100并拼接字符ConcatMap,保证了数据源的顺序性");
+        Integer[] integers = {2, 3, 6, 4, 2, 8, 2, 1, 9};
+
+        Observable.from(integers).concatMap(new Func1<Integer, Observable<String>>() {
+            @Override
+            public Observable<String> call(Integer integer) {
+                Log.e(TAG, "call: ConcatMap"+Thread.currentThread().getName() );
+                return Observable.just((integer + 100) + "ConcatMap");
+            }
+        }).subscribe(new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
+                Log.e(TAG, "onCompleted: ConcatMap" );
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e(TAG, "onError: ConcatMap" );
+            }
+
+            @Override
+            public void onNext(String s) {
+                Log.e(TAG, "onNext: ConcatMap" );
+                tv.append("\n 转换后的内容：" + s + "\n");
+            }
+        });
+    }
+
+    private void executeSwitchMap() {
+        //switch()和flatMap()很像，除了一点:当源Observable发射一个新的数据项时，
+        // 如果旧数据项订阅还未完成，就取消旧订阅数据和停止监视那个数据项产生的Observable,开始监视新的数据项.
+        tv.setText("输入参数： 2,3,6,4,2,8,2,1,9将数据增大100并拼接字符SwitchMap，通过subscribeOn指定在新线程中模拟并发");
+        Integer[] integers = {2, 3, 6, 4, 2, 8, 2, 1, 9};
+        Observable.from(integers).switchMap(new Func1<Integer, Observable<String>>() {
+            @Override
+            public Observable<String> call(Integer integer) {
+                Log.e(TAG, "call: SwitchMap"+Thread.currentThread().getName() );
+                //如果不通过subscribeOn(Schedulers.newThread())在在子线程模拟并发操作，所有数据源依然会全部输出
+                return Observable.just((integer + 100) + "SwitchMap").subscribeOn(Schedulers.newThread());
+            }
+        }).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
+                Log.e(TAG, "onCompleted: SwitchMap" );
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e(TAG, "onError: SwitchMap" );
+            }
+
+            @Override
+            public void onNext(String s) {
+                Log.e(TAG, "onNext: SwitchMap" );
+                tv.append("\n 转换后的内容：" + s + "\n");
+            }
+        });
+
+    }
     private void connect() {
-        String [] strs={"也许当初忙着微笑和哭泣","忙着追逐天空中的流星","人理所当然的忘记","是谁风里雨里一直默默守护在原地"};
+        String[] strs = {"也许当初忙着微笑和哭泣", "忙着追逐天空中的流星", "人理所当然的忘记", "是谁风里雨里一直默默守护在原地"};
 
         tv.append("\n");
-        Observable observable=Observable.from(strs);
-        Action1 action0=new Action1<String>() {
+        Observable observable = Observable.from(strs);
+        Action1 action0 = new Action1<String>() {
             @Override
             public void call(String s) {
-                tv.append("观察者A 收到："+s+"\n");
+                tv.append("观察者A 收到：" + s + "\n");
             }
         };
-        Action1 action10=new Action1<String>() {
+        Action1 action10 = new Action1<String>() {
             @Override
             public void call(String s) {
-                tv.append("观察者B 收到："+s+"\n");
+                tv.append("观察者B 收到：" + s + "\n");
             }
         };
         observable.subscribe(action0);
@@ -599,40 +687,42 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
 
         tv.append("\n");
         //获得一个可连接的Observable对象，需调用publish()方法
-        ConnectableObservable connectableObservable=Observable.from(strs).publish();
-        Action1 action1=new Action1<String>(){
+        ConnectableObservable connectableObservable = Observable.from(strs).publish();
+        Action1 action1 = new Action1<String>() {
             @Override
             public void call(String s) {
-                tv.append("观察者A  收到:  "+s+"\n");
+                tv.append("观察者A  收到:  " + s + "\n");
             }
         };
-        Action1 action11=new Action1<String>(){
+        Action1 action11 = new Action1<String>() {
             @Override
             public void call(String s) {
-                tv.append("观察者B  收到:  "+s+"\n");
+                tv.append("观察者B  收到:  " + s + "\n");
             }
         };
         connectableObservable.subscribe(action1);
         connectableObservable.subscribe(action11);
         connectableObservable.connect();
     }
+
     private void executeFilter() {
         tv.setText("输入1-10,过滤掉能被2整除的数");
-        Integer []ints={1,2,3,4,5,6,7,8,9};
-        Observable observable=Observable.from(ints).filter(new Func1<Integer, Boolean>() {
+        Integer[] ints = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+        Observable observable = Observable.from(ints).filter(new Func1<Integer, Boolean>() {
             @Override
             public Boolean call(Integer integer) {
-                return integer%2!=0;//返回true，就不会过滤掉，过滤掉返回false的值
+                return integer % 2 != 0;//返回true，就不会过滤掉，过滤掉返回false的值
             }
         });
-        Action1 action1=new Action1<Integer>(){
+        Action1 action1 = new Action1<Integer>() {
             @Override
             public void call(Integer i) {
-                tv.append(i.toString()+",");
+                tv.append(i.toString() + ",");
             }
         };
         observable.subscribe(action1);
     }
+
     private void executeMap() {
 
         tv.setText("输入参数： 0,0,6,4,2,8,2,1,9,0,23大于5的数据用true表示");

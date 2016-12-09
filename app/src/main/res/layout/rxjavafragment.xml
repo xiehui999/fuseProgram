@@ -50,7 +50,20 @@
                 android:id="@+id/btn4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Map判断大于5的数用true" />
+                android:layout_weight="1"
+                android:text="Map" />
+            <Button
+                android:id="@+id/btn14"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="concatMap" />
+            <Button
+                android:id="@+id/btn15"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="SwitchMap" />
         </LinearLayout>
 
 
@@ -74,7 +87,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="toSortedList" />
+                android:text="Sorted" />
 
             <Button
                 android:id="@+id/btn7"
