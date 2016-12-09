@@ -43,6 +43,7 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
 
     private String TAG = "RXJAVA";
     private Button btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn10, btn11, btn12, btn13, btn14, btn15;
+    private Button btn16,btn17,btn18;
     private LinearLayout layout;
     private TextView tv;
     private StringBuffer stringBuffer;
@@ -73,6 +74,9 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
         btn13.setOnClickListener(this);
         btn14.setOnClickListener(this);
         btn15.setOnClickListener(this);
+        btn16.setOnClickListener(this);
+        btn17.setOnClickListener(this);
+        btn18.setOnClickListener(this);
     }
 
     @Nullable
@@ -99,6 +103,9 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
         btn13 = (Button) view.findViewById(R.id.btn13);
         btn14 = (Button) view.findViewById(R.id.btn14);
         btn15 = (Button) view.findViewById(R.id.btn15);
+        btn16 = (Button) view.findViewById(R.id.btn16);
+        btn17 = (Button) view.findViewById(R.id.btn17);
+        btn18 = (Button) view.findViewById(R.id.btn18);
         layout = (LinearLayout) view.findViewById(R.id.layout);
         tv = (TextView) view.findViewById(R.id.tv);
 
@@ -327,8 +334,6 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
             case R.id.btn5:
                 //可以一对多
                 // flatMap() 中返回的是个 Observable 对象，并且这个 Observable 对象并不是被直接发送到了 Subscriber 的回调方法中
-                //
-
                 executeFlatMap();
                 break;
             case R.id.btn6:
@@ -359,6 +364,15 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
                 executeConcatMap();
                 break;
             case R.id.btn15:
+                executeSwitchMap();
+                break;
+            case R.id.btn16:
+                executeDebounce();
+                break;
+            case R.id.btn17:
+                executeConcatMap();
+                break;
+            case R.id.btn18:
                 executeSwitchMap();
                 break;
         }
@@ -722,7 +736,43 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
         };
         observable.subscribe(action1);
     }
+    private void executeDebounce() {//debounce英文意思消抖
+        //debounce操作符是对源Observable间隔期产生的结果进行过滤，如果在这个规定的间隔期内没有别的结果产生，
+        // 则将这个结果提交给订阅者，否则忽略该结果，原理有点像光学防抖.
+        tv.setText("输入1-10,过滤掉数据源发送间隔期小于1s的数据（sleep(200*integer)integer为1到10的数据）");
+        //这样的话在前一秒内产生了多个数据，从200*5=1000ms既1s开始间隔达到1s，则从第5个数据开始输出
+        Integer[] ints = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+        Observable<String> observable = Observable.from(ints).flatMap(new Func1<Integer, Observable<String>>() {
+            @Override
+            public Observable<String> call(Integer integer) {
+                try {
+                    Thread.currentThread().sleep(200*integer);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                return Observable.just(integer+"");
+            }
+        });
+        observable.subscribeOn(Schedulers.newThread())
+                .debounce(1,TimeUnit.SECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<String>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.e(TAG, "onCompleted: " );
+                    }
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "onError: ");
+                    }
 
+                    @Override
+                    public void onNext(String s) {
+                        Log.e(TAG, "onNext: "+s );
+                        tv.append("\n"+s);
+                    }
+                });
+    }
     private void executeMap() {
 
         tv.setText("输入参数： 0,0,6,4,2,8,2,1,9,0,23大于5的数据用true表示");
