@@ -53,7 +53,7 @@ public class RxFilterActivity extends BaseActivity{
         Action1 action1=new Action1<Integer>(){
             @Override
             public void call(Integer i) {
-                tv2.append(i.toString()+",");
+                tv1.append(i.toString()+",");
             }
         };
         observable.subscribe(action1);

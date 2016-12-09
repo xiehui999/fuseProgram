@@ -18,9 +18,9 @@
             android:id="@+id/tv1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
             android:text=""
             />
-
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -28,12 +28,32 @@
             android:id="@+id/button"
             android:layout_marginTop="31dp" />
 
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Range使用"
+            android:id="@+id/button1"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Repeat使用"
+            android:id="@+id/button2" />
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Timer使用"
+            android:id="@+id/button3" />
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Range实用"
+            android:id="@+id/button4"/>
+
         <TextView
             android:id="@+id/tv2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text=""
-            android:layout_marginTop="30dp"
             />
     </LinearLayout>
 </ScrollView>
