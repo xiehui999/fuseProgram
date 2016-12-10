@@ -377,38 +377,6 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
         // 中，可以避免创建不必要的线程
 
     }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-    }
-
-
     private void executeTimestamp() {
         Integer[] number = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
         tv.setText("输入数据：1, 2, 3, 4, 5, 6, 7, 8, 9, 10\n");
