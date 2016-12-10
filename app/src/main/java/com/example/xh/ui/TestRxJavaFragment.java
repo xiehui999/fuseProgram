@@ -206,7 +206,7 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
                 executeSample();
                 break;
             case R.id.btn24:
-                executeSingle();
+                executeSkip();
                 break;
         }
     }
@@ -982,6 +982,48 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
 
                     }
                 });
+    }
+
+    private  void executeSkip(){
+        tv.setText("Skip数据源range(1,10)\n执行Skip(6)");
+        Observable.range(1,10).skip(6).subscribe(new Action1<Integer>() {
+            @Override
+            public void call(Integer integer) {
+             tv.append("\n"+integer);
+            }
+        });
+        //skip(long time,TimeUnit) 是跳过多少秒 然后才开始将后面产生的数据提交给订阅者
+        tv.append("\n下面是interval(500,TimeUnit.MILLISECONDS).skip(2,TimeUnit.SECONDS)执行结果");
+        Observable.interval(500,TimeUnit.MILLISECONDS)
+                .skip(2,TimeUnit.SECONDS)
+                .subscribe(new Subscriber<Long>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Long aLong) {
+                        tv.append("\n"+aLong);
+                        if (aLong>10){
+                            this.unsubscribe();
+                        }
+                    }
+                });
+        //skipLast 正好和skip 相反，忽略最后产生的n个数据项
+        tv.append("\nskipLast(6),数据源range(1,10)");
+        Observable.range(1,10).skipLast(6).subscribe(new Action1<Integer>() {
+            @Override
+            public void call(Integer integer) {
+                tv.append("\n"+integer);
+            }
+        });
+
     }
     private void executeMap() {
 
