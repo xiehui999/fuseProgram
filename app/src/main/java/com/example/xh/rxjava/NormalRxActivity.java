@@ -17,7 +17,9 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func0;
 import rx.functions.Func1;
+import rx.functions.Func2;
 import rx.observables.GroupedObservable;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by xiehui on 2016/11/1.
@@ -101,10 +103,10 @@ public class NormalRxActivity extends BaseActivity {
                 executeConcat();
                 break;
             case R.id.button10:
-                executeGroupBy();
+                executeCombineLastest();
                 break;
             case R.id.button11:
-                executeWindow();
+                executeJoin();
                 break;
         }
     }
@@ -412,7 +414,90 @@ public class NormalRxActivity extends BaseActivity {
     }
 
     private void executeConcat() {
-        tv1.setText("\nConcat");
+        //是将多个Observable 按传入顺序进行输出observableA,observableB...先后输出
+        tv1.setText("\nConcat数据源observableA：range(1,5),observableB:range(7,5)");
+        Observable<Integer> observableA = Observable.range(1, 5);
+        Observable<Integer> observableB = Observable.range(7, 5);
+        Observable.concat(observableA, observableB).subscribe(new Subscriber<Integer>() {
+            @Override
+            public void onCompleted() {
+                Log.e(TAG, "onCompleted: concat");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e(TAG, "onError: concat");
+            }
+
+            @Override
+            public void onNext(Integer integer) {
+                Log.e(TAG, "onNext: concat" + integer);
+                tv1.append("\nonNext：" + integer);
+            }
+        });
     }
 
+    private void executeCombineLastest() {
+        // 是将第一个Observable的最新(最后一条)数据与后面的Observable数据项按某种规则合并
+        tv1.setText("combineLastest数据源observableA：range(1,5),observableB:range(7,5)");
+        Observable<Integer> observableA = Observable.range(1, 5);
+        Observable<Integer> observableB = Observable.range(7, 5);
+        Observable.combineLatest(observableA, observableB, new Func2<Integer, Integer, String>() {
+            @Override
+            public String call(Integer integer, Integer integer2) {
+                Log.e(TAG, "call: combineLatest");
+                return "observableA:" + integer + "  observableB:" + integer2;
+            }
+        }).subscribe(new Action1<String>() {
+            @Override
+            public void call(String s) {
+                Log.e(TAG, "call: combineLatest" + s);
+                tv1.append("\n" + s);
+            }
+        });
+    }
+
+    private void executeJoin() {
+        //在a的生命周期内：b输出的数据项与a输出的数据项每个合并,直到b输出下一项
+        //需要使用subscribeOn(Schedulers.newThread())将两个Observable在两个不同的线程发射
+        tv1.setText("join数据源observableA：range(1,5),observableB:range(7,5)");
+        Observable<Integer> observableA = Observable.range(1, 5).subscribeOn(Schedulers.newThread());
+        Observable<Integer> observableB = Observable.range(7, 5).subscribeOn(Schedulers.newThread());
+        observableA.join(observableB, new Func1<Integer, Observable<Integer>>() {
+            @Override
+            public Observable<Integer> call(Integer integer) {
+                Log.e(TAG, "call: A" + integer +"   "+ Thread.currentThread().getName());
+                return Observable.just(integer).delay(1,TimeUnit.SECONDS);
+            }
+        }, new Func1<Integer, Observable<Integer>>() {
+            @Override
+            public Observable<Integer> call(Integer integer) {
+                Log.e(TAG, "call: B" + integer +"   "+ Thread.currentThread().getName());
+                return Observable.just(integer).delay(1,TimeUnit.SECONDS);
+            }
+        }, new Func2<Integer, Integer, Integer>() {
+            @Override
+            public Integer call(Integer integer, Integer integer2) {
+                Log.e(TAG, "call:AjoinB A: " + integer + " B:" + integer2 + Thread.currentThread().getName());
+                return integer+integer2;
+            }
+        }).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Integer>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.e(TAG, "onCompleted: ");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "onError: ");
+                    }
+
+                    @Override
+                    public void onNext(Integer integer) {
+                        Log.e(TAG, "onNext: ");
+                        tv1.append("\n"+integer);
+                    }
+                });
+    }
 }

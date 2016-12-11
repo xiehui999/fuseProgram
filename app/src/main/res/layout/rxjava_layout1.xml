@@ -113,19 +113,19 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Window" />
+                android:text="Concat" />
             <Button
                 android:id="@+id/button10"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Window" />
+                android:text="combineLastest" />
             <Button
                 android:id="@+id/button11"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Window" />
+                android:text="Join" />
         </LinearLayout>
 
 
