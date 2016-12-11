@@ -31,7 +31,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="开始" />
+                android:text="wu" />
 
             <Button
 
@@ -40,13 +40,14 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Range" />
-        </LinearLayout>
 
-        <Button
-            android:id="@+id/button2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Repeat,repeatWhen" />
+            <Button
+                android:id="@+id/button2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Repeat" />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -58,21 +59,22 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Timer" />
+                android:text="repeatWhen" />
 
             <Button
                 android:id="@+id/button4"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Defer" />
+                android:text="Timer" />
 
             <Button
                 android:id="@+id/button5"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="buffer" />
+                android:text="Defer" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -85,28 +87,48 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Window" />
+                android:text="buffer" />
 
             <Button
                 android:id="@+id/button7"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="GroupBy" />
+                android:text="Window" />
 
             <Button
                 android:id="@+id/button8"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:text="GroupBy" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/button9"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Window" />
+            <Button
+                android:id="@+id/button10"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Window" />
+            <Button
+                android:id="@+id/button11"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="Window" />
         </LinearLayout>
 
-        <Button
-            android:id="@+id/button9"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Window" />
+
 
         <TextView
             android:id="@+id/tv2"

@@ -25,10 +25,11 @@ import rx.observables.GroupedObservable;
 public class NormalRxActivity extends BaseActivity {
     private TextView tv1;
     private TextView tv2;
-    private Button btn,btn1,btn2,btn3,btn4,btn5,btn6,btn7,btn8,btn9;
-    String[] strs={"也许当初忙着微笑和哭泣","忙着追逐天空中的流星","人理所当然的忘记","是谁风里雨里一直默默守护在原地"};
+    private Button btn, btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9;
+    private Button btn10, btn11;
+    String[] strs = {"也许当初忙着微笑和哭泣", "忙着追逐天空中的流星", "人理所当然的忘记", "是谁风里雨里一直默默守护在原地"};
     private String text;
-    private String TAG="RxJava";
+    private String TAG = "RxJava";
 
     @Override
     public int getContentViewId() {
@@ -50,6 +51,8 @@ public class NormalRxActivity extends BaseActivity {
         btn7 = (Button) findViewById(R.id.button7);
         btn8 = (Button) findViewById(R.id.button8);
         btn9 = (Button) findViewById(R.id.button9);
+        btn10 = (Button) findViewById(R.id.button10);
+        btn11 = (Button) findViewById(R.id.button11);
         btn.setOnClickListener(this);
         btn1.setOnClickListener(this);
         btn2.setOnClickListener(this);
@@ -60,6 +63,8 @@ public class NormalRxActivity extends BaseActivity {
         btn7.setOnClickListener(this);
         btn8.setOnClickListener(this);
         btn9.setOnClickListener(this);
+        btn10.setOnClickListener(this);
+        btn11.setOnClickListener(this);
     }
 
     @Override
@@ -75,31 +80,38 @@ public class NormalRxActivity extends BaseActivity {
                 executeRepeat();
                 break;
             case R.id.button3:
-                executeTimer();
+                executeRepeatWhen();
                 break;
             case R.id.button4:
-                executeDefer();
+                executeTimer();
                 break;
             case R.id.button5:
-                executeBuffer();
+                executeDefer();
                 break;
             case R.id.button6:
-                executeWindow();
-                break;
-            case R.id.button7:
-                executeGroupBy();
-                break;
-            case R.id.button8:
                 executeBuffer();
                 break;
+            case R.id.button7:
+                executeWindow();
+                break;
+            case R.id.button8:
+                executeGroupBy();
+                break;
             case R.id.button9:
+                executeConcat();
+                break;
+            case R.id.button10:
+                executeGroupBy();
+                break;
+            case R.id.button11:
                 executeWindow();
                 break;
         }
     }
+
     private void execute() {
         tv1.setText("");
-        Observable observable=Observable.create(new Observable.OnSubscribe<String>(){
+        Observable observable = Observable.create(new Observable.OnSubscribe<String>() {
             @Override
             public void call(Subscriber<? super String> subscriber) {
                 subscriber.onNext("也许当初忙着微笑和哭泣");
@@ -111,155 +123,170 @@ public class NormalRxActivity extends BaseActivity {
             }
         });
         //或者
-        Observable observable1=Observable.from(strs);
+        Observable observable1 = Observable.from(strs);
         //或者
-        Observable observable2=Observable.just("也许当初忙着微笑和哭泣","忙着追逐天空中的流星","人理所当然的忘记","是谁风里雨里一直默默守护在原地");
-        Subscriber subscriber=new Subscriber<String>(){
+        Observable observable2 = Observable.just("也许当初忙着微笑和哭泣", "忙着追逐天空中的流星", "人理所当然的忘记", "是谁风里雨里一直默默守护在原地");
+        Subscriber subscriber = new Subscriber<String>() {
             @Override
             public void onCompleted() {
                 tv1.append("执行onCompleted，观察结束...\n");
             }
+
             @Override
             public void onError(Throwable e) {
             }
+
             @Override
             public void onNext(String s) {
-                tv1.append("执行了onNext()\n"+s+"\n");
+                tv1.append("执行了onNext()\n" + s + "\n");
             }
         };
         tv1.append("开始观察.....、\n");
         observable.subscribe(subscriber);
     }
+
     private void executeRange() {
         //Range(n,m)操作符根据初始值n和数目m发射一系列大于等于n的m个值
         tv1.setText("Range(10,4)");
-        Observable.range(10,4).subscribe(new Action1<Integer>() {
+        Observable.range(10, 4).subscribe(new Action1<Integer>() {
             @Override
             public void call(Integer integer) {
-                tv1.append("  "+integer);//输出从10开始的4个数10,11,12,14
+                tv1.append("  " + integer);//输出从10开始的4个数10,11,12,14
             }
         });
     }
+
     private void executeRepeat() {
         //将一个Observable对象重复发射，我们可以指定其发射的次数，当repeat() 接收到onComplete()会触发重订阅
         tv1.setText("repeat(2)");
         Observable.from(strs).repeat(2).subscribe(new Action1<String>() {
             @Override
             public void call(String s) {
-               tv1.append("\n"+s);
+                tv1.append("\n" + s);
             }
         });
+    }
+
+    private void executeRepeatWhen() {
         //repeatWhen可以让订阅者多次订阅,onCompleted只执行一次
-        tv1.append("\n\nrepeatWhen()用法");
-        Observable.range(10,3).repeatWhen(new Func1<Observable<? extends Void>, Observable<?>>() {
+        tv1.setText("\nrepeatWhen()用法");
+        Observable.range(10, 3).repeatWhen(new Func1<Observable<? extends Void>, Observable<?>>() {
             @Override
             public Observable<?> call(Observable<? extends Void> observable) {
-                return Observable.timer(3,TimeUnit.SECONDS);
+                return Observable.timer(3, TimeUnit.SECONDS);
             }
         }).subscribe(new Subscriber<Integer>() {
             @Override
             public void onCompleted() {
-                Log.e(TAG, "onCompleted: "+Thread.currentThread().getName() );
+                Log.e(TAG, "onCompleted: " + Thread.currentThread().getName());
             }
 
             @Override
             public void onError(Throwable e) {
-                Log.e(TAG, "onError: " );
+                Log.e(TAG, "onError: ");
             }
 
             @Override
             public void onNext(Integer s) {
-                tv1.append("\n"+s);
+                tv1.append("\n" + s);
             }
         });
 
 
-
     }
+
     private void executeTimer() {
         //在指定时间后发射一个数字0，运行在Computation Scheduler
         //timer发生在新线程
         tv1.setText("Timer");
-        Observable.timer(1, TimeUnit.SECONDS,AndroidSchedulers.mainThread()).subscribe(new Action1<Long>() {
+        Observable.timer(1, TimeUnit.SECONDS, AndroidSchedulers.mainThread()).subscribe(new Action1<Long>() {
             @Override
             public void call(Long aLong) {
-                tv1.append("\n"+aLong);
+                tv1.append("\n" + aLong);
             }
         });
     }
+
     private void executeDefer() {
         //与create、just、from等操作符一样，是创建类操作符，不过所有与该操作符相关的数据都是在订阅是才生效的，defer能保证Observable的状态是最新的:
         //defer()中的代码直到被订阅才会执行,对于延迟执行，用。create（）操作符也能达到此效果，手动调用onNext(),onCompleted()
         //如下代码,输出应该是更改后的值(RxComputationScheduler)
         tv1.setText("Defer");
-        text="初始值";
-        Observable<String>  observable=Observable.defer(new Func0<Observable<String>>() {
+        text = "初始值";
+        Observable<String> observable = Observable.defer(new Func0<Observable<String>>() {
             @Override
             public Observable<String> call() {
                 return Observable.just(text);
             }
         });
-        text="更改后的值";
+        text = "更改后的值";
         observable.observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<String>() {
             @Override
             public void call(String s) {
-                tv1.append("\n"+s);
+                tv1.append("\n" + s);
             }
         });
     }
+
     private void executeBuffer() {
         //
         tv1.setText("Buffer");
-        tv1.append("\n"+"输入从10开始的6个数，通过使用buffer(2)将数据两个两个发送（一次订阅两个）");
+        tv1.append("\n" + "输入从10开始的6个数，通过使用buffer(2)将数据两个两个发送（一次订阅两个）");
         //buffer(2)一次订阅2两个，假如参数超过数据长度，按最大长度一次订阅
-        Observable.range(10,6).buffer(2).subscribe(new Subscriber<List<Integer>>() {
+        Observable.range(10, 6).buffer(2).subscribe(new Subscriber<List<Integer>>() {
             @Override
             public void onCompleted() {
                 Log.e(TAG, "onCompleted: ");
             }
+
             @Override
             public void onError(Throwable e) {
                 Log.e(TAG, "onError: ");
             }
+
             @Override
             public void onNext(List<Integer> integers) {
-                Log.e(TAG, "onNext: "+integers );
-                tv1.append("\n"+integers);
+                Log.e(TAG, "onNext: " + integers);
+                tv1.append("\n" + integers);
             }
         });
 
-        tv1.append("\n"+"使用buffer(6,1)结果");
+        tv1.append("\n" + "使用buffer(6,1)结果");
         //buffer（n,m）第一次发射前N个数据，之后每次剔除m个数据发射,当m等于数据总长度时效果和buffer(n)一样
         //如buffer(6,2)//第一次接收10,11,12,13,14,15第二次12,13,14,15第三次14,15
-        Observable.range(10,6).buffer(6,1).subscribe(new Subscriber<List<Integer>>() {
+        Observable.range(10, 6).buffer(6, 1).subscribe(new Subscriber<List<Integer>>() {
             @Override
             public void onCompleted() {
                 Log.e(TAG, "onCompleted: ");
             }
+
             @Override
             public void onError(Throwable e) {
                 Log.e(TAG, "onError: ");
             }
+
             @Override
             public void onNext(List<Integer> integers) {
-                Log.e(TAG, "onNext: "+integers );
-                tv1.append("\n"+integers);
+                Log.e(TAG, "onNext: " + integers);
+                tv1.append("\n" + integers);
             }
         });
-        tv1.append("\n"+"使用buffer(5,2)结果");
-        Observable.range(10,6).buffer(5,2).subscribe(new Subscriber<List<Integer>>() {
+        tv1.append("\n" + "使用buffer(5,2)结果");
+        Observable.range(10, 6).buffer(5, 2).subscribe(new Subscriber<List<Integer>>() {
             @Override
             public void onCompleted() {
                 Log.e(TAG, "onCompleted: ");
             }
+
             @Override
             public void onError(Throwable e) {
                 Log.e(TAG, "onError: ");
             }
+
             @Override
             public void onNext(List<Integer> integers) {
-                Log.e(TAG, "onNext: "+integers );
-                tv1.append("\n"+integers);
+                Log.e(TAG, "onNext: " + integers);
+                tv1.append("\n" + integers);
             }
         });
     }
@@ -267,32 +294,36 @@ public class NormalRxActivity extends BaseActivity {
     private void executeWindow() {
         //window和函数buffer有点相似，区别是此操作符发射的是Observable而不是列表
         tv1.setText("Window\n输入数据位从10开始的6个数\nwindow(2)");
-        Observable.range(10,6).window(2).subscribe(new Subscriber<Observable<Integer>>() {
+        Observable.range(10, 6).window(2).subscribe(new Subscriber<Observable<Integer>>() {
             @Override
             public void onCompleted() {
                 Log.e(TAG, "onCompleted1: ");
             }
+
             @Override
             public void onError(Throwable e) {
                 Log.e(TAG, "onError1: ");
             }
+
             @Override
             public void onNext(Observable<Integer> integerObservable) {
-                Log.e(TAG, "onNext1: " );
+                Log.e(TAG, "onNext1: ");
                 tv1.append("\n");
                 integerObservable.subscribe(new Subscriber<Integer>() {
                     @Override
                     public void onCompleted() {
-                        Log.e(TAG, "onCompleted2: " );
+                        Log.e(TAG, "onCompleted2: ");
                     }
+
                     @Override
                     public void onError(Throwable e) {
                         Log.e(TAG, "onError2: ");
                     }
+
                     @Override
                     public void onNext(Integer integer) {
                         Log.e(TAG, "onNext2: ");
-                        tv1.append("     "+integer);
+                        tv1.append("     " + integer);
                     }
                 });
             }
@@ -300,56 +331,63 @@ public class NormalRxActivity extends BaseActivity {
 
         //理解可参考buffer(n,m),会发送重叠数据
         tv1.append("\nwindow(5,2)");
-       // 10,11,   12,13,   14,15；
+        // 10,11,   12,13,   14,15；
         //window理解不了了..............先放着改天再看，蒙了///
         // TODO: 2016/12/9
-        Observable.range(10,6).window(5,2).subscribe(new Subscriber<Observable<Integer>>() {
+        Observable.range(10, 6).window(5, 2).subscribe(new Subscriber<Observable<Integer>>() {
             @Override
             public void onCompleted() {
                 Log.e(TAG, "onCompletedwindow(5,2)1: ");
             }
+
             @Override
             public void onError(Throwable e) {
                 Log.e(TAG, "onErrorwindow(5,2)1: ");
             }
+
             @Override
             public void onNext(Observable<Integer> integerObservable) {
-                Log.e(TAG, "onNextwindow(5,2)1: " );
+                Log.e(TAG, "onNextwindow(5,2)1: ");
                 tv1.append("\n");
                 integerObservable.subscribe(new Subscriber<Integer>() {
                     @Override
                     public void onCompleted() {
-                        Log.e(TAG, "onCompletedwindow(5,2)2: " );
+                        Log.e(TAG, "onCompletedwindow(5,2)2: ");
                     }
+
                     @Override
                     public void onError(Throwable e) {
                         Log.e(TAG, "onErrorwindow(5,2)2: ");
                     }
+
                     @Override
                     public void onNext(Integer integer) {
-                        Log.e(TAG, "onNextwindow(5,2)2:------------ "+integer);
-                        tv1.append("      "+integer);
+                        Log.e(TAG, "onNextwindow(5,2)2:------------ " + integer);
+                        tv1.append("      " + integer);
                     }
                 });
             }
         });
     }
+
     private void executeGroupBy() {
         tv1.setText("GroupBy将1到10的数据按奇偶分组");
-        Observable.range(1,10).groupBy(new Func1<Integer, Boolean>() {
+        Observable.range(1, 10).groupBy(new Func1<Integer, Boolean>() {
             @Override
             public Boolean call(Integer integer) {
-                return integer%2==0;
+                return integer % 2 == 0;
             }
         }).subscribe(new Subscriber<GroupedObservable<Boolean, Integer>>() {
             @Override
             public void onCompleted() {
-                Log.e(TAG, "onCompleted: " );
+                Log.e(TAG, "onCompleted: ");
             }
+
             @Override
             public void onError(Throwable e) {
-                Log.e(TAG, "onError: " );
+                Log.e(TAG, "onError: ");
             }
+
             @Override
             public void onNext(GroupedObservable<Boolean, Integer> booleanIntegerGroupedObservable) {
                 Log.e(TAG, "onNext: ");
@@ -366,12 +404,15 @@ public class NormalRxActivity extends BaseActivity {
 
                     @Override
                     public void onNext(List<Integer> integers) {
-                        tv1.append("\n"+integers);
+                        tv1.append("\n" + integers);
                     }
                 });
             }
         });
     }
 
+    private void executeConcat() {
+        tv1.setText("\nConcat");
+    }
 
 }

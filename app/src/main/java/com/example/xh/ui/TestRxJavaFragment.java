@@ -484,7 +484,7 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
 
             @Override
             public void onNext(String o) {
-                Log.e(TAG, "onNext: " + 0);
+                Log.e(TAG, "onNext: " + o);
                 tv.append("\n" + o);
             }
         });
