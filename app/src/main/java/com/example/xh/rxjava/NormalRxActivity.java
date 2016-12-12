@@ -28,7 +28,7 @@ public class NormalRxActivity extends BaseActivity {
     private TextView tv1;
     private TextView tv2;
     private Button btn, btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9;
-    private Button btn10, btn11;
+    private Button btn10, btn11,btn12, btn13,btn14;
     String[] strs = {"也许当初忙着微笑和哭泣", "忙着追逐天空中的流星", "人理所当然的忘记", "是谁风里雨里一直默默守护在原地"};
     private String text;
     private String TAG = "RxJava";
@@ -55,6 +55,9 @@ public class NormalRxActivity extends BaseActivity {
         btn9 = (Button) findViewById(R.id.button9);
         btn10 = (Button) findViewById(R.id.button10);
         btn11 = (Button) findViewById(R.id.button11);
+        btn12 = (Button) findViewById(R.id.button12);
+        btn13 = (Button) findViewById(R.id.button13);
+        btn14 = (Button) findViewById(R.id.button14);
         btn.setOnClickListener(this);
         btn1.setOnClickListener(this);
         btn2.setOnClickListener(this);
@@ -67,6 +70,9 @@ public class NormalRxActivity extends BaseActivity {
         btn9.setOnClickListener(this);
         btn10.setOnClickListener(this);
         btn11.setOnClickListener(this);
+        btn12.setOnClickListener(this);
+        btn13.setOnClickListener(this);
+        btn14.setOnClickListener(this);
     }
 
     @Override
@@ -106,6 +112,15 @@ public class NormalRxActivity extends BaseActivity {
                 executeCombineLastest();
                 break;
             case R.id.button11:
+                executeJoin();
+                break;
+            case R.id.button12:
+                executeConcat();
+                break;
+            case R.id.button13:
+                executeCombineLastest();
+                break;
+            case R.id.button14:
                 executeJoin();
                 break;
         }
@@ -159,11 +174,23 @@ public class NormalRxActivity extends BaseActivity {
     }
 
     private void executeRepeat() {
-        //将一个Observable对象重复发射，我们可以指定其发射的次数，当repeat() 接收到onComplete()会触发重订阅
+        //将一个Observable对象重复发射，我们可以指定其发射的次数，
+        String[] strs = {"也许当初忙着微笑和哭泣", "忙着追逐天空中的流星"};
         tv1.setText("repeat(2)");
-        Observable.from(strs).repeat(2).subscribe(new Action1<String>() {
+        Observable.from(strs).repeat(3).subscribe(new Subscriber<String>() {
             @Override
-            public void call(String s) {
+            public void onCompleted() {
+                Log.e(TAG, "onCompleted: " );
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e(TAG, "onError: ");
+            }
+
+            @Override
+            public void onNext(String s) {
+                Log.e(TAG, "onNext: "+s );
                 tv1.append("\n" + s);
             }
         });
