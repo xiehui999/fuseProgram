@@ -115,13 +115,13 @@ public class NormalRxActivity extends BaseActivity {
                 executeJoin();
                 break;
             case R.id.button12:
-                executeConcat();
+                executeScan();
                 break;
             case R.id.button13:
-                executeCombineLastest();
+                executeStartWith();
                 break;
             case R.id.button14:
-                executeJoin();
+                executeSwitchOnNext();
                 break;
         }
     }
@@ -527,4 +527,91 @@ public class NormalRxActivity extends BaseActivity {
                     }
                 });
     }
+
+    private void executeScan(){
+        //scan对原始Observable发射的第一项数据应用一个函数，然后将函数计算结果作为第一项再与第二项数据应用函数，并且对后面的数据一直持续这个过程
+        //例如计算1+2+3+4.先输出onNext（）输出1，接着scan回调1+2=3作为onNext（）  继续scan回调3+3=6作为onNext() 继续scan6+4=10作为onNext() 然后onCompleted()
+        tv1.setText("Scan执行计算阶前n项和");
+        //scan(10, new Func2)scan还有一个重载方法可以指定初始值
+        Observable.range(1,20).scan(new Func2<Integer, Integer, Integer>() {
+            @Override
+            public Integer call(Integer integer, Integer integer2) {
+                Log.e(TAG, "call: integer:"+integer+"  integer2"+integer2);
+                return integer+integer2;
+            }
+        }).subscribe(new Subscriber<Integer>() {
+            @Override
+            public void onCompleted() {
+                Log.e(TAG, "onCompleted: ");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e(TAG, "onError: " );
+            }
+
+            @Override
+            public void onNext(Integer integer) {
+                Log.e(TAG, "onNext: "+integer );
+                tv1.append("\n"+integer);
+            }
+        });
+    }
+
+    private void executeStartWith(){
+        //结合操作
+        tv1.setText("range(1,5).startWith(11,12)");
+        Observable.range(1,5).startWith(11,12).subscribe(new Subscriber<Integer>() {
+            @Override
+            public void onCompleted() {
+                Log.e(TAG, "onCompleted: " );
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e(TAG, "onError: ");
+            }
+
+            @Override
+            public void onNext(Integer integer) {
+                Log.e(TAG, "onNext: "+integer );
+                tv1.append("\n"+integer);
+            }
+        });
+    }
+
+    private void executeSwitchOnNext(){
+        tv1.setText("switchOnNext");
+        //每隔500毫秒产生一个observable
+        Observable<Observable<Long>> observable = Observable.interval(0, 500, TimeUnit.MILLISECONDS).map(new Func1<Long, Observable<Long>>() {
+            @Override
+            public Observable<Long> call(Long aLong) {
+                //每隔200毫秒产生一组数据（0,10,20,30,40)
+                return Observable.interval(0, 200, TimeUnit.MILLISECONDS).map(new Func1<Long, Long>() {
+                    @Override
+                    public Long call(Long aLong) {
+                        return aLong * 10;
+                    }
+                }).take(5);
+            }
+        }).take(2);
+
+        Observable.switchOnNext(observable).subscribe(new Subscriber<Long>() {
+            @Override
+            public void onCompleted() {
+                Log.e(TAG, "onCompleted: SwitchOnNext" );
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e(TAG, "onError: SwitchOnNext");
+            }
+
+            @Override
+            public void onNext(Long aLong) {
+                Log.e(TAG, "onNext: SwitchOnNext  "+aLong);
+            }
+        });
+    }
+
 }
