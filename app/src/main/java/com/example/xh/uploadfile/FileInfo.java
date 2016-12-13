@@ -70,4 +70,15 @@ public class FileInfo implements Serializable{
     public void setFileLength(long fileLength) {
         this.fileLength = fileLength;
     }
+
+    @Override
+    public String toString() {
+        return "FileInfo{" +
+                "filePath='" + filePath + '\'' +
+                ", gguid='" + gguid + '\'' +
+                ", md5='" + md5 + '\'' +
+                ", fileLength=" + fileLength +
+                ", isChunk=" + isChunk +
+                '}';
+    }
 }
