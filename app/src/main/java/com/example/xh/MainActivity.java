@@ -13,9 +13,9 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.xh.ui.BaiduLocationFragment;
+import com.example.xh.ui.BaseActivity;
 import com.example.xh.ui.RetrofitFragment;
 import com.example.xh.ui.TestRxJavaFragment;
-import com.example.xh.ui.BaseActivity;
 import com.example.xh.ui.UpLoadFileFragment;
 import com.google.android.gms.common.api.GoogleApiClient;
 

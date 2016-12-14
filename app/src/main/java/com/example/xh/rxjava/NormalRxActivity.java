@@ -7,7 +7,9 @@ import android.widget.TextView;
 
 import com.example.xh.R;
 import com.example.xh.ui.BaseActivity;
+import com.example.xh.uploadfile.FileInfo;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -28,10 +30,11 @@ public class NormalRxActivity extends BaseActivity {
     private TextView tv1;
     private TextView tv2;
     private Button btn, btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9;
-    private Button btn10, btn11,btn12, btn13,btn14;
+    private Button btn10, btn11,btn12, btn13,btn14,btn15, btn16,btn17;
     String[] strs = {"也许当初忙着微笑和哭泣", "忙着追逐天空中的流星", "人理所当然的忘记", "是谁风里雨里一直默默守护在原地"};
     private String text;
     private String TAG = "RxJava";
+    private Serializable serializable;
 
     @Override
     public int getContentViewId() {
@@ -40,7 +43,7 @@ public class NormalRxActivity extends BaseActivity {
 
     @Override
     public void initViews() {
-
+        serializable=this.getIntent().getSerializableExtra("fileInfo");
         tv1 = (TextView) findViewById(R.id.tv1);
         tv2 = (TextView) findViewById(R.id.tv2);
         btn = (Button) findViewById(R.id.button);
@@ -58,6 +61,9 @@ public class NormalRxActivity extends BaseActivity {
         btn12 = (Button) findViewById(R.id.button12);
         btn13 = (Button) findViewById(R.id.button13);
         btn14 = (Button) findViewById(R.id.button14);
+        btn15 = (Button) findViewById(R.id.button15);
+        btn16 = (Button) findViewById(R.id.button16);
+        btn17 = (Button) findViewById(R.id.button17);
         btn.setOnClickListener(this);
         btn1.setOnClickListener(this);
         btn2.setOnClickListener(this);
@@ -73,6 +79,9 @@ public class NormalRxActivity extends BaseActivity {
         btn12.setOnClickListener(this);
         btn13.setOnClickListener(this);
         btn14.setOnClickListener(this);
+        btn15.setOnClickListener(this);
+        btn16.setOnClickListener(this);
+        btn17.setOnClickListener(this);
     }
 
     @Override
@@ -121,6 +130,15 @@ public class NormalRxActivity extends BaseActivity {
                 executeStartWith();
                 break;
             case R.id.button14:
+                executeSwitchOnNext();
+                break;
+            case R.id.button15:
+                executeCast();
+                break;
+            case R.id.button16:
+                executeStartWith();
+                break;
+            case R.id.button17:
                 executeSwitchOnNext();
                 break;
         }
@@ -336,7 +354,6 @@ public class NormalRxActivity extends BaseActivity {
 
             @Override
             public void onNext(Observable<Integer> integerObservable) {
-                Log.e(TAG, "onNext1: ");
                 tv1.append("\n");
                 integerObservable.subscribe(new Subscriber<Integer>() {
                     @Override
@@ -351,7 +368,7 @@ public class NormalRxActivity extends BaseActivity {
 
                     @Override
                     public void onNext(Integer integer) {
-                        Log.e(TAG, "onNext2: ");
+                        Log.e(TAG, "onNext2: "+integer);
                         tv1.append("     " + integer);
                     }
                 });
@@ -409,31 +426,31 @@ public class NormalRxActivity extends BaseActivity {
         }).subscribe(new Subscriber<GroupedObservable<Boolean, Integer>>() {
             @Override
             public void onCompleted() {
-                Log.e(TAG, "onCompleted: ");
+                Log.e(TAG, "onCompleted:1 ");
             }
 
             @Override
             public void onError(Throwable e) {
-                Log.e(TAG, "onError: ");
+                Log.e(TAG, "onError:1 ");
             }
 
             @Override
-            public void onNext(GroupedObservable<Boolean, Integer> booleanIntegerGroupedObservable) {
-                Log.e(TAG, "onNext: ");
+            public void onNext(final GroupedObservable<Boolean, Integer> booleanIntegerGroupedObservable) {
                 booleanIntegerGroupedObservable.toList().subscribe(new Subscriber<List<Integer>>() {
                     @Override
                     public void onCompleted() {
-
+                        Log.e(TAG, "onCompleted:2 " );
                     }
 
                     @Override
                     public void onError(Throwable e) {
-
+                        Log.e(TAG, "onError:2 ");
                     }
 
                     @Override
                     public void onNext(List<Integer> integers) {
-                        tv1.append("\n" + integers);
+                        Log.e(TAG, "onNext:2 "+integers);
+                        tv1.append("\n" + "所属分组"+booleanIntegerGroupedObservable.getKey()+"值："+integers);
                     }
                 });
             }
@@ -532,7 +549,7 @@ public class NormalRxActivity extends BaseActivity {
         //scan对原始Observable发射的第一项数据应用一个函数，然后将函数计算结果作为第一项再与第二项数据应用函数，并且对后面的数据一直持续这个过程
         //例如计算1+2+3+4.先输出onNext（）输出1，接着scan回调1+2=3作为onNext（）  继续scan回调3+3=6作为onNext() 继续scan6+4=10作为onNext() 然后onCompleted()
         tv1.setText("Scan执行计算阶前n项和");
-        //scan(10, new Func2)scan还有一个重载方法可以指定初始值
+        //scan(10, new Func2)scan还有一个重载方法可以指定初始值,你可以设置查看执行log。
         Observable.range(1,20).scan(new Func2<Integer, Integer, Integer>() {
             @Override
             public Integer call(Integer integer, Integer integer2) {
@@ -614,4 +631,25 @@ public class NormalRxActivity extends BaseActivity {
         });
     }
 
+    private void executeCast(){
+        //该操作符比较少用，可以做类型检查之用
+        tv1.setText("cast 数据源range(1,3)");
+        Observable.just(serializable).cast(FileInfo.class).subscribe(new Subscriber<FileInfo>() {
+            @Override
+            public void onCompleted() {
+                Log.e(TAG, "onCompleted: " );
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e(TAG, "onError: " );
+            }
+
+            @Override
+            public void onNext(FileInfo fileInfo) {
+                Log.e(TAG, "onNext: "+fileInfo.toString());
+                tv1.append("\n"+fileInfo.toString());
+            }
+        });
+    }
 }

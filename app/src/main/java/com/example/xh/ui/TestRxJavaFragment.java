@@ -2,8 +2,11 @@ package com.example.xh.ui;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -17,7 +20,9 @@ import android.widget.TextView;
 
 import com.example.xh.R;
 import com.example.xh.rxjava.NormalRxActivity;
+import com.example.xh.uploadfile.FileInfo;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,7 +48,7 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
 
     private String TAG = "RXJAVA";
     private Button btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn10, btn11, btn12, btn13, btn14, btn15;
-    private Button btn16, btn17, btn18, btn19, btn20, btn21, btn22, btn23, btn24;
+    private Button btn16, btn17, btn18, btn19, btn20, btn21, btn22, btn23, btn24,btn25, btn26,btn27;
     private LinearLayout layout;
     private TextView tv;
     private StringBuffer stringBuffer;
@@ -83,6 +88,9 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
         btn22.setOnClickListener(this);
         btn23.setOnClickListener(this);
         btn24.setOnClickListener(this);
+        btn25.setOnClickListener(this);
+        btn26.setOnClickListener(this);
+        btn27.setOnClickListener(this);
     }
 
     @Nullable
@@ -118,6 +126,9 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
         btn22 = (Button) view.findViewById(R.id.btn22);
         btn23 = (Button) view.findViewById(R.id.btn23);
         btn24 = (Button) view.findViewById(R.id.btn24);
+        btn25 = (Button) view.findViewById(R.id.btn25);
+        btn26 = (Button) view.findViewById(R.id.btn26);
+        btn27 = (Button) view.findViewById(R.id.btn27);
         layout = (LinearLayout) view.findViewById(R.id.layout);
         tv = (TextView) view.findViewById(R.id.tv);
 
@@ -133,6 +144,13 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
             //lift() 是针对事件项和事件序列的，而 compose() 是针对 Observable 自身进行变换
             case R.id.btn1:
                 intent.setClass(getContext(), NormalRxActivity.class);
+                FileInfo fileInfo = new FileInfo();
+                fileInfo.setGguid("1234567");
+                fileInfo.setMd5("A563899AC90A9C5");
+                fileInfo.setIsChunk(true);
+                fileInfo.setFileLength(1000l);
+                fileInfo.setFilePath("mnt/sdcard/aaa.jpg");
+                intent.putExtra("fileInfo", fileInfo);
                 startActivity(intent);
                 break;
             case R.id.btn2:
@@ -197,7 +215,7 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
                 executeLast();
                 break;
             case R.id.btn21:
-                executeSingle();
+                executeSkip();
                 break;
             case R.id.btn22:
                 executeIgnore();
@@ -206,7 +224,16 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
                 executeSample();
                 break;
             case R.id.btn24:
-                executeSkip();
+                executeSingle();
+                break;
+            case R.id.btn25:
+                executeOfType();
+                break;
+            case R.id.btn26:
+                executetakeFirst();
+                break;
+            case R.id.btn27:
+                executeOfType();
                 break;
         }
     }
@@ -377,6 +404,7 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
         // 中，可以避免创建不必要的线程
 
     }
+
     private void executeTimestamp() {
         Integer[] number = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
         tv.setText("输入数据：1, 2, 3, 4, 5, 6, 7, 8, 9, 10\n");
@@ -448,8 +476,6 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
                     }
                 })
         ;
-
-
     }
 
     private void executeZip() {
@@ -587,75 +613,105 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
     }
 
     private void executeFlatMap() {
-        tv.setText("输入参数： 2,3,6,4,2,8,2,1,9将数据增大100并拼接字符FlatMap，没有保证数据的顺序性");
-        Integer[] integers = {2, 3, 6, 4, 2, 8, 2, 1, 9};
+        tv.setText("输入参数： 1,2, 3将数据增大100并拼接字符FlatMap，没有保证数据的顺序性");
+        Integer[] integers = {1, 2, 3};
         Observable.from(integers).flatMap(new Func1<Integer, Observable<String>>() {
             @Override
-            public Observable<String> call(Integer integer) {
-                Log.e(TAG, "call: FlatMap" + Thread.currentThread().getName());
-                return Observable.just((integer + 100) + "FlatMap");
+            public Observable<String> call(final Integer integer) {
+                return Observable.create(new Observable.OnSubscribe<String>() {
+                    @Override
+                    public void call(Subscriber<? super String> subscriber) {
+                        Log.e(TAG, "call: FlatMap " + Thread.currentThread().getName());
+                        try {
+                            Thread.sleep(200);
+                            subscriber.onNext(integer + 100 + " FlatMap");
+                            subscriber.onCompleted();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                            subscriber.onError(e);
+                        }
+                    }
+                }).subscribeOn(Schedulers.newThread());
             }
-        }).subscribe(new Subscriber<String>() {
-            @Override
-            public void onCompleted() {
-                Log.e(TAG, "onCompleted: FlatMap");
-            }
+        }).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<String>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.e(TAG, "onCompleted: FlatMap");
+                    }
 
-            @Override
-            public void onError(Throwable e) {
-                Log.e(TAG, "onError: FlatMap");
-            }
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "onError: FlatMap");
+                    }
 
-            @Override
-            public void onNext(String s) {
-                Log.e(TAG, "onNext: FlatMap");
-                tv.append("\n 转换后的内容：" + s + "\n");
-            }
-        });
+                    @Override
+                    public void onNext(String s) {
+                        Log.e(TAG, "onNext: FlatMap" + s);
+                        tv.append("\n 转换后的内容：" + s + "\n");
+                    }
+                });
     }
 
     private void executeConcatMap() {
         //concatMap保证结果的顺序性，顺序与输入一致
         //输出是按（call: ConcatMap，onNext: ConcatMap)n  ，最后 onCompleted: ConcatMap，保证了数据源的顺序性
         //而FlatMap是先所有call: ConcatMap，再所有onNext: ConcatMap，最后onCompleted: ConcatMap，是没有保证数据源的顺序性
-        tv.setText("输入参数： 2,3,6,4,2,8,2,1,9将数据增大100并拼接字符ConcatMap,保证了数据源的顺序性");
-        Integer[] integers = {2, 3, 6, 4, 2, 8, 2, 1, 9};
-
+        tv.setText("输入参数： 1,2, 3将数据增大100并拼接字符ConcatMap,保证了数据源的顺序性");
+        Integer[] integers = {1, 2, 3};
         Observable.from(integers).concatMap(new Func1<Integer, Observable<String>>() {
             @Override
-            public Observable<String> call(Integer integer) {
-                Log.e(TAG, "call: ConcatMap" + Thread.currentThread().getName());
-                return Observable.just((integer + 100) + "ConcatMap");
+            public Observable<String> call(final Integer integer) {
+                return Observable.create(new Observable.OnSubscribe<String>() {
+                    @Override
+                    public void call(Subscriber<? super String> subscriber) {
+                        Log.e(TAG, "call:2 ConcatMap " + Thread.currentThread().getName());
+                        try {
+                            Thread.sleep(200);
+                            subscriber.onNext(integer + 100 + " ConcatMap");
+                            subscriber.onCompleted();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                            subscriber.onError(e);
+                        }
+                    }
+                }).subscribeOn(Schedulers.newThread());
             }
-        }).subscribe(new Subscriber<String>() {
-            @Override
-            public void onCompleted() {
-                Log.e(TAG, "onCompleted: ConcatMap");
-            }
+        }).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<String>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.e(TAG, "onCompleted: ConcatMap");
+                    }
 
-            @Override
-            public void onError(Throwable e) {
-                Log.e(TAG, "onError: ConcatMap");
-            }
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "onError: ConcatMap");
+                    }
 
-            @Override
-            public void onNext(String s) {
-                Log.e(TAG, "onNext: ConcatMap");
-                tv.append("\n 转换后的内容：" + s + "\n");
-            }
-        });
+                    @Override
+                    public void onNext(String s) {
+                        Log.e(TAG, "onNext: ConcatMap "+s);
+                        tv.append("\n 转换后的内容：" + s + "\n");
+                    }
+                });
     }
 
     private void executeSwitchMap() {
         //switch()和flatMap()很像，除了一点:当源Observable发射一个新的数据项时，
         // 如果旧数据项订阅还未完成，就取消旧订阅数据和停止监视那个数据项产生的Observable,开始监视新的数据项.
         tv.setText("输入参数： 2,3,6,4,2,8,2,1,9将数据增大100并拼接字符SwitchMap，通过subscribeOn指定在新线程中模拟并发");
-        Integer[] integers = {2, 3, 6, 4, 2, 8, 2, 1, 9};
+        Integer[] integers = {2, 3, 6,2,3,2,3,};
         Observable.from(integers).switchMap(new Func1<Integer, Observable<String>>() {
             @Override
             public Observable<String> call(Integer integer) {
                 Log.e(TAG, "call: SwitchMap" + Thread.currentThread().getName());
                 //如果不通过subscribeOn(Schedulers.newThread())在在子线程模拟并发操作，所有数据源依然会全部输出
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 return Observable.just((integer + 100) + "SwitchMap").subscribeOn(Schedulers.newThread());
             }
         }).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<String>() {
@@ -671,7 +727,7 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
 
             @Override
             public void onNext(String s) {
-                Log.e(TAG, "onNext: SwitchMap");
+                Log.e(TAG, "onNext: SwitchMap "+s);
                 tv.append("\n 转换后的内容：" + s + "\n");
             }
         });
@@ -731,6 +787,7 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
         Action1 action1 = new Action1<Integer>() {
             @Override
             public void call(Integer i) {
+                Log.e(TAG, "call: "+i );
                 tv.append(i.toString() + ",");
             }
         };
@@ -849,54 +906,140 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
                 });
 
     }
-    private void executeFirst(){
-        //与ElementAt(0)作用相同
-        tv.setText("first过滤获得第一个数据此例数据源10,11,12,13");
-        Observable.just(10,11,12,13).first().subscribe(new Action1<Integer>() {
-            @Override
-            public void call(Integer integer) {
-                tv.append("\n"+integer);
-            }
-        });
-        tv.append("\nfist（Func1）传过滤参数条件大于12");
-        Observable.just(10,11,12,13).first(new Func1<Integer, Boolean>() {
+    private void executetakeFirst() {
+        tv.setText("takeFirst");
+        //first变体，若没有发射任何满足条件的数据，不会抛出异常，不执行onNext()但是会调用onCompleted
+        //而对于first，若没有发射任何满足条件的数据，first会抛出一个NoSuchElementException
+        Observable.just(10,11).filter(new Func1<Integer, Boolean>() {
             @Override
             public Boolean call(Integer integer) {
-                return integer>12;
+                return integer>20;
             }
-        }).subscribe(new Action1<Integer>() {
+        }).first().subscribe(new Subscriber<Object>() {
+
             @Override
-            public void call(Integer integer) {
-                tv.append("\n"+integer);
+            public void onCompleted() {
+                Log.e(TAG, "onCompleted: ");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e(TAG, "onError: "+e.toString());
+            }
+
+            @Override
+            public void onNext(Object o) {
+                Log.e(TAG, "onNext: "+o.toString());
+            }
+        });
+
+
+
+        Observable.just(10,11).takeFirst(new Func1<Integer, Boolean>() {
+            @Override
+            public Boolean call(Integer integer) {
+                Log.e(TAG, "call: takeFirst" );
+                return integer>30;
+            }
+        }).subscribe(new Subscriber<Object>() {
+
+            @Override
+            public void onCompleted() {
+                Log.e(TAG, "onCompleted: ");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e(TAG, "onError: "+e.toString());
+            }
+
+            @Override
+            public void onNext(Object o) {
+                Log.e(TAG, "onNext: "+o.toString());
             }
         });
     }
-    private void executeLast(){
+    private void executeFirst() {
         //与ElementAt(0)作用相同
-        tv.setText("last过滤获得第一个数据此例数据源10,11,12,13");
-        Observable.just(10,11,12,13).last().subscribe(new Action1<Integer>() {
+        tv.setText("first过滤获得第一个数据此例数据源10,11,12,13");
+        Observable.just(10, 11, 12, 13).first().subscribe(new Action1<Integer>() {
             @Override
             public void call(Integer integer) {
-                tv.append("\n"+integer);
+                tv.append("\n" + integer);
             }
         });
-        tv.append("\nlast（Func1）传过滤参数条件小于12");
-        Observable.just(10,11,12,13).last(new Func1<Integer, Boolean>() {
+        tv.append("\nfist（Func1）传过滤参数条件大于12");
+        Observable.just(10, 11, 12, 13).first(new Func1<Integer, Boolean>() {
             @Override
             public Boolean call(Integer integer) {
-                return integer<12;
+                return integer > 12;
             }
         }).subscribe(new Action1<Integer>() {
             @Override
             public void call(Integer integer) {
+                tv.append("\n" + integer);
+            }
+        });
+
+        tv.append("\nempty().firstOrDefault(10)");
+        Observable.empty().firstOrDefault(10).subscribe(new Action1<Object>() {
+            @Override
+            public void call(Object o) {
+                Log.e(TAG, "firstOrDefault(10)"+o.toString());
+                tv.append("\n"+o.toString());
+            }
+        });
+        tv.append("\nempty().firstOrDefault(10)1111111111111");
+        Observable.just(11,11).firstOrDefault(10).subscribe(new Action1<Object>() {
+            @Override
+            public void call(Object o) {
+                Log.e(TAG, "firstOrDefault(101)"+o.toString());
+                tv.append("\n"+o.toString());
+            }
+        });
+        tv.append("\njust(10).firstOrDefault(10, new Func1) integer>20");
+        Observable.just(10).firstOrDefault(15, new Func1<Integer, Boolean>() {
+            @Override
+            public Boolean call(Integer integer) {
+                return integer>20;
+            }
+        }).subscribe(new Action1<Integer>() {
+            @Override
+            public void call(Integer integer) {
+                Log.e(TAG, "firstOrDefault(10)2 "+integer);
                 tv.append("\n"+integer);
+            }
+        });
+
+    }
+
+    private void executeLast() {
+        //与ElementAt(0)作用相同
+        tv.setText("last过滤获得最后一个数据。此例数据源10,11,12,13");
+        Observable.just(10, 11, 12, 13).last().subscribe(new Action1<Integer>() {
+            @Override
+            public void call(Integer integer) {
+                tv.append("\n" + integer);
+            }
+        });
+        tv.append("\nlast（Func1）传过滤参数条件小于12");
+        Observable.just(10, 11, 12, 13).last(new Func1<Integer, Boolean>() {
+            @Override
+            public Boolean call(Integer integer) {
+                return integer < 12;
+            }
+        }).subscribe(new Action1<Integer>() {
+            @Override
+            public void call(Integer integer) {
+                Log.e(TAG, "call: "+integer);
+                tv.append("\n" + integer);
             }
         });
     }
 
-    private void executeSingle(){
+    private void executeSingle() {
         tv.setText("Single检测是不是只有一条数据，否则执行onError()此例数据源10,11,12,13");
-        Observable.just(10,11,12,13).single().subscribe(new Subscriber<Integer>() {
+/*        Observable.just(10, 11, 12, 13).single().subscribe(new Subscriber<Integer>() {
             @Override
             public void onCompleted() {
                 tv.append("\nonCompleted");
@@ -904,19 +1047,35 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
 
             @Override
             public void onError(Throwable e) {
-                tv.append("\nonError");
+                tv.append("\nonError"+e.toString());
             }
 
             @Override
             public void onNext(Integer integer) {
-                tv.append("\n"+integer);
+                tv.append("\n" + integer);
+            }
+        });*/
+        Observable.empty().single().subscribe(new Subscriber<Object>() {
+            @Override
+            public void onCompleted() {
+                tv.append("\nonCompleted1");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                tv.append("\nonError1"+e.toString());
+            }
+
+            @Override
+            public void onNext(Object integer) {
+                tv.append("\n1111" + integer);
             }
         });
         tv.append("\nSingle（Func1）传过滤参数条件大于12");
-        Observable.just(10,11,12,13).last(new Func1<Integer, Boolean>() {
+        Observable.just(10, 11, 12, 13).filter(new Func1<Integer, Boolean>() {
             @Override
             public Boolean call(Integer integer) {
-                return integer>12;
+                return integer > 12;
             }
         }).subscribe(new Subscriber<Integer>() {
             @Override
@@ -931,15 +1090,17 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
 
             @Override
             public void onNext(Integer integer) {
-                tv.append("\n"+integer);
+                tv.append("\n" + integer);
             }
         });
     }
-    private void executeIgnore(){
+
+    private void executeIgnore() {
         tv.setText("ignoreElements不会执行onNext()数据源1,2,3");
-        Observable.just(1,2,3).ignoreElements().subscribe(new Subscriber<Integer>() {
+        Observable.just(1, 2, 3).ignoreElements().subscribe(new Subscriber<Integer>() {
             @Override
             public void onCompleted() {
+
                 tv.append("\nonCompleted");
             }
 
@@ -954,29 +1115,30 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
             }
         });
     }
-    private void executeSample(){
+
+    private void executeSample() {
         //定期扫描源Observable产生的结果，在指定的间隔周期内进行采样
         //sample在线程中执行的，会默认开启一个新线程
         tv.setText("Sample对数据进行采样,本例按1s时间对数据采样，数据源1,2,3.....500ms数据增加1");
-        Observable.interval(500,TimeUnit.MILLISECONDS)
-                .sample(1,TimeUnit.SECONDS)
+        Observable.interval(500, TimeUnit.MILLISECONDS)
+                .sample(1, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Long>() {
                     @Override
                     public void onCompleted() {
-                        Log.e(TAG, "onCompleted: Sample" );
+                        Log.e(TAG, "onCompleted: Sample");
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.e(TAG, "onError: Sample"  );
+                        Log.e(TAG, "onError: Sample");
                     }
 
                     @Override
                     public void onNext(Long aLong) {
-                        Log.e(TAG, "onNext: Sample"  );
-                        tv.append("\n"+aLong);
-                        if (aLong>10){
+                        Log.e(TAG, "onNext: Sample");
+                        tv.append("\n" + aLong);
+                        if (aLong > 10) {
                             this.unsubscribe();
                         }
 
@@ -984,63 +1146,123 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
                 });
     }
 
-    private  void executeSkip(){
+    private void executeSkip() {
         tv.setText("Skip数据源range(1,10)\n执行Skip(6)");
-        Observable.range(1,10).skip(6).subscribe(new Action1<Integer>() {
+        Observable.range(1, 10).skip(6).subscribe(new Action1<Integer>() {
             @Override
             public void call(Integer integer) {
-             tv.append("\n"+integer);
+                tv.append("\n" + integer);
+                Log.e(TAG, "call: "+integer );
             }
         });
         //skip(long time,TimeUnit) 是跳过多少秒 然后才开始将后面产生的数据提交给订阅者
         tv.append("\n下面是interval(500,TimeUnit.MILLISECONDS).skip(2,TimeUnit.SECONDS)执行结果");
-        Observable.interval(500,TimeUnit.MILLISECONDS)
-                .skip(2,TimeUnit.SECONDS)
+        Observable.interval(500, TimeUnit.MILLISECONDS)
+                .skip(2, TimeUnit.SECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Long>() {
                     @Override
                     public void onCompleted() {
-
+                        Log.e(TAG, "onCompleted: ");
                     }
 
                     @Override
                     public void onError(Throwable e) {
-
+                        Log.e(TAG, "onError: " );
                     }
 
                     @Override
                     public void onNext(Long aLong) {
-                        tv.append("\n"+aLong);
-                        if (aLong>10){
+                        tv.append("\n" + aLong);
+                        Log.e(TAG, "onNext: "+aLong );
+                        if (aLong > 10) {
                             this.unsubscribe();
                         }
                     }
                 });
         //skipLast 正好和skip 相反，忽略最后产生的n个数据项
         tv.append("\nskipLast(6),数据源range(1,10)");
-        Observable.range(1,10).skipLast(6).subscribe(new Action1<Integer>() {
+        Observable.range(1, 10).skipLast(6).subscribe(new Action1<Integer>() {
             @Override
             public void call(Integer integer) {
-                tv.append("\n"+integer);
+                Log.e(TAG, "call: "+integer );
+                tv.append("\n" + integer);
             }
         });
 
     }
-    private void executeMap() {
 
+    private void executeMap() {
+        //可以参考下面的executeMap1方法，学习稍微复杂的例子
         tv.setText("输入参数： 0,0,6,4,2,8,2,1,9,0,23大于5的数据用true表示");
         Integer[] integers = {0, 0, 6, 4, 2, 8, 2, 1, 9, 0, 23};
         Observable.from(integers).map(new Func1<Integer, Boolean>() {
             @Override
             public Boolean call(Integer integer) {
+                Log.e(TAG, "call: " + integer);
                 return (integer > 5);
             }
-        }).subscribe(new Action1<Boolean>() {
+        }).subscribe(new Subscriber<Boolean>() {
             @Override
-            public void call(Boolean aBoolean) {
+            public void onCompleted() {
+                Log.e(TAG, "onCompleted: ");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e(TAG, "onError: ");
+            }
+
+            @Override
+            public void onNext(Boolean aBoolean) {
+                Log.e(TAG, "onNext: " + aBoolean);
                 tv.append("\n观察到输出结果：");
                 tv.append(aBoolean.toString() + "\n");
             }
         });
+    }
+
+    private void executeMap1() {
+        String path = Environment.getExternalStorageDirectory() + File.separator + "aaa.jpg";
+        Observable.just(path)
+                .subscribeOn(Schedulers.io())
+                .map(new Func1<String, Bitmap>() {
+
+                    @Override
+                    public Bitmap call(String s) {
+                        Bitmap bitmap = BitmapFactory.decodeFile(s);
+                        Log.e(TAG, "call: Bitmap" + bitmap);
+                        return bitmap;
+                    }
+                }).map(new Func1<Bitmap, ImageView>() {
+            @Override
+            public ImageView call(Bitmap bitmap) {
+                Log.e(TAG, "call: ImageView");
+                ImageView imageView = new ImageView(getActivity());
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                imageView.setLayoutParams(params);
+                imageView.setImageBitmap(bitmap);
+                return imageView;
+            }
+        }).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<ImageView>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.e(TAG, "onCompleted: ");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "onError: ");
+                    }
+
+                    @Override
+                    public void onNext(ImageView imageView) {
+                        Log.e(TAG, "onNext: ");
+                        tv.append(stringBuffer.toString() + "接收信息事件" + Thread.currentThread().getName());
+                        layout.addView(imageView);
+                    }
+                });
     }
 
 }
