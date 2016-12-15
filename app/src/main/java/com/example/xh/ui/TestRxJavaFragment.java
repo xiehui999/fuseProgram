@@ -235,6 +235,7 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
             case R.id.btn27:
                 executeOfType();
                 break;
+
         }
     }
 
@@ -522,46 +523,53 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
         //任一出错，都会打断合并，若不想中断可以是用mergeDelayError（）
         // 它能从一个Observable中继续发射数据即便是其中有一个抛出了错误。当所有的Observables都完成时，mergeDelayError()将会发射onError()
         tv.setText("并发执行任务开始\n");
-        Observable observable = Observable.create(new Observable.OnSubscribe<String>() {
+        Observable observable = Observable.create(new Observable.OnSubscribe<Integer>() {
             @Override
-            public void call(Subscriber<? super String> subscriber) {
+            public void call(Subscriber<? super Integer> subscriber) {
+
+                try {
+                    subscriber.onNext(100);
+                    Thread.sleep(500);
+                    subscriber.onError(new Throwable("error"));
+                    subscriber.onCompleted();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    subscriber.onError(new Throwable("error11"));
+                }
+
+            }
+        }).subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread());
+        Observable observable1 = Observable.create(new Observable.OnSubscribe<Integer>() {
+            @Override
+            public void call(Subscriber<? super Integer> subscriber) {
                 try {
                     Thread.sleep(500);
-                    subscriber.onNext("aaaaaaaaaa");
+                    subscriber.onNext(100);
                     subscriber.onCompleted();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
         }).subscribeOn(Schedulers.newThread());
-        Observable observable1 = Observable.create(new Observable.OnSubscribe<String>() {
-            @Override
-            public void call(Subscriber<? super String> subscriber) {
-                try {
-                    Thread.sleep(500);
-                    subscriber.onNext("bbbbbbbbbb");
-                    subscriber.onCompleted();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).subscribeOn(Schedulers.newThread());
-        Observable.merge(observable, observable1)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<String>() {
+        Observable observable2=Observable.just(1,2,3,4).subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread());
+        Observable observable3=Observable.just(6,7,8,9).subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread());
+        Observable.merge(observable,observable2, observable3)
+                .subscribe(new Subscriber<Integer>() {
                     @Override
                     public void onCompleted() {
                         tv.append("两个任务都处理完毕！！\n");
                         tv.append("更新数据：\n");
+                        Log.e(TAG, "onCompleted: ");
                     }
 
                     @Override
                     public void onError(Throwable e) {
-
+                        Log.e(TAG, "onError: "+e.toString() );
                     }
 
                     @Override
-                    public void onNext(String s) {
+                    public void onNext(Integer s) {
+                        Log.e(TAG, "onNext: "+s);
                         tv.append("得到一个数据：" + s + "\n");
                     }
                 });

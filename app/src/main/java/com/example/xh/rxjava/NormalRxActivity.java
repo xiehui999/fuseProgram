@@ -460,8 +460,26 @@ public class NormalRxActivity extends BaseActivity {
     private void executeConcat() {
         //是将多个Observable 按传入顺序进行输出observableA,observableB...先后输出
         tv1.setText("\nConcat数据源observableA：range(1,5),observableB:range(7,5)");
+        Observable observable = Observable.create(new Observable.OnSubscribe<Integer>() {
+            @Override
+            public void call(Subscriber<? super Integer> subscriber) {
+
+                try {
+                    subscriber.onNext(100);
+                    Thread.sleep(500);
+                    subscriber.onNext(200);
+                    subscriber.onCompleted();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    subscriber.onError(new Throwable("error11"));
+                }
+
+            }
+        }).subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread());
+
         Observable<Integer> observableA = Observable.range(1, 5);
         Observable<Integer> observableB = Observable.range(7, 5);
+        //可以自己将observableA更换为observable，或者更改操作符为merge理解
         Observable.concat(observableA, observableB).subscribe(new Subscriber<Integer>() {
             @Override
             public void onCompleted() {
@@ -485,7 +503,7 @@ public class NormalRxActivity extends BaseActivity {
         // 是将第一个Observable的最新(最后一条)数据与后面的Observable数据项按某种规则合并
         tv1.setText("combineLastest数据源observableA：range(1,5),observableB:range(7,5)");
         Observable<Integer> observableA = Observable.range(1, 5);
-        Observable<Integer> observableB = Observable.range(7, 5);
+        Observable<Integer> observableB = Observable.range(7, 6);
         Observable.combineLatest(observableA, observableB, new Func2<Integer, Integer, String>() {
             @Override
             public String call(Integer integer, Integer integer2) {
@@ -505,8 +523,8 @@ public class NormalRxActivity extends BaseActivity {
         //在a的生命周期内：b输出的数据项与a输出的数据项每个合并,直到b输出下一项
         //需要使用subscribeOn(Schedulers.newThread())将两个Observable在两个不同的线程发射
         tv1.setText("join数据源observableA：range(1,5),observableB:range(7,5)");
-        Observable<Integer> observableA = Observable.range(1, 5).subscribeOn(Schedulers.newThread());
-        Observable<Integer> observableB = Observable.range(7, 5).subscribeOn(Schedulers.newThread());
+        Observable<Integer> observableA = Observable.range(1, 2).subscribeOn(Schedulers.newThread());
+        Observable<Integer> observableB = Observable.range(7, 3).subscribeOn(Schedulers.newThread());
         observableA.join(observableB, new Func1<Integer, Observable<Integer>>() {
             @Override
             public Observable<Integer> call(Integer integer) {
@@ -534,12 +552,12 @@ public class NormalRxActivity extends BaseActivity {
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.e(TAG, "onError: ");
+                        Log.e(TAG, "onError: "+e.toString());
                     }
 
                     @Override
                     public void onNext(Integer integer) {
-                        Log.e(TAG, "onNext: ");
+                        Log.e(TAG, "onNext: "+integer);
                         tv1.append("\n"+integer);
                     }
                 });
@@ -586,7 +604,7 @@ public class NormalRxActivity extends BaseActivity {
 
             @Override
             public void onError(Throwable e) {
-                Log.e(TAG, "onError: ");
+                Log.e(TAG, "onError: "+e.toString());
             }
 
             @Override
@@ -604,15 +622,16 @@ public class NormalRxActivity extends BaseActivity {
             @Override
             public Observable<Long> call(Long aLong) {
                 //每隔200毫秒产生一组数据（0,10,20,30,40)
+                Log.e(TAG, "call1: "+aLong);
                 return Observable.interval(0, 200, TimeUnit.MILLISECONDS).map(new Func1<Long, Long>() {
                     @Override
                     public Long call(Long aLong) {
+                        Log.e(TAG, "call2: "+aLong );
                         return aLong * 10;
                     }
                 }).take(5);
             }
         }).take(2);
-
         Observable.switchOnNext(observable).subscribe(new Subscriber<Long>() {
             @Override
             public void onCompleted() {
