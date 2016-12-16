@@ -10,12 +10,15 @@ import com.example.xh.ui.BaseActivity;
 import com.example.xh.uploadfile.FileInfo;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func0;
 import rx.functions.Func1;
@@ -30,7 +33,7 @@ public class NormalRxActivity extends BaseActivity {
     private TextView tv1;
     private TextView tv2;
     private Button btn, btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9;
-    private Button btn10, btn11,btn12, btn13,btn14,btn15, btn16,btn17;
+    private Button btn10, btn11, btn12, btn13, btn14, btn15, btn16, btn17, btn18, btn19, btn20;
     String[] strs = {"也许当初忙着微笑和哭泣", "忙着追逐天空中的流星", "人理所当然的忘记", "是谁风里雨里一直默默守护在原地"};
     private String text;
     private String TAG = "RxJava";
@@ -43,7 +46,7 @@ public class NormalRxActivity extends BaseActivity {
 
     @Override
     public void initViews() {
-        serializable=this.getIntent().getSerializableExtra("fileInfo");
+        serializable = this.getIntent().getSerializableExtra("fileInfo");
         tv1 = (TextView) findViewById(R.id.tv1);
         tv2 = (TextView) findViewById(R.id.tv2);
         btn = (Button) findViewById(R.id.button);
@@ -64,6 +67,9 @@ public class NormalRxActivity extends BaseActivity {
         btn15 = (Button) findViewById(R.id.button15);
         btn16 = (Button) findViewById(R.id.button16);
         btn17 = (Button) findViewById(R.id.button17);
+        btn18 = (Button) findViewById(R.id.button18);
+        btn19 = (Button) findViewById(R.id.button19);
+        btn20 = (Button) findViewById(R.id.button20);
         btn.setOnClickListener(this);
         btn1.setOnClickListener(this);
         btn2.setOnClickListener(this);
@@ -82,6 +88,9 @@ public class NormalRxActivity extends BaseActivity {
         btn15.setOnClickListener(this);
         btn16.setOnClickListener(this);
         btn17.setOnClickListener(this);
+        btn18.setOnClickListener(this);
+        btn19.setOnClickListener(this);
+        btn20.setOnClickListener(this);
     }
 
     @Override
@@ -136,10 +145,19 @@ public class NormalRxActivity extends BaseActivity {
                 executeCast();
                 break;
             case R.id.button16:
-                executeStartWith();
+                executeDelay();
                 break;
             case R.id.button17:
-                executeSwitchOnNext();
+                executeDelaySubscription();
+                break;
+            case R.id.button18:
+                executeDo();
+                break;
+            case R.id.button19:
+                executeDelay();
+                break;
+            case R.id.button20:
+                executeDelaySubscription();
                 break;
         }
     }
@@ -198,7 +216,7 @@ public class NormalRxActivity extends BaseActivity {
         Observable.from(strs).repeat(3).subscribe(new Subscriber<String>() {
             @Override
             public void onCompleted() {
-                Log.e(TAG, "onCompleted: " );
+                Log.e(TAG, "onCompleted: ");
             }
 
             @Override
@@ -208,7 +226,7 @@ public class NormalRxActivity extends BaseActivity {
 
             @Override
             public void onNext(String s) {
-                Log.e(TAG, "onNext: "+s );
+                Log.e(TAG, "onNext: " + s);
                 tv1.append("\n" + s);
             }
         });
@@ -368,7 +386,7 @@ public class NormalRxActivity extends BaseActivity {
 
                     @Override
                     public void onNext(Integer integer) {
-                        Log.e(TAG, "onNext2: "+integer);
+                        Log.e(TAG, "onNext2: " + integer);
                         tv1.append("     " + integer);
                     }
                 });
@@ -439,7 +457,7 @@ public class NormalRxActivity extends BaseActivity {
                 booleanIntegerGroupedObservable.toList().subscribe(new Subscriber<List<Integer>>() {
                     @Override
                     public void onCompleted() {
-                        Log.e(TAG, "onCompleted:2 " );
+                        Log.e(TAG, "onCompleted:2 ");
                     }
 
                     @Override
@@ -449,8 +467,8 @@ public class NormalRxActivity extends BaseActivity {
 
                     @Override
                     public void onNext(List<Integer> integers) {
-                        Log.e(TAG, "onNext:2 "+integers);
-                        tv1.append("\n" + "所属分组"+booleanIntegerGroupedObservable.getKey()+"值："+integers);
+                        Log.e(TAG, "onNext:2 " + integers);
+                        tv1.append("\n" + "所属分组" + booleanIntegerGroupedObservable.getKey() + "值：" + integers);
                     }
                 });
             }
@@ -528,20 +546,20 @@ public class NormalRxActivity extends BaseActivity {
         observableA.join(observableB, new Func1<Integer, Observable<Integer>>() {
             @Override
             public Observable<Integer> call(Integer integer) {
-                Log.e(TAG, "call: A" + integer +"   "+ Thread.currentThread().getName());
-                return Observable.just(integer).delay(1,TimeUnit.SECONDS);
+                Log.e(TAG, "call: A" + integer + "   " + Thread.currentThread().getName());
+                return Observable.just(integer).delay(1, TimeUnit.SECONDS);
             }
         }, new Func1<Integer, Observable<Integer>>() {
             @Override
             public Observable<Integer> call(Integer integer) {
-                Log.e(TAG, "call: B" + integer +"   "+ Thread.currentThread().getName());
-                return Observable.just(integer).delay(1,TimeUnit.SECONDS);
+                Log.e(TAG, "call: B" + integer + "   " + Thread.currentThread().getName());
+                return Observable.just(integer).delay(1, TimeUnit.SECONDS);
             }
         }, new Func2<Integer, Integer, Integer>() {
             @Override
             public Integer call(Integer integer, Integer integer2) {
                 Log.e(TAG, "call:AjoinB A: " + integer + " B:" + integer2 + Thread.currentThread().getName());
-                return integer+integer2;
+                return integer + integer2;
             }
         }).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Integer>() {
@@ -552,27 +570,27 @@ public class NormalRxActivity extends BaseActivity {
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.e(TAG, "onError: "+e.toString());
+                        Log.e(TAG, "onError: " + e.toString());
                     }
 
                     @Override
                     public void onNext(Integer integer) {
-                        Log.e(TAG, "onNext: "+integer);
-                        tv1.append("\n"+integer);
+                        Log.e(TAG, "onNext: " + integer);
+                        tv1.append("\n" + integer);
                     }
                 });
     }
 
-    private void executeScan(){
+    private void executeScan() {
         //scan对原始Observable发射的第一项数据应用一个函数，然后将函数计算结果作为第一项再与第二项数据应用函数，并且对后面的数据一直持续这个过程
         //例如计算1+2+3+4.先输出onNext（）输出1，接着scan回调1+2=3作为onNext（）  继续scan回调3+3=6作为onNext() 继续scan6+4=10作为onNext() 然后onCompleted()
         tv1.setText("Scan执行计算阶前n项和");
         //scan(10, new Func2)scan还有一个重载方法可以指定初始值,你可以设置查看执行log。
-        Observable.range(1,20).scan(new Func2<Integer, Integer, Integer>() {
+        Observable.range(1, 20).scan(new Func2<Integer, Integer, Integer>() {
             @Override
             public Integer call(Integer integer, Integer integer2) {
-                Log.e(TAG, "call: integer:"+integer+"  integer2"+integer2);
-                return integer+integer2;
+                Log.e(TAG, "call: integer:" + integer + "  integer2" + integer2);
+                return integer + integer2;
             }
         }).subscribe(new Subscriber<Integer>() {
             @Override
@@ -582,51 +600,51 @@ public class NormalRxActivity extends BaseActivity {
 
             @Override
             public void onError(Throwable e) {
-                Log.e(TAG, "onError: " );
+                Log.e(TAG, "onError: ");
             }
 
             @Override
             public void onNext(Integer integer) {
-                Log.e(TAG, "onNext: "+integer );
-                tv1.append("\n"+integer);
+                Log.e(TAG, "onNext: " + integer);
+                tv1.append("\n" + integer);
             }
         });
     }
 
-    private void executeStartWith(){
+    private void executeStartWith() {
         //结合操作
         tv1.setText("range(1,5).startWith(11,12)");
-        Observable.range(1,5).startWith(11,12).subscribe(new Subscriber<Integer>() {
+        Observable.range(1, 5).startWith(11, 12).subscribe(new Subscriber<Integer>() {
             @Override
             public void onCompleted() {
-                Log.e(TAG, "onCompleted: " );
+                Log.e(TAG, "onCompleted: ");
             }
 
             @Override
             public void onError(Throwable e) {
-                Log.e(TAG, "onError: "+e.toString());
+                Log.e(TAG, "onError: " + e.toString());
             }
 
             @Override
             public void onNext(Integer integer) {
-                Log.e(TAG, "onNext: "+integer );
-                tv1.append("\n"+integer);
+                Log.e(TAG, "onNext: " + integer);
+                tv1.append("\n" + integer);
             }
         });
     }
 
-    private void executeSwitchOnNext(){
+    private void executeSwitchOnNext() {
         tv1.setText("switchOnNext");
         //每隔500毫秒产生一个observable
         Observable<Observable<Long>> observable = Observable.interval(0, 500, TimeUnit.MILLISECONDS).map(new Func1<Long, Observable<Long>>() {
             @Override
             public Observable<Long> call(Long aLong) {
                 //每隔200毫秒产生一组数据（0,10,20,30,40)
-                Log.e(TAG, "call1: "+aLong);
+                Log.e(TAG, "call1: " + aLong);
                 return Observable.interval(0, 200, TimeUnit.MILLISECONDS).map(new Func1<Long, Long>() {
                     @Override
                     public Long call(Long aLong) {
-                        Log.e(TAG, "call2: "+aLong );
+                        Log.e(TAG, "call2: " + aLong);
                         return aLong * 10;
                     }
                 }).take(5);
@@ -635,7 +653,7 @@ public class NormalRxActivity extends BaseActivity {
         Observable.switchOnNext(observable).subscribe(new Subscriber<Long>() {
             @Override
             public void onCompleted() {
-                Log.e(TAG, "onCompleted: SwitchOnNext" );
+                Log.e(TAG, "onCompleted: SwitchOnNext");
             }
 
             @Override
@@ -645,30 +663,162 @@ public class NormalRxActivity extends BaseActivity {
 
             @Override
             public void onNext(Long aLong) {
-                Log.e(TAG, "onNext: SwitchOnNext  "+aLong);
+                Log.e(TAG, "onNext: SwitchOnNext  " + aLong);
             }
         });
     }
 
-    private void executeCast(){
+    private void executeCast() {
         //该操作符比较少用，可以做类型检查之用
         tv1.setText("cast 数据源range(1,3)");
         Observable.just(serializable).cast(FileInfo.class).subscribe(new Subscriber<FileInfo>() {
             @Override
             public void onCompleted() {
-                Log.e(TAG, "onCompleted: " );
+                Log.e(TAG, "onCompleted: ");
             }
 
             @Override
             public void onError(Throwable e) {
-                Log.e(TAG, "onError: " );
+                Log.e(TAG, "onError: ");
             }
 
             @Override
             public void onNext(FileInfo fileInfo) {
-                Log.e(TAG, "onNext: "+fileInfo.toString());
-                tv1.append("\n"+fileInfo.toString());
+                Log.e(TAG, "onNext: " + fileInfo.toString());
+                tv1.append("\n" + fileInfo.toString());
             }
         });
+    }
+
+    private void executeDelay() {
+        tv1.setText("delay");
+        Observable.create(new Observable.OnSubscribe<Integer>() {
+            @Override
+            public void call(Subscriber<? super Integer> subscriber) {
+                Log.e(TAG, "call: " + new SimpleDateFormat("yyyy/MM/dd HH:MM:ss").format(new Date()));
+                subscriber.onNext(1);
+                subscriber.onNext(2);
+                subscriber.onNext(3);
+                subscriber.onNext(4);
+                subscriber.onCompleted();
+            }
+        }).delay(2, TimeUnit.SECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Integer>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.e(TAG, "onCompleted: " + new SimpleDateFormat("yyyy/MM/dd HH:MM:ss").format(new Date()));
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "onError: " + new SimpleDateFormat("yyyy/MM/dd HH:MM:ss").format(new Date()) + e.toString());
+                    }
+
+                    @Override
+                    public void onNext(Integer integer) {
+                        tv1.append("\n" + new SimpleDateFormat("yyyy/MM/ddHH:MM:ss").format(new Date()) + "  " + integer);
+                        Log.e(TAG, "onNext: " + new SimpleDateFormat("yyyy/MM/dd HH:MM:ss").format(new Date()) + integer);
+                    }
+                });
+    }
+
+    private void executeDelaySubscription() {
+        tv1.setText("delay");
+        Observable observable = Observable.create(new Observable.OnSubscribe<Integer>() {
+            @Override
+            public void call(Subscriber<? super Integer> subscriber) {
+                Log.e(TAG, "call: " + new SimpleDateFormat("yyyy/MM/dd HH:MM:ss").format(new Date()));
+                subscriber.onNext(1);
+                subscriber.onNext(2);
+                subscriber.onNext(3);
+                subscriber.onNext(4);
+                subscriber.onCompleted();
+            }
+        });
+        Log.e(TAG, "call11: " + new SimpleDateFormat("yyyy/MM/dd HH:MM:ss").format(new Date()));
+        observable.delaySubscription(2, TimeUnit.SECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Integer>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.e(TAG, "onCompleted: " + new SimpleDateFormat("yyyy/MM/dd HH:MM:ss").format(new Date()));
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "onError: " + new SimpleDateFormat("yyyy/MM/dd HH:MM:ss").format(new Date()) + e.toString());
+                    }
+
+                    @Override
+                    public void onNext(Integer integer) {
+                        tv1.append("\n" + new SimpleDateFormat("yyyy/MM/ddHH:MM:ss").format(new Date()) + "  " + integer);
+                        Log.e(TAG, "onNext: " + new SimpleDateFormat("yyyy/MM/dd HH:MM:ss").format(new Date()) + integer);
+                    }
+                });
+    }
+
+    private void executeDo() {
+        tv1.setText("Do");
+        //doOnEach实现了doOnNext,doOnError,doOncompleted
+        Observable.just(1, 2, 3)
+                .doOnNext(new Action1<Integer>() {
+                    @Override
+                    public void call(Integer integer) {
+                        Log.e(TAG, "doOnNext: " );
+                    }
+                })
+                .doOnError(new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        Log.e(TAG, "doOnError: " );
+                    }
+                })
+                .doOnCompleted(new Action0() {
+                    @Override
+                    public void call() {
+                        Log.e(TAG, "doOnCompleted: " );
+                    }
+                })
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                        Log.e(TAG, "doOnSubscribe: " );
+                    }
+                })
+                .doOnUnsubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                        Log.e(TAG, "doOnUnsubscribe: " );
+                    }
+                })
+                .doOnTerminate(new Action0() {
+                    @Override
+                    public void call() {
+                        Log.e(TAG, "doOnTerminate: " );
+                    }
+                })
+                .doAfterTerminate(new Action0() {
+                    @Override
+                    public void call() {
+                        Log.e(TAG, "doAfterTerminate: " );
+                    }
+                })
+                .subscribe(new Subscriber<Integer>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.e(TAG, "onCompleted1: ");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "onError1: ");
+                    }
+
+                    @Override
+                    public void onNext(Integer integer) {
+                        Log.e(TAG, "onNext1: " + integer);
+                    }
+                });
     }
 }
