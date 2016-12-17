@@ -48,7 +48,7 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
 
     private String TAG = "RXJAVA";
     private Button btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn10, btn11, btn12, btn13, btn14, btn15;
-    private Button btn16, btn17, btn18, btn19, btn20, btn21, btn22, btn23, btn24,btn25, btn26,btn27;
+    private Button btn16, btn17, btn18, btn19, btn20, btn21, btn22, btn23, btn24, btn25, btn26, btn27;
     private LinearLayout layout;
     private TextView tv;
     private StringBuffer stringBuffer;
@@ -409,12 +409,13 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
     private void executeTimestamp() {
         Integer[] number = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
         tv.setText("输入数据：1, 2, 3, 4, 5, 6, 7, 8, 9, 10\n");
-        Observable.from(number).timestamp().subscribe(new Action1<Timestamped<Integer>>() {
+        Observable.just(1,2,3,4).timestamp().subscribe(new Action1<Timestamped<Integer>>() {
             @Override
             public void call(Timestamped<Integer> integerTimestamped) {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss");
                 tv.append("value: " + integerTimestamped.getValue() + "       time:   ");
                 tv.append(sdf.format(new Date(integerTimestamped.getTimestampMillis())) + "\n");
+                Log.e(TAG, "value: " + integerTimestamped.getValue() + "       time:   "+sdf.format(new Date(integerTimestamped.getTimestampMillis())) );
             }
         });
     }
@@ -456,7 +457,10 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
                 subscriber.onNext(drawable);
                 subscriber.onCompleted();
             }
-        }).subscribeOn(Schedulers.io())
+        })
+                //指定创建Observable在io中
+                .subscribeOn(Schedulers.io())
+                //由于map中做耗时操作，通过Observable指定发射数据在新的线程
                 .observeOn(Schedulers.newThread())
                 .map(new Func1<Drawable, ImageView>() {
                     @Override
@@ -468,15 +472,16 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
 
                         return imageView;
                     }
-                }).observeOn(AndroidSchedulers.mainThread())
+                })
+                //操作UI，需要指定在主线程
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<ImageView>() {
                     @Override
                     public void call(ImageView imageView) {
                         tv.append(stringBuffer.toString() + "接收信息事件" + Thread.currentThread().getName());
                         layout.addView(imageView);
                     }
-                })
-        ;
+                });
     }
 
     private void executeZip() {
@@ -551,9 +556,9 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
                 }
             }
         }).subscribeOn(Schedulers.newThread());
-        Observable observable2=Observable.just(1,2,3,4).subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread());
-        Observable observable3=Observable.just(6,7,8,9).subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread());
-        Observable.merge(observable,observable2, observable3)
+        Observable observable2 = Observable.just(1, 2, 3, 4).subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread());
+        Observable observable3 = Observable.just(6, 7, 8, 9).subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread());
+        Observable.merge(observable, observable2, observable3)
                 .subscribe(new Subscriber<Integer>() {
                     @Override
                     public void onCompleted() {
@@ -564,12 +569,12 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.e(TAG, "onError: "+e.toString() );
+                        Log.e(TAG, "onError: " + e.toString());
                     }
 
                     @Override
                     public void onNext(Integer s) {
-                        Log.e(TAG, "onNext: "+s);
+                        Log.e(TAG, "onNext: " + s);
                         tv.append("得到一个数据：" + s + "\n");
                     }
                 });
@@ -699,7 +704,7 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
 
                     @Override
                     public void onNext(String s) {
-                        Log.e(TAG, "onNext: ConcatMap "+s);
+                        Log.e(TAG, "onNext: ConcatMap " + s);
                         tv.append("\n 转换后的内容：" + s + "\n");
                     }
                 });
@@ -709,7 +714,7 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
         //switch()和flatMap()很像，除了一点:当源Observable发射一个新的数据项时，
         // 如果旧数据项订阅还未完成，就取消旧订阅数据和停止监视那个数据项产生的Observable,开始监视新的数据项.
         tv.setText("输入参数： 2,3,6,4,2,8,2,1,9将数据增大100并拼接字符SwitchMap，通过subscribeOn指定在新线程中模拟并发");
-        Integer[] integers = {2, 3, 6,2,3,2,3,};
+        Integer[] integers = {2, 3, 6, 2, 3, 2, 3,};
         Observable.from(integers).switchMap(new Func1<Integer, Observable<String>>() {
             @Override
             public Observable<String> call(Integer integer) {
@@ -735,7 +740,7 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
 
             @Override
             public void onNext(String s) {
-                Log.e(TAG, "onNext: SwitchMap "+s);
+                Log.e(TAG, "onNext: SwitchMap " + s);
                 tv.append("\n 转换后的内容：" + s + "\n");
             }
         });
@@ -795,7 +800,7 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
         Action1 action1 = new Action1<Integer>() {
             @Override
             public void call(Integer i) {
-                Log.e(TAG, "call: "+i );
+                Log.e(TAG, "call: " + i);
                 tv.append(i.toString() + ",");
             }
         };
@@ -914,14 +919,15 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
                 });
 
     }
+
     private void executetakeFirst() {
         tv.setText("takeFirst");
         //first变体，若没有发射任何满足条件的数据，不会抛出异常，不执行onNext()但是会调用onCompleted
         //而对于first，若没有发射任何满足条件的数据，first会抛出一个NoSuchElementException
-        Observable.just(10,11).filter(new Func1<Integer, Boolean>() {
+        Observable.just(10, 11).filter(new Func1<Integer, Boolean>() {
             @Override
             public Boolean call(Integer integer) {
-                return integer>20;
+                return integer > 20;
             }
         }).first().subscribe(new Subscriber<Object>() {
 
@@ -932,22 +938,21 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
 
             @Override
             public void onError(Throwable e) {
-                Log.e(TAG, "onError: "+e.toString());
+                Log.e(TAG, "onError: " + e.toString());
             }
 
             @Override
             public void onNext(Object o) {
-                Log.e(TAG, "onNext: "+o.toString());
+                Log.e(TAG, "onNext: " + o.toString());
             }
         });
 
 
-
-        Observable.just(10,11).takeFirst(new Func1<Integer, Boolean>() {
+        Observable.just(10, 11).takeFirst(new Func1<Integer, Boolean>() {
             @Override
             public Boolean call(Integer integer) {
-                Log.e(TAG, "call: takeFirst" );
-                return integer>30;
+                Log.e(TAG, "call: takeFirst");
+                return integer > 30;
             }
         }).subscribe(new Subscriber<Object>() {
 
@@ -958,15 +963,16 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
 
             @Override
             public void onError(Throwable e) {
-                Log.e(TAG, "onError: "+e.toString());
+                Log.e(TAG, "onError: " + e.toString());
             }
 
             @Override
             public void onNext(Object o) {
-                Log.e(TAG, "onNext: "+o.toString());
+                Log.e(TAG, "onNext: " + o.toString());
             }
         });
     }
+
     private void executeFirst() {
         //与ElementAt(0)作用相同
         tv.setText("first过滤获得第一个数据此例数据源10,11,12,13");
@@ -993,29 +999,29 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
         Observable.empty().firstOrDefault(10).subscribe(new Action1<Object>() {
             @Override
             public void call(Object o) {
-                Log.e(TAG, "firstOrDefault(10)"+o.toString());
-                tv.append("\n"+o.toString());
+                Log.e(TAG, "firstOrDefault(10)" + o.toString());
+                tv.append("\n" + o.toString());
             }
         });
         tv.append("\nempty().firstOrDefault(10)1111111111111");
-        Observable.just(11,11).firstOrDefault(10).subscribe(new Action1<Object>() {
+        Observable.just(11, 11).firstOrDefault(10).subscribe(new Action1<Object>() {
             @Override
             public void call(Object o) {
-                Log.e(TAG, "firstOrDefault(101)"+o.toString());
-                tv.append("\n"+o.toString());
+                Log.e(TAG, "firstOrDefault(101)" + o.toString());
+                tv.append("\n" + o.toString());
             }
         });
         tv.append("\njust(10).firstOrDefault(10, new Func1) integer>20");
         Observable.just(10).firstOrDefault(15, new Func1<Integer, Boolean>() {
             @Override
             public Boolean call(Integer integer) {
-                return integer>20;
+                return integer > 20;
             }
         }).subscribe(new Action1<Integer>() {
             @Override
             public void call(Integer integer) {
-                Log.e(TAG, "firstOrDefault(10)2 "+integer);
-                tv.append("\n"+integer);
+                Log.e(TAG, "firstOrDefault(10)2 " + integer);
+                tv.append("\n" + integer);
             }
         });
 
@@ -1039,7 +1045,7 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
         }).subscribe(new Action1<Integer>() {
             @Override
             public void call(Integer integer) {
-                Log.e(TAG, "call: "+integer);
+                Log.e(TAG, "call: " + integer);
                 tv.append("\n" + integer);
             }
         });
@@ -1071,7 +1077,7 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
 
             @Override
             public void onError(Throwable e) {
-                tv.append("\nonError1"+e.toString());
+                tv.append("\nonError1" + e.toString());
             }
 
             @Override
@@ -1160,7 +1166,7 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
             @Override
             public void call(Integer integer) {
                 tv.append("\n" + integer);
-                Log.e(TAG, "call: "+integer );
+                Log.e(TAG, "call: " + integer);
             }
         });
         //skip(long time,TimeUnit) 是跳过多少秒 然后才开始将后面产生的数据提交给订阅者
@@ -1176,13 +1182,13 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.e(TAG, "onError: " );
+                        Log.e(TAG, "onError: ");
                     }
 
                     @Override
                     public void onNext(Long aLong) {
                         tv.append("\n" + aLong);
-                        Log.e(TAG, "onNext: "+aLong );
+                        Log.e(TAG, "onNext: " + aLong);
                         if (aLong > 10) {
                             this.unsubscribe();
                         }
@@ -1193,7 +1199,7 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
         Observable.range(1, 10).skipLast(6).subscribe(new Action1<Integer>() {
             @Override
             public void call(Integer integer) {
-                Log.e(TAG, "call: "+integer );
+                Log.e(TAG, "call: " + integer);
                 tv.append("\n" + integer);
             }
         });

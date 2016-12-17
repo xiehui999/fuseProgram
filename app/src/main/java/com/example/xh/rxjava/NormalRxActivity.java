@@ -25,6 +25,7 @@ import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.observables.GroupedObservable;
 import rx.schedulers.Schedulers;
+import rx.schedulers.TimeInterval;
 
 /**
  * Created by xiehui on 2016/11/1.
@@ -34,6 +35,7 @@ public class NormalRxActivity extends BaseActivity {
     private TextView tv2;
     private Button btn, btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9;
     private Button btn10, btn11, btn12, btn13, btn14, btn15, btn16, btn17, btn18, btn19, btn20;
+    private Button btn21,btn22,btn23;
     String[] strs = {"也许当初忙着微笑和哭泣", "忙着追逐天空中的流星", "人理所当然的忘记", "是谁风里雨里一直默默守护在原地"};
     private String text;
     private String TAG = "RxJava";
@@ -70,6 +72,9 @@ public class NormalRxActivity extends BaseActivity {
         btn18 = (Button) findViewById(R.id.button18);
         btn19 = (Button) findViewById(R.id.button19);
         btn20 = (Button) findViewById(R.id.button20);
+        btn21 = (Button) findViewById(R.id.button21);
+        btn22 = (Button) findViewById(R.id.button22);
+        btn23 = (Button) findViewById(R.id.button23);
         btn.setOnClickListener(this);
         btn1.setOnClickListener(this);
         btn2.setOnClickListener(this);
@@ -91,6 +96,9 @@ public class NormalRxActivity extends BaseActivity {
         btn18.setOnClickListener(this);
         btn19.setOnClickListener(this);
         btn20.setOnClickListener(this);
+        btn21.setOnClickListener(this);
+        btn22.setOnClickListener(this);
+        btn23.setOnClickListener(this);
     }
 
     @Override
@@ -154,10 +162,19 @@ public class NormalRxActivity extends BaseActivity {
                 executeDo();
                 break;
             case R.id.button19:
-                executeDelay();
+                executeTimeInterval();
                 break;
             case R.id.button20:
-                executeDelaySubscription();
+                executeTimeOut();
+                break;
+            case R.id.button21:
+                executetoList();
+                break;
+            case R.id.button22:
+                executeTimeInterval();
+                break;
+            case R.id.button23:
+                executeTimeOut();
                 break;
         }
     }
@@ -820,5 +837,104 @@ public class NormalRxActivity extends BaseActivity {
                         Log.e(TAG, "onNext1: " + integer);
                     }
                 });
+    }
+
+    private void executeTimeInterval(){
+        //和Timestamp（）TestRxJavaFragment 409行对比
+        tv1.setText("TimeInterval");
+        //下面代码并没有接触订阅,实际不可这样应用，需手动接触订阅
+        Observable.interval(1,TimeUnit.SECONDS)
+                .filter(new Func1<Long, Boolean>() {
+                    @Override
+                    public Boolean call(Long aLong) {
+                        return aLong<5;
+                    }
+                })
+                .timeInterval()
+                .doOnUnsubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                        Log.e(TAG, "call: doOnUnsubscribe");
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<TimeInterval<Long>>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.e(TAG, "onCompleted: " );
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "onError: ");
+                    }
+
+                    @Override
+                    public void onNext(TimeInterval<Long> longTimeInterval) {
+                        Log.e(TAG, "onNext: value:"+longTimeInterval.getValue()+"getIntervalInMilliseconds"+longTimeInterval.getIntervalInMilliseconds());
+                    }
+                });
+    }
+
+    private void executeTimeOut(){
+        tv1.setText("TimeOut");
+        Observable.create(new Observable.OnSubscribe<Integer>() {
+            @Override
+            public void call(Subscriber<? super Integer> subscriber) {
+                try {
+                    subscriber.onNext(1);
+                    Thread.sleep(100);
+                    subscriber.onNext(2);
+                    Thread.sleep(200);
+                    subscriber.onNext(3);
+                    Thread.sleep(300);
+                    subscriber.onNext(4);
+                    Thread.sleep(400);
+                    subscriber.onNext(5);
+                    subscriber.onCompleted();
+                } catch (InterruptedException e) {
+                    subscriber.onError(new Throwable("Error"));
+                    e.printStackTrace();
+                }
+            }
+        })
+                //可更改方法为观察效果timeout(250,TimeUnit.MILLISECONDS,Observable.just(10,11))
+                //在computation调度器执行
+                .timeout(250,TimeUnit.MILLISECONDS)
+                .subscribe(new Subscriber<Integer>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.e(TAG, "onCompleted: " );
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "onError: " );
+                    }
+
+                    @Override
+                    public void onNext(Integer integer) {
+                        Log.e(TAG, "onNext: "+integer );
+                    }
+                });
+    }
+    private void executetoList(){
+        tv1.setText("toList");
+        Observable.just(1,2,3,4,5).toList().subscribe(new Subscriber<List<Integer>>() {
+            @Override
+            public void onCompleted() {
+                Log.e(TAG, "onCompleted: " );
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e(TAG, "onError: " );
+            }
+
+            @Override
+            public void onNext(List<Integer> integers) {
+                Log.e(TAG, "onNext: "+integers);
+            }
+        });
     }
 }
