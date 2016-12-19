@@ -235,13 +235,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="ToMap" />
+                android:text="Amb" />
             <Button
                 android:id="@+id/button26"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="ToMultiMap" />
+                android:text="Contains" />
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -252,19 +252,42 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="ToList" />
+                android:text="DefaultIfEmpty" />
             <Button
                 android:id="@+id/button28"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="ToMap" />
+                android:text="SequenceEqual" />
             <Button
                 android:id="@+id/button29"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="ToMultiMap" />
+                android:text="SkipUntil" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/button30"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="SkipWhile" />
+            <Button
+                android:id="@+id/button31"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="TakeUntil" />
+            <Button
+                android:id="@+id/button32"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="TakeWhile" />
         </LinearLayout>
         <TextView
             android:id="@+id/tv2"

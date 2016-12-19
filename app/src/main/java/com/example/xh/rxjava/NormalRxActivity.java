@@ -37,7 +37,8 @@ public class NormalRxActivity extends BaseActivity {
     private TextView tv2;
     private Button btn, btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9;
     private Button btn10, btn11, btn12, btn13, btn14, btn15, btn16, btn17, btn18, btn19, btn20;
-    private Button btn21,btn22,btn23,btn24,btn25,btn26,btn27,btn28,btn29;
+    private Button btn21, btn22, btn23, btn24, btn25, btn26, btn27, btn28, btn29;
+    private Button btn30,btn31,btn32;
     String[] strs = {"也许当初忙着微笑和哭泣", "忙着追逐天空中的流星", "人理所当然的忘记", "是谁风里雨里一直默默守护在原地"};
     private String text;
     private String TAG = "RxJava";
@@ -83,6 +84,9 @@ public class NormalRxActivity extends BaseActivity {
         btn27 = (Button) findViewById(R.id.button27);
         btn28 = (Button) findViewById(R.id.button28);
         btn29 = (Button) findViewById(R.id.button29);
+        btn30 = (Button) findViewById(R.id.button30);
+        btn31 = (Button) findViewById(R.id.button31);
+        btn32 = (Button) findViewById(R.id.button32);
         btn.setOnClickListener(this);
         btn1.setOnClickListener(this);
         btn2.setOnClickListener(this);
@@ -113,6 +117,9 @@ public class NormalRxActivity extends BaseActivity {
         btn27.setOnClickListener(this);
         btn28.setOnClickListener(this);
         btn29.setOnClickListener(this);
+        btn30.setOnClickListener(this);
+        btn31.setOnClickListener(this);
+        btn32.setOnClickListener(this);
     }
 
     @Override
@@ -194,13 +201,28 @@ public class NormalRxActivity extends BaseActivity {
                 executeAll();
                 break;
             case R.id.button25:
-                executetoList();
+                executeAmb();
                 break;
             case R.id.button26:
-                executeToMap();
+                executeContains();
                 break;
             case R.id.button27:
-                executeToMultiMap();
+                executeDefaultIfEmpty();
+                break;
+            case R.id.button28:
+                executeSequenceEqual();
+                break;
+            case R.id.button29:
+                executeSkipUntil();
+                break;
+            case R.id.button30:
+                executeSkipWhile();
+                break;
+            case R.id.button31:
+                executeTakeUntil();
+                break;
+            case R.id.button32:
+                executeTakeWhile();
                 break;
         }
     }
@@ -808,43 +830,43 @@ public class NormalRxActivity extends BaseActivity {
                 .doOnNext(new Action1<Integer>() {
                     @Override
                     public void call(Integer integer) {
-                        Log.e(TAG, "doOnNext: " );
+                        Log.e(TAG, "doOnNext: ");
                     }
                 })
                 .doOnError(new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        Log.e(TAG, "doOnError: " );
+                        Log.e(TAG, "doOnError: ");
                     }
                 })
                 .doOnCompleted(new Action0() {
                     @Override
                     public void call() {
-                        Log.e(TAG, "doOnCompleted: " );
+                        Log.e(TAG, "doOnCompleted: ");
                     }
                 })
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
-                        Log.e(TAG, "doOnSubscribe: " );
+                        Log.e(TAG, "doOnSubscribe: ");
                     }
                 })
                 .doOnUnsubscribe(new Action0() {
                     @Override
                     public void call() {
-                        Log.e(TAG, "doOnUnsubscribe: " );
+                        Log.e(TAG, "doOnUnsubscribe: ");
                     }
                 })
                 .doOnTerminate(new Action0() {
                     @Override
                     public void call() {
-                        Log.e(TAG, "doOnTerminate: " );
+                        Log.e(TAG, "doOnTerminate: ");
                     }
                 })
                 .doAfterTerminate(new Action0() {
                     @Override
                     public void call() {
-                        Log.e(TAG, "doAfterTerminate: " );
+                        Log.e(TAG, "doAfterTerminate: ");
                     }
                 })
                 .subscribe(new Subscriber<Integer>() {
@@ -865,15 +887,15 @@ public class NormalRxActivity extends BaseActivity {
                 });
     }
 
-    private void executeTimeInterval(){
+    private void executeTimeInterval() {
         //和Timestamp（）TestRxJavaFragment 409行对比
         tv1.setText("TimeInterval");
         //下面代码并没有接触订阅,实际不可这样应用，需手动接触订阅
-        Observable.interval(1,TimeUnit.SECONDS)
+        Observable.interval(1, TimeUnit.SECONDS)
                 .filter(new Func1<Long, Boolean>() {
                     @Override
                     public Boolean call(Long aLong) {
-                        return aLong<5;
+                        return aLong < 5;
                     }
                 })
                 .timeInterval()
@@ -887,7 +909,7 @@ public class NormalRxActivity extends BaseActivity {
                 .subscribe(new Subscriber<TimeInterval<Long>>() {
                     @Override
                     public void onCompleted() {
-                        Log.e(TAG, "onCompleted: " );
+                        Log.e(TAG, "onCompleted: ");
                     }
 
                     @Override
@@ -897,12 +919,12 @@ public class NormalRxActivity extends BaseActivity {
 
                     @Override
                     public void onNext(TimeInterval<Long> longTimeInterval) {
-                        Log.e(TAG, "onNext: value:"+longTimeInterval.getValue()+"getIntervalInMilliseconds"+longTimeInterval.getIntervalInMilliseconds());
+                        Log.e(TAG, "onNext: value:" + longTimeInterval.getValue() + "getIntervalInMilliseconds" + longTimeInterval.getIntervalInMilliseconds());
                     }
                 });
     }
 
-    private void executeTimeOut(){
+    private void executeTimeOut() {
         tv1.setText("TimeOut");
         Observable.create(new Observable.OnSubscribe<Integer>() {
             @Override
@@ -926,46 +948,48 @@ public class NormalRxActivity extends BaseActivity {
         })
                 //可更改方法为观察效果timeout(250,TimeUnit.MILLISECONDS,Observable.just(10,11))
                 //在computation调度器执行
-                .timeout(250,TimeUnit.MILLISECONDS)
+                .timeout(250, TimeUnit.MILLISECONDS)
                 .subscribe(new Subscriber<Integer>() {
                     @Override
                     public void onCompleted() {
-                        Log.e(TAG, "onCompleted: " );
+                        Log.e(TAG, "onCompleted: ");
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.e(TAG, "onError: " );
+                        Log.e(TAG, "onError: ");
                     }
 
                     @Override
                     public void onNext(Integer integer) {
-                        Log.e(TAG, "onNext: "+integer );
+                        Log.e(TAG, "onNext: " + integer);
                     }
                 });
     }
-    private void executetoList(){
+
+    private void executetoList() {
         tv1.setText("toList");
-        Observable.just(1,2,3,4,5).toList().subscribe(new Subscriber<List<Integer>>() {
+        Observable.just(1, 2, 3, 4, 5).toList().subscribe(new Subscriber<List<Integer>>() {
             @Override
             public void onCompleted() {
-                Log.e(TAG, "onCompleted: " );
+                Log.e(TAG, "onCompleted: ");
             }
 
             @Override
             public void onError(Throwable e) {
-                Log.e(TAG, "onError: " );
+                Log.e(TAG, "onError: ");
             }
 
             @Override
             public void onNext(List<Integer> integers) {
-                Log.e(TAG, "onNext: "+integers);
+                Log.e(TAG, "onNext: " + integers);
             }
         });
     }
-    private void executeToMap(){
+
+    private void executeToMap() {
         tv1.setText("ToMap");
-        Observable.just(1,2,3,4)
+        Observable.just(1, 2, 3, 4)
                 .toMap(new Func1<Integer, String>() {
                     @Override
                     public String call(Integer integer) {
@@ -974,7 +998,7 @@ public class NormalRxActivity extends BaseActivity {
                 }, new Func1<Integer, Integer>() {
                     @Override
                     public Integer call(Integer integer) {
-                        return integer+10;
+                        return integer + 10;
                     }
                 })
                 /*//指定map的key，vaule默认是发射数据原始值。
@@ -985,30 +1009,31 @@ public class NormalRxActivity extends BaseActivity {
                     }
                 })*/
                 .subscribe(new Subscriber<Map<String, Integer>>() {
-            @Override
-            public void onCompleted() {
-                Log.e(TAG, "onCompleted: "  );
-            }
+                    @Override
+                    public void onCompleted() {
+                        Log.e(TAG, "onCompleted: ");
+                    }
 
-            @Override
-            public void onError(Throwable e) {
-                Log.e(TAG, "onError: ");
-            }
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "onError: ");
+                    }
 
-            @Override
-            public void onNext(Map<String, Integer> integerIntegerMap) {
-                Log.e(TAG, "onNext: "+integerIntegerMap.toString() );
+                    @Override
+                    public void onNext(Map<String, Integer> integerIntegerMap) {
+                        Log.e(TAG, "onNext: " + integerIntegerMap.toString());
 
-            }
-        });
+                    }
+                });
     }
-    private void executeToMultiMap(){
-        tv1.setText("toMultiMap");
-        Observable.just(1,2,3,4)
+
+    private void executeToMultiMap() {
+        tv2.setText("toMultiMap");
+        Observable.just(1, 2, 3, 4)
                 .toMultimap(new Func1<Integer, String>() {
                     @Override
                     public String call(Integer integer) {
-                        return "key"+integer;
+                        return "key" + integer;
                     }
                 }).subscribe(new Subscriber<Map<String, Collection<Integer>>>() {
             @Override
@@ -1023,19 +1048,19 @@ public class NormalRxActivity extends BaseActivity {
 
             @Override
             public void onNext(Map<String, Collection<Integer>> integerCollectionMap) {
-                Log.e(TAG, "onNext: "+integerCollectionMap.toString());
+                Log.e(TAG, "onNext: " + integerCollectionMap.toString());
             }
         });
     }
 
-    private void   executeAll(){
-        tv1.setText("All数据源1,2,3,4，条件integer<2");
-        Observable.just(1,2,3,4).all(new Func1<Integer, Boolean>() {
+    private void executeAll() {
+        tv2.setText("All数据源1,2,3,4，条件integer<2");
+        Observable.just(1, 2, 3, 4).all(new Func1<Integer, Boolean>() {
             @Override
             public Boolean call(Integer integer) {
-                Log.e(TAG, "call: "+integer );
-                tv1.append("  call: "+integer);
-                return integer<2;
+                Log.e(TAG, "call: " + integer);
+                tv2.append("  call: " + integer + "\n");
+                return integer < 2;
             }
         }).subscribe(new Subscriber<Boolean>() {
             @Override
@@ -1045,13 +1070,214 @@ public class NormalRxActivity extends BaseActivity {
 
             @Override
             public void onError(Throwable e) {
-                Log.e(TAG, "onError: " );
+                Log.e(TAG, "onError: ");
             }
 
             @Override
             public void onNext(Boolean aBoolean) {
-                Log.e(TAG, "onNext: "+aBoolean );
-                tv1.append("   onNext: "+aBoolean);
+                Log.e(TAG, "onNext: " + aBoolean);
+                tv2.append("   onNext: " + aBoolean);
+            }
+        });
+    }
+
+    private void executeAmb() {
+        tv2.setText("amb");
+        Observable observable = Observable.just(1, 2, 3).delay(500, TimeUnit.MILLISECONDS).subscribeOn(Schedulers.newThread());
+        Observable observable1 = Observable.just(4, 5, 6).delay(100, TimeUnit.MILLISECONDS).subscribeOn(Schedulers.newThread());
+        //observable.ambWith(observable1)效果与下相同
+        Observable.amb(observable, observable1).subscribe(new Subscriber<Integer>() {
+            @Override
+            public void onCompleted() {
+                Log.e(TAG, "onCompleted: ");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e(TAG, "onError: ");
+            }
+
+            @Override
+            public void onNext(Integer integer) {
+                Log.e(TAG, "  onNext: " + integer);
+            }
+        });
+    }
+
+    private void executeContains() {
+        tv2.setText("Contains just(1,2,3,4).contains(2)");
+        Observable.just(1, 2, 3, 4).contains(2)
+                .subscribe(new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.e(TAG, "onCompleted: ");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "onError: ");
+                    }
+
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        Log.e(TAG, "onNext: " + aBoolean);
+                    }
+                });
+        Observable.just(1, 2, 3, 4).isEmpty().subscribe(new Action1<Boolean>() {
+            @Override
+            public void call(Boolean aBoolean) {
+                Log.e(TAG, "call: " + aBoolean);
+            }
+        });
+        Observable.just(1, 2, 3, 4)
+                .exists(new Func1<Integer, Boolean>() {
+                    @Override
+                    public Boolean call(Integer integer) {
+                        return integer > 3;
+                    }
+                }).subscribe(new Action1<Boolean>() {
+            @Override
+            public void call(Boolean aBoolean) {
+                Log.e(TAG, "call: exists" + aBoolean);
+            }
+        });
+    }
+
+    private void executeDefaultIfEmpty() {
+        tv2.setText("DefaultIfEmpty");
+        Observable.empty().defaultIfEmpty(1).subscribe(new Subscriber<Object>() {
+
+            @Override
+            public void onCompleted() {
+                Log.e(TAG, "onCompleted: ");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e(TAG, "onError: ");
+            }
+
+            @Override
+            public void onNext(Object object) {
+                Log.e(TAG, "onNext: " + object);
+            }
+        });
+    }
+
+    private void executeSequenceEqual() {
+        tv2.setText("SequenceEqual");
+        Observable observable = Observable.just(1, 2, 3);
+        Observable observable1 = Observable.just(1, 2, 3);
+        Observable.sequenceEqual(observable, observable1)
+                .subscribe(new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.e(TAG, "onCompleted: ");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "onError: ");
+                    }
+
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        Log.e(TAG, "onNext: " + aBoolean);
+                    }
+                });
+    }
+
+    private void executeSkipUntil(){
+        tv2.setText("SkipUntil");
+        Observable observable = Observable.just(1, 2, 3,4,5,6).delay(100, TimeUnit.MILLISECONDS).subscribeOn(Schedulers.newThread());
+        Observable observable1 = Observable.just(20, 21, 22).delay(130, TimeUnit.MILLISECONDS).subscribeOn(Schedulers.newThread());
+        observable.skipUntil(observable1)
+               .subscribe(new Subscriber() {
+                   @Override
+                   public void onCompleted() {
+                       Log.e(TAG, "onCompleted: " );
+                   }
+
+                   @Override
+                   public void onError(Throwable e) {
+                       Log.e(TAG, "onError: " );
+                   }
+
+                   @Override
+                   public void onNext(Object o) {
+                       Log.e(TAG, "onNext: "+o );
+                   }
+               });
+    }
+    private void executeSkipWhile(){
+        tv2.setText("SkipWhile");
+        Observable.range(1,5).skipWhile(new Func1<Integer, Boolean>() {
+            @Override
+            public Boolean call(Integer integer) {
+                Log.e(TAG, "call: "+integer);
+                return integer<3;
+            }
+        }).subscribe(new Subscriber<Integer>() {
+            @Override
+            public void onCompleted() {
+                Log.e(TAG, "onCompleted: " );
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e(TAG, "onError: " );
+            }
+
+            @Override
+            public void onNext(Integer integer) {
+                Log.e(TAG, "onNext: " +integer);
+            }
+        });
+    }
+    private void executeTakeUntil(){
+        tv2.setText("TakeUntil");
+        Observable observable = Observable.just(1, 2, 3,4,5,6).delay(100, TimeUnit.MILLISECONDS).subscribeOn(Schedulers.newThread());
+        Observable observable1 = Observable.just(20, 21, 22).delay(120, TimeUnit.MILLISECONDS).subscribeOn(Schedulers.newThread());
+        observable.takeUntil(observable1)
+                .subscribe(new Subscriber() {
+                    @Override
+                    public void onCompleted() {
+                        Log.e(TAG, "onCompleted: " );
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "onError: " );
+                    }
+
+                    @Override
+                    public void onNext(Object o) {
+                        Log.e(TAG, "onNext: "+o );
+                    }
+                });
+    }
+    private void executeTakeWhile(){
+        tv2.setText("TakeWhile");
+        Observable.range(1,5).takeWhile(new Func1<Integer, Boolean>() {
+            @Override
+            public Boolean call(Integer integer) {
+                Log.e(TAG, "call: "+integer);
+                return integer<3;
+            }
+        }).subscribe(new Subscriber<Integer>() {
+            @Override
+            public void onCompleted() {
+                Log.e(TAG, "onCompleted: " );
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e(TAG, "onError: " );
+            }
+
+            @Override
+            public void onNext(Integer integer) {
+                Log.e(TAG, "onNext: " +integer);
             }
         });
     }
