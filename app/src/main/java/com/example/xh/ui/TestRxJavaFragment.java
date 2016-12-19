@@ -608,18 +608,30 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
     }
 
     private void executeSort() {
-        tv.setText("toSortedList 输入参数： 2,3,6,4,2,8,2,1,9");
-        Integer[] integers = {2, 3, 6, 4, 2, 8, 2, 1, 9};
+        tv.setText("toSortedList 输入参数： 2, 3, 6, 4, 9,2, 8");
+        Integer[] integers = {2, 3, 6, 4, 9,2, 8};
         Observable.from(integers)
                 .toSortedList()
                 .flatMap(new Func1<List<Integer>, Observable<Integer>>() {
                     @Override
                     public Observable<Integer> call(List<Integer> integer) {
+                        Log.e(TAG, "call: "+integer.toString() );
                         return Observable.from(integer);
                     }
-                }).subscribe(new Action1<Integer>() {
+                }).subscribe(new Subscriber<Integer>() {
             @Override
-            public void call(Integer integer) {
+            public void onCompleted() {
+                Log.e(TAG, "onCompleted: " );
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e(TAG, "onError: " );
+            }
+
+            @Override
+            public void onNext(Integer integer) {
+                Log.e(TAG, "onNext: "+integer);
                 tv.append("\n" + integer);
             }
         });

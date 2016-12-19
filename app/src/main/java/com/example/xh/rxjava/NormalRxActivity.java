@@ -11,8 +11,10 @@ import com.example.xh.uploadfile.FileInfo;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -35,7 +37,7 @@ public class NormalRxActivity extends BaseActivity {
     private TextView tv2;
     private Button btn, btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9;
     private Button btn10, btn11, btn12, btn13, btn14, btn15, btn16, btn17, btn18, btn19, btn20;
-    private Button btn21,btn22,btn23;
+    private Button btn21,btn22,btn23,btn24,btn25,btn26,btn27,btn28,btn29;
     String[] strs = {"也许当初忙着微笑和哭泣", "忙着追逐天空中的流星", "人理所当然的忘记", "是谁风里雨里一直默默守护在原地"};
     private String text;
     private String TAG = "RxJava";
@@ -75,6 +77,12 @@ public class NormalRxActivity extends BaseActivity {
         btn21 = (Button) findViewById(R.id.button21);
         btn22 = (Button) findViewById(R.id.button22);
         btn23 = (Button) findViewById(R.id.button23);
+        btn24 = (Button) findViewById(R.id.button24);
+        btn25 = (Button) findViewById(R.id.button25);
+        btn26 = (Button) findViewById(R.id.button26);
+        btn27 = (Button) findViewById(R.id.button27);
+        btn28 = (Button) findViewById(R.id.button28);
+        btn29 = (Button) findViewById(R.id.button29);
         btn.setOnClickListener(this);
         btn1.setOnClickListener(this);
         btn2.setOnClickListener(this);
@@ -99,6 +107,12 @@ public class NormalRxActivity extends BaseActivity {
         btn21.setOnClickListener(this);
         btn22.setOnClickListener(this);
         btn23.setOnClickListener(this);
+        btn24.setOnClickListener(this);
+        btn25.setOnClickListener(this);
+        btn26.setOnClickListener(this);
+        btn27.setOnClickListener(this);
+        btn28.setOnClickListener(this);
+        btn29.setOnClickListener(this);
     }
 
     @Override
@@ -171,10 +185,22 @@ public class NormalRxActivity extends BaseActivity {
                 executetoList();
                 break;
             case R.id.button22:
-                executeTimeInterval();
+                executeToMap();
                 break;
             case R.id.button23:
-                executeTimeOut();
+                executeToMultiMap();
+                break;
+            case R.id.button24:
+                executeAll();
+                break;
+            case R.id.button25:
+                executetoList();
+                break;
+            case R.id.button26:
+                executeToMap();
+                break;
+            case R.id.button27:
+                executeToMultiMap();
                 break;
         }
     }
@@ -934,6 +960,98 @@ public class NormalRxActivity extends BaseActivity {
             @Override
             public void onNext(List<Integer> integers) {
                 Log.e(TAG, "onNext: "+integers);
+            }
+        });
+    }
+    private void executeToMap(){
+        tv1.setText("ToMap");
+        Observable.just(1,2,3,4)
+                .toMap(new Func1<Integer, String>() {
+                    @Override
+                    public String call(Integer integer) {
+                        return "key" + integer;
+                    }
+                }, new Func1<Integer, Integer>() {
+                    @Override
+                    public Integer call(Integer integer) {
+                        return integer+10;
+                    }
+                })
+                /*//指定map的key，vaule默认是发射数据原始值。
+                .toMap(new Func1<Integer, String>() {
+                    @Override
+                    public String call(Integer integer) {
+                        return "key"+integer;
+                    }
+                })*/
+                .subscribe(new Subscriber<Map<String, Integer>>() {
+            @Override
+            public void onCompleted() {
+                Log.e(TAG, "onCompleted: "  );
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e(TAG, "onError: ");
+            }
+
+            @Override
+            public void onNext(Map<String, Integer> integerIntegerMap) {
+                Log.e(TAG, "onNext: "+integerIntegerMap.toString() );
+
+            }
+        });
+    }
+    private void executeToMultiMap(){
+        tv1.setText("toMultiMap");
+        Observable.just(1,2,3,4)
+                .toMultimap(new Func1<Integer, String>() {
+                    @Override
+                    public String call(Integer integer) {
+                        return "key"+integer;
+                    }
+                }).subscribe(new Subscriber<Map<String, Collection<Integer>>>() {
+            @Override
+            public void onCompleted() {
+                Log.e(TAG, "onCompleted: ");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e(TAG, "onError: ");
+            }
+
+            @Override
+            public void onNext(Map<String, Collection<Integer>> integerCollectionMap) {
+                Log.e(TAG, "onNext: "+integerCollectionMap.toString());
+            }
+        });
+    }
+
+    private void   executeAll(){
+        tv1.setText("All数据源1,2,3,4，条件integer<2");
+        Observable.just(1,2,3,4).all(new Func1<Integer, Boolean>() {
+            @Override
+            public Boolean call(Integer integer) {
+                Log.e(TAG, "call: "+integer );
+                tv1.append("  call: "+integer);
+                return integer<2;
+            }
+        }).subscribe(new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {
+                Log.e(TAG, "onCompleted: ");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e(TAG, "onError: " );
+            }
+
+            @Override
+            public void onNext(Boolean aBoolean) {
+                Log.e(TAG, "onNext: "+aBoolean );
+                tv1.append("   onNext: "+aBoolean);
             }
         });
     }
