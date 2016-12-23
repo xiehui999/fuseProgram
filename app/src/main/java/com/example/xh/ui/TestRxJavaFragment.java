@@ -38,6 +38,7 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.observables.ConnectableObservable;
+import rx.observables.MathObservable;
 import rx.schedulers.Schedulers;
 import rx.schedulers.Timestamped;
 
@@ -48,7 +49,7 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
 
     private String TAG = "RXJAVA";
     private Button btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn10, btn11, btn12, btn13, btn14, btn15;
-    private Button btn16, btn17, btn18, btn19, btn20, btn21, btn22, btn23, btn24, btn25, btn26, btn27;
+    private Button btn16, btn17, btn18, btn19, btn20, btn21, btn22, btn23, btn24, btn25, btn26, btn27, btn28, btn29, btn30;
     private LinearLayout layout;
     private TextView tv;
     private StringBuffer stringBuffer;
@@ -91,6 +92,9 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
         btn25.setOnClickListener(this);
         btn26.setOnClickListener(this);
         btn27.setOnClickListener(this);
+        btn28.setOnClickListener(this);
+        btn29.setOnClickListener(this);
+        btn30.setOnClickListener(this);
     }
 
     @Nullable
@@ -129,6 +133,9 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
         btn25 = (Button) view.findViewById(R.id.btn25);
         btn26 = (Button) view.findViewById(R.id.btn26);
         btn27 = (Button) view.findViewById(R.id.btn27);
+        btn28 = (Button) view.findViewById(R.id.btn28);
+        btn29 = (Button) view.findViewById(R.id.btn29);
+        btn30 = (Button) view.findViewById(R.id.btn30);
         layout = (LinearLayout) view.findViewById(R.id.layout);
         tv = (TextView) view.findViewById(R.id.tv);
 
@@ -234,6 +241,15 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
                 break;
             case R.id.btn27:
                 executeOfType();
+                break;
+            case R.id.btn28:
+                executeAverage();
+                break;
+            case R.id.btn29:
+                executeMin();
+                break;
+            case R.id.btn30:
+                executeCount();
                 break;
 
         }
@@ -1291,4 +1307,64 @@ public class TestRxJavaFragment extends Fragment implements View.OnClickListener
                 });
     }
 
+    private void executeAverage(){
+        tv.setText("Average");
+        Observable observable=Observable.range(1,5);
+        MathObservable.averageInteger(observable).subscribe(new Subscriber<Integer>() {
+
+            @Override
+            public void onCompleted() {
+                Log.e(TAG, "onCompleted: " );
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e(TAG, "onError: "+e.toString() );
+            }
+
+            @Override
+            public void onNext(Integer integer) {
+                Log.e(TAG, "onNext: " +integer);
+            }
+        });
+    }
+
+    private void executeMin(){
+        tv.setText("Min/Max  range(1,5)" );
+        Observable<Integer> observable=Observable.range(1,5);
+        MathObservable.min(observable).subscribe(new Subscriber<Integer>() {
+            @Override
+            public void onCompleted() {
+                Log.e(TAG, "onCompleted: " );
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e(TAG, "onError: "+e.toString() );
+            }
+
+            @Override
+            public void onNext(Integer integer) {
+                Log.e(TAG, "onNext: " +integer);
+            }
+        });
+    }
+    private void executeCount(){
+        tv.setText("Count/Sum range(1,5)" );
+        Observable observable=Observable.range(1,5);
+        observable.count().subscribe(new Action1<Integer>() {
+            @Override
+            public void call(Integer integer) {
+                Log.e(TAG, "call: "+integer );
+            }
+        });
+
+        MathObservable.sumInteger(observable).subscribe(new Action1<Integer>() {
+            @Override
+            public void call(Integer integer) {
+                Log.e(TAG, "call: sum:" +integer);
+            }
+        });
+
+    }
 }

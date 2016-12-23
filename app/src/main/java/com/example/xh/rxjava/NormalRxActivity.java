@@ -584,9 +584,9 @@ public class NormalRxActivity extends BaseActivity {
 
     private void executeCombineLastest() {
         // 是将第一个Observable的最新(最后一条)数据与后面的Observable数据项按某种规则合并
-        tv1.setText("combineLastest数据源observableA：range(1,5),observableB:range(7,5)");
-        Observable<Integer> observableA = Observable.range(1, 5);
-        Observable<Integer> observableB = Observable.range(7, 6);
+        tv1.setText("combineLastest数据源observableA：range(1,4),observableB:range(10,5)");
+        Observable<Integer> observableA = Observable.range(1, 4);
+        Observable<Integer> observableB = Observable.range(10, 5);
         Observable.combineLatest(observableA, observableB, new Func2<Integer, Integer, String>() {
             @Override
             public String call(Integer integer, Integer integer2) {

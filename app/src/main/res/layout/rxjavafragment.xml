@@ -254,5 +254,30 @@
                 android:text="OfType" />
 
         </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn28"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Average" />
+            <Button
+                android:id="@+id/btn29"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Min/Max" />
+            <Button
+                android:id="@+id/btn30"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Count/Sum" />
+
+        </LinearLayout>
     </LinearLayout>
 </ScrollView>
