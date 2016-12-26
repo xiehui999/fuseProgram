@@ -19,5 +19,9 @@
             android:id="@+id/navigation_setting"
             android:icon="@drawable/drawer_icon_setting"
             android:title="百度定位" />
+        <item
+            android:id="@+id/navigation_greendao"
+            android:icon="@drawable/drawer_icon_setting"
+            android:title="GreenDao" />
     </group>
 </menu>

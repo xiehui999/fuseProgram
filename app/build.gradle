@@ -19,6 +19,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    sourceSets {
+        main {
+            java.srcDirs = ['src/main/java', 'src/main/java-gen']
+        }
+    }
 }
 
 dependencies {
@@ -37,4 +42,5 @@ dependencies {
     apt 'com.jakewharton:butterknife-compiler:8.2.1'
     compile 'de.hdodenhof:circleimageview:1.3.0'
     compile 'com.google.android.gms:play-services-appindexing:8.1.0'
+    compile 'org.greenrobot:greendao:2.2.0'
 }

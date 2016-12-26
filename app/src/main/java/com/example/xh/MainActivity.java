@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.example.xh.ui.BaiduLocationFragment;
 import com.example.xh.ui.BaseActivity;
+import com.example.xh.ui.GreenDaoFragment;
 import com.example.xh.ui.RetrofitFragment;
 import com.example.xh.ui.TestRxJavaFragment;
 import com.example.xh.ui.UpLoadFileFragment;
@@ -83,6 +84,9 @@ public class MainActivity extends BaseActivity {
                     case R.id.navigation_setting:
                         selectNavigation(3);
                         break;
+                    case R.id.navigation_greendao:
+                        selectNavigation(4);
+                        break;
                 }
                 mDrawerLayout.closeDrawers();
                 return true;
@@ -105,6 +109,9 @@ public class MainActivity extends BaseActivity {
                 break;
             case 3:
                 fragment=new BaiduLocationFragment();
+                break;
+            case 4:
+                fragment=new GreenDaoFragment();
                 break;
         }
         if (fragment!=null){
