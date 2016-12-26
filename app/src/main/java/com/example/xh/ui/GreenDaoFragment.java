@@ -67,6 +67,7 @@ public class GreenDaoFragment extends Fragment implements View.OnClickListener {
         query.setOnClickListener(this);
         update.setOnClickListener(this);
         delete.setOnClickListener(this);
+        query();
     }
 
     @Override
@@ -78,7 +79,7 @@ public class GreenDaoFragment extends Fragment implements View.OnClickListener {
         mDaoSession=mDaoMaster.newSession();
         mPersonDao= mDaoSession.getPersonDao();
         //cursor=db.query(mPersonDao.getTablename(),mPersonDao.getAllColumns(),null,null,null,null,null);
-        query();
+
     }
 
     @Override
@@ -120,7 +121,7 @@ public class GreenDaoFragment extends Fragment implements View.OnClickListener {
         textView.setText("");
         //where条件判断,orderAsc排序,limit查询条数,list() 查询结果为一个集合,and
         //unique()或uniqueOrThrow()，返回单个结果，如果没有满足条件的结果，前者返回null， 后者抛出异常
-        QueryBuilder<Person> queryBuilder=mPersonDao.queryBuilder().where(PersonDao.Properties.Name.eq(name));
+        QueryBuilder<Person> queryBuilder=mPersonDao.queryBuilder()/*.where(PersonDao.Properties.Name.eq(name))*/;
         List<Person> persons = queryBuilder.list();
         //List<Person> persons1 = mPersonDao.loadAll();//也可以查询所有数据
         for (Person person:persons){

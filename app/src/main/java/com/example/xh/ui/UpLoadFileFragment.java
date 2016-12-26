@@ -40,6 +40,8 @@ public class UpLoadFileFragment extends Fragment implements View.OnClickListener
 
     private Button btn_getmd5;
     private Context context;
+    private String TAG="Fragment";
+
     @Override
     public void onDetach() {
         super.onDetach();
@@ -48,7 +50,7 @@ public class UpLoadFileFragment extends Fragment implements View.OnClickListener
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
+        Log.e(TAG, "onActivityCreated: ");
         btn_chooseFile.setOnClickListener(this);
         btn_upLoadFile.setOnClickListener(this);
         btn_getmd5.setOnClickListener(this);
@@ -59,23 +61,26 @@ public class UpLoadFileFragment extends Fragment implements View.OnClickListener
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         this.context=activity;
-
+        Log.e(TAG, "onAttach: " );
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.e(TAG, "onCreate: ");
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Log.e(TAG, "onCreateView: ");
         return inflater.inflate(R.layout.upoadfilefragment, null);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Log.e(TAG, "onViewCreated: " );
         tv_fileName=(TextView)view.findViewById(R.id.tv_fileName);
         tv_filemd5=(TextView)view.findViewById(R.id.tv_filemd5);
         tv_progress=(TextView)view.findViewById(R.id.tv_progress);
@@ -92,11 +97,13 @@ public class UpLoadFileFragment extends Fragment implements View.OnClickListener
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        Log.e(TAG, "onDestroyView: " );
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Log.e(TAG, "onDestroy: " );
         getActivity().unregisterReceiver(mReceiver);
     }
     BroadcastReceiver mReceiver = new BroadcastReceiver() {
