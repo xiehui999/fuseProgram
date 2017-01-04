@@ -32,6 +32,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
+        android:theme="@style/AppTheme"
 >
         <service
             android:name="com.baidu.location.f"
@@ -41,16 +42,34 @@
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="w7NQOKL8SpxHrs6lixBNoe90" />
+
         <activity
-            android:name=".MainActivity"
+            android:name=".LoginActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity><!-- ATTENTION: This was auto-generated to add Google Play services to your project for
+        </activity>
+
+        <!--        <activity
+                    android:name=".MainActivity"
+                    android:label="@string/app_name"
+                    android:theme="@style/AppTheme.NoActionBar">
+                    <intent-filter>
+                        <action android:name="android.intent.action.MAIN" />
+
+                        <category android:name="android.intent.category.LAUNCHER" />
+                    </intent-filter>
+                </activity>-->
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <!-- ATTENTION: This was auto-generated to add Google Play services to your project for
      App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
         <activity android:name=".uploadfile.SelectFileActivity" ></activity>
         <activity android:name=".rxjava.NormalRxActivity"         android:theme="@style/AppTheme"></activity>
