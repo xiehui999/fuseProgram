@@ -10,7 +10,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.example.xh.ui.BaiduLocationFragment;
 import com.example.xh.ui.BaseActivity;
@@ -55,13 +54,15 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
-                Toast.makeText(MainActivity.this, "11111111", Toast.LENGTH_LONG).show();
+                getSupportActionBar().setTitle("APP");
+                //Toast.makeText(MainActivity.this, "11111111", Toast.LENGTH_LONG).show();
             }
 
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                Toast.makeText(MainActivity.this, "111122221", Toast.LENGTH_LONG).show();
+                getSupportActionBar().setTitle("打开");
+               // Toast.makeText(MainActivity.this, "111122221", Toast.LENGTH_LONG).show();
             }
         };
         mDrawerToggle.syncState();
