@@ -4,6 +4,7 @@ import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
@@ -11,14 +12,19 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -34,7 +40,7 @@ import static android.Manifest.permission.READ_CONTACTS;
 /**
  * A login screen that offers login via account/password.
  */
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity implements OnClickListener{
 
     /**
      * Id to identity READ_CONTACTS permission request.
@@ -56,20 +62,31 @@ public class LoginActivity extends AppCompatActivity {
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private  String[] accounts = { "18236593333", "13463373657", "18235784765", "18234637686" };
+    private TextInputLayout accountinput,passwordinput;
+    private Button mAccountSignInButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         // Set up the login form.
+        mAccountSignInButton = (Button) findViewById(R.id.account_sign_in_button);
         mAccountView = (AutoCompleteTextView) findViewById(R.id.account);
+        accountinput=(TextInputLayout) findViewById(R.id.accountinput);
+        passwordinput=(TextInputLayout) findViewById(R.id.passwordinput);
+        mPasswordView=(EditText)findViewById(R.id.password);
+        //accountinput.setHint("username");//和子EditText(给EditText通过.setHint("")设置hint时不能出现浮动标签，要在布局文件设置) hint同时使用，此有效
         populateAutoComplete();
         initBaiDuStatistics();
-        mPasswordView = (EditText) findViewById(R.id.password);
+        //是在我们编辑完之后点击软键盘上的确定键键才会触发
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == R.id.login || id == EditorInfo.IME_NULL) {
+                if ( id == EditorInfo.IME_ACTION_DONE) {
+                    InputMethodManager inputMethodManager=(InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                    //inputMethodManager.showSoftInput(getWindow().getDecorView(),InputMethodManager.SHOW_FORCED);//显示
+                    inputMethodManager.hideSoftInputFromWindow(getWindow().getDecorView().getWindowToken(),InputMethodManager.RESULT_UNCHANGED_SHOWN);
                     //attemptLogin();
                     startLogin();
                     return true;
@@ -78,17 +95,56 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        Button mAccountSignInButton = (Button) findViewById(R.id.account_sign_in_button);
-        mAccountSignInButton.setOnClickListener(new OnClickListener() {
+        mAccountView.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onClick(View view) {
-               // attemptLogin();
-                startLogin();
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(accountinput.getError()!=null){
+                    accountinput.setError(null);
+                }
+               String s1= s.toString();
+                if (s1.equals("")||passwordinput.getEditText().getText().toString().equals("")){
+                    mAccountSignInButton.setClickable(false);
+                    mAccountSignInButton.setTextColor(getResources().getColor(R.color.btninvalid));
+                }else{
+                    mAccountSignInButton.setClickable(true);
+                    mAccountSignInButton.setTextColor(getResources().getColor(R.color.white));
+                }
             }
         });
-
+        mPasswordView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(passwordinput.getError()!=null){
+                    passwordinput.setError(null);
+                }
+                String s1= s.toString();
+                if (s1.equals("")||accountinput.getEditText().getText().toString().equals("")){
+                    mAccountSignInButton.setClickable(false);
+                    mAccountSignInButton.setTextColor(getResources().getColor(R.color.btninvalid));
+                }else{
+                    mAccountSignInButton.setClickable(true);
+                    mAccountSignInButton.setTextColor(getResources().getColor(R.color.white));
+                }
+            }
+        });
+        mAccountSignInButton.setOnClickListener(this);
+        mAccountSignInButton.setClickable(false);
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+        ArrayAdapter<String> arrayAdapter=new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,accounts);
+        mAccountView.setAdapter(arrayAdapter);//输入至少两个字符才会提示
     }
     @Override
     public void onPause() {
@@ -192,6 +248,10 @@ public class LoginActivity extends AppCompatActivity {
         String account = mAccountView.getText().toString();
         String password = mPasswordView.getText().toString();
 
+        //或者使用下面获取文本,
+        String account1 = accountinput.getEditText().getText().toString();
+        String password1 = passwordinput.getEditText().getText().toString();
+
         boolean cancel = false;
         View focusView = null;
 
@@ -199,13 +259,15 @@ public class LoginActivity extends AppCompatActivity {
 
         // Check for a valid account address.
        if (TextUtils.isEmpty(account)||!isAccountValid(account)) {
-            mAccountView.setError(getString(R.string.error_invalid_account));
+            //mAccountView.setError(getString(R.string.error_invalid_account));
+            accountinput.setError(getString(R.string.error_invalid_account));
             focusView = mAccountView;
             cancel = true;
         }
         // Check for a valid password, if the user entered one.
         if (!cancel&&(TextUtils.isEmpty(password)||!isPasswordValid(password))) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
+            passwordinput.setError(getString(R.string.error_invalid_password));
+            //mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
             cancel = true;
         }
@@ -265,6 +327,15 @@ public class LoginActivity extends AppCompatActivity {
             // and hide the relevant UI components.
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.account_sign_in_button:
+                startLogin();
+                break;
         }
     }
 
