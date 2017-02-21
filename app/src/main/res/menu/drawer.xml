@@ -23,5 +23,9 @@
             android:id="@+id/navigation_greendao"
             android:icon="@drawable/drawer_icon_setting"
             android:title="GreenDao" />
+        <item
+            android:id="@+id/navigation_recycleview"
+            android:icon="@drawable/drawer_icon_setting"
+            android:title="RecycleView" />
     </group>
 </menu>

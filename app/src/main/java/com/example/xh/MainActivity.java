@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.example.xh.ui.BaiduLocationFragment;
 import com.example.xh.ui.BaseActivity;
 import com.example.xh.ui.GreenDaoFragment;
+import com.example.xh.ui.RecycleViewFragment;
 import com.example.xh.ui.RetrofitFragment;
 import com.example.xh.ui.TestRxJavaFragment;
 import com.example.xh.ui.UpLoadFileFragment;
@@ -87,6 +88,9 @@ public class MainActivity extends BaseActivity {
                     case R.id.navigation_greendao:
                         selectNavigation(4);
                         break;
+                    case R.id.navigation_recycleview:
+                        selectNavigation(5);
+                        break;
                 }
                 mDrawerLayout.closeDrawers();
                 return true;
@@ -112,6 +116,9 @@ public class MainActivity extends BaseActivity {
                 break;
             case 4:
                 fragment=new GreenDaoFragment();
+                break;
+            case 5:
+                fragment=new RecycleViewFragment();
                 break;
         }
         if (fragment!=null){
