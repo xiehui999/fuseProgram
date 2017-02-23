@@ -20,7 +20,6 @@ import com.example.xh.utils.MyApplication;
 public class RecycleItemTouchHelper extends ItemTouchHelper.Callback{
     private static final String TAG ="RecycleItemTouchHelper" ;
     private final ItemTouchHelperCallback helperCallback;
-    private  boolean mCanDelete;
 
     public RecycleItemTouchHelper(ItemTouchHelperCallback helperCallback) {
         this.helperCallback = helperCallback;
@@ -37,8 +36,9 @@ public class RecycleItemTouchHelper extends ItemTouchHelper.Callback{
     @Override
     public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
         Log.e(TAG, "getMovementFlags: " );
-        //
-        return makeMovementFlags(ItemTouchHelper.UP|ItemTouchHelper.DOWN,ItemTouchHelper.START | ItemTouchHelper.END);
+        //START  右向左 END左向右 LEFT  向左 RIGHT向右  UP向上
+        //如果某个值传0，表示不触发该操作
+        return makeMovementFlags(ItemTouchHelper.UP|ItemTouchHelper.DOWN,ItemTouchHelper.END );
     }
     /**
      * Item是否支持长按拖动
@@ -120,34 +120,34 @@ public class RecycleItemTouchHelper extends ItemTouchHelper.Callback{
      */
     @Override
     public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+        //滑动时自己实现背景及图片
         if (actionState==ItemTouchHelper.ACTION_STATE_SWIPE){
+
             //dX大于0时向右滑动，小于0向左滑动
-            View itemView=viewHolder.itemView;
+            View itemView=viewHolder.itemView;//获取滑动的view
             Resources resources= MyApplication.getAppContext().getResources();
-            Bitmap bitmap= BitmapFactory.decodeResource(resources, R.drawable.delete);
-            int padding =10;
-            int maxDrawWidth=2*padding+bitmap.getWidth();
+            Bitmap bitmap= BitmapFactory.decodeResource(resources, R.drawable.delete);//获取删除指示的背景图片
+            int padding =10;//图片绘制的padding
+            int maxDrawWidth=2*padding+bitmap.getWidth();//最大的绘制宽度
             Paint paint=new Paint();
             paint.setColor(resources.getColor(R.color.btninvalid));
             int x=Math.round(Math.abs(dX));
-            if (x==0){
-                mCanDelete=false;
-            }else if((x>maxDrawWidth)&&isCurrentlyActive){//背景图片画完整并且被操作，表示该item允许被删除
-                mCanDelete=true;
-            }
-
-            int drawWidth=Math.min(x,maxDrawWidth);
-            int itemTop=itemView.getBottom()-itemView.getHeight();
-            if(dX>0){//向左滑动
-              //先画一个背景
+            int drawWidth=Math.min(x,maxDrawWidth);//实际的绘制宽度，取实时滑动距离x和最大绘制距离maxDrawWidth最小值
+            int itemTop=itemView.getBottom()-itemView.getHeight();//绘制的top位置
+            //向右滑动
+            if(dX>0){
+              //根据滑动实时绘制一个背景
                 c.drawRect(itemView.getLeft(),itemTop,drawWidth,itemView.getBottom(),paint);
-                if (x>padding){
+                //在背景上面绘制图片
+                if (x>padding){//滑动距离大于padding时开始绘制图片
+                    //指定图片绘制的位置
                     Rect rect=new Rect();//画图的位置
                     rect.left=itemView.getLeft()+padding;
                     rect.top=itemTop+(itemView.getBottom()-itemTop-bitmap.getHeight())/2;//图片居中
                     int maxRight=rect.left+bitmap.getWidth();
                     rect.right=Math.min(x,maxRight);
                     rect.bottom=rect.top+bitmap.getHeight();
+                    //指定图片的绘制区域
                     Rect rect1=null;
                     if (x<maxRight){
                         rect1=new Rect();//不能再外面初始化，否则dx大于画图区域时，删除图片不显示
@@ -160,13 +160,18 @@ public class RecycleItemTouchHelper extends ItemTouchHelper.Callback{
                 }
                 float alpha = 1.0f - Math.abs(dX) / (float) itemView.getWidth();
                 itemView.setAlpha(alpha);
+                //绘制时需调用平移动画，否则滑动看不到反馈
                 itemView.setTranslationX(dX);
             }else {
+                //如果在getMovementFlags指定了向左滑动（ItemTouchHelper。START）时则绘制工作可参考向右的滑动绘制，也可直接使用下面语句交友系统自己处理
                 super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
             }
         }else {
+            //拖动时有系统自己完成
             super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
         }
+
+
     }
 
 
