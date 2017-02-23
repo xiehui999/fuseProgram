@@ -1,15 +1,15 @@
+<!--    app:cardCornerRadius="4dp"
+cardUseCompatPadding   设置内边距
+-->
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/card_view"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="90dp"
     android:layout_gravity="center"
-    app:cardCornerRadius="4dp"
-    app:cardElevation="3dp"
-    app:cardMaxElevation="10dp"
-    app:cardUseCompatPadding="true"
-    app:cardPreventCornerOverlap="true">
+    app:cardElevation="1dp"
+    app:cardMaxElevation="2dp"
+    app:cardUseCompatPadding="true">
 
     <TextView
         android:id="@+id/item_textView"
