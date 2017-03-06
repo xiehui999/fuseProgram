@@ -3,3 +3,7 @@ apply plugin: 'java'
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 }
+//解决打印日志乱码问题
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
