@@ -2,7 +2,12 @@ package com.example.xh.ui;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.PowerManager;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -10,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
@@ -25,7 +31,7 @@ public class BaiduLocationFragment extends Fragment implements View.OnClickListe
 
     private TextView tv_location;
 
-    private Button btn_getLocation;
+    private Button btn_getLocation,btn_batteryOption;
     private Context context;
     private LocationService locationService;
     @Override
@@ -37,6 +43,7 @@ public class BaiduLocationFragment extends Fragment implements View.OnClickListe
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         btn_getLocation.setOnClickListener(this);
+        btn_batteryOption.setOnClickListener(this);
 
     }
 
@@ -65,6 +72,7 @@ public class BaiduLocationFragment extends Fragment implements View.OnClickListe
         super.onViewCreated(view, savedInstanceState);
         tv_location=(TextView)view.findViewById(R.id.tv_location);
         btn_getLocation=(Button)view.findViewById(R.id.btn_getLocation);
+        btn_batteryOption=(Button)view.findViewById(R.id.btn_batteryOption);
     }
 
     @Override
@@ -98,10 +106,30 @@ public class BaiduLocationFragment extends Fragment implements View.OnClickListe
                 }
 
                 break;
+            case  R.id.btn_batteryOption:
+                isIgnoreBatteryOption();
+                break;
 
         }
     }
-
+    public  void isIgnoreBatteryOption() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            try {
+                Intent intent = new Intent();
+                String packageName = getActivity().getPackageName();
+                PowerManager pm = (PowerManager) getActivity().getSystemService(Context.POWER_SERVICE);
+                if (!pm.isIgnoringBatteryOptimizations(packageName)) {
+                    intent.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+                    intent.setData(Uri.parse("package:" + packageName));
+                    getActivity().startActivityForResult(intent, 1);
+                }else{
+                    Toast.makeText(getActivity(),"测试测试",Toast.LENGTH_LONG).show();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
     /*****
      * 定位结果回调，重写onReceiveLocation方法
      *

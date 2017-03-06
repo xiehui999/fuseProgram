@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/customgreendao/customgreendao.iml" filepath="$PROJECT_DIR$/customgreendao/customgreendao.iml" />
+      <module fileurl="file://$PROJECT_DIR$/designpattern/designpattern.iml" filepath="$PROJECT_DIR$/designpattern/designpattern.iml" />
       <module fileurl="file://$PROJECT_DIR$/fuseProgram.iml" filepath="$PROJECT_DIR$/fuseProgram.iml" />
     </modules>
   </component>
