@@ -8,7 +8,7 @@ public class Main {
         IHighPressure highPressureLamp = new HighPressureLamp();
         highPressureLamp.light();
         ILowPressure iLowPressure = new LowPressureLamp();
-        HighSwitchToLowAdapter highSwitchToLowAdapter = new HighSwitchToLowAdapter(iLowPressure);
+        IHighPressure highSwitchToLowAdapter = new HighSwitchToLowAdapter(iLowPressure);
         highSwitchToLowAdapter.light();
     }
 }
