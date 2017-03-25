@@ -1,7 +1,8 @@
 package com.observer;
 
 /**
- * Created by xiehui on 2017/3/8.
+ * Publish-Subscribe（发布-订阅）模式,定义了一种一对多的依赖关系
+ * MVC框架,消息推送，事件监听
  */
 public class Main {
     public static void main(String[] args) {
