@@ -13,10 +13,10 @@ import java.awt.event.ActionListener;
 public class SafeFrame extends Frame implements ActionListener, Context {
     private TextField textClock = new TextField(60);        // 显示当前时间
     private TextArea textScreen = new TextArea(10, 60);     // 显示警报中心的记录
-    private Button buttonUse = new Button("使用金库");      // 金库使用按钮
-    private Button buttonAlarm = new Button("按下警铃");    // 按下警铃按钮
-    private Button buttonPhone = new Button("正常通话");    // 正常通话按钮
-    private Button buttonExit = new Button("结束");         // 结束按钮
+    private Button buttonUse = new Button("buttonUse");      // 金库使用按钮
+    private Button buttonAlarm = new Button("buttonAlarm");    // 按下警铃按钮
+    private Button buttonPhone = new Button("buttonPhone");    // 正常通话按钮
+    private Button buttonExit = new Button("buttonExit");         // 结束按钮
 
     private State state = DayState.getInstance();           // 当前的状态
 
@@ -64,6 +64,7 @@ public class SafeFrame extends Frame implements ActionListener, Context {
         }
     }
     // 设置时间
+    @Override
     public void setClock(int hour) {
         String clockstring = "现在时间是";
         if (hour < 10) {
@@ -76,15 +77,18 @@ public class SafeFrame extends Frame implements ActionListener, Context {
         state.doClock(this, hour);
     }
     // 改变状态
+    @Override
     public void changeState(State state) {
         System.out.println("从" + this.state + "状態变为了" + state + "状态。");
         this.state = state;
     }
     // 联系警报中心
+    @Override
     public void callSecurityCenter(String msg) {
         textScreen.append("call! " + msg + "\n");
     }
     // 在警报中心留下记录
+    @Override
     public void recordLog(String msg) {
         textScreen.append("record ... " + msg + "\n");
     }

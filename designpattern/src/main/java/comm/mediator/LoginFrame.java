@@ -42,6 +42,7 @@ public class LoginFrame extends Frame implements ActionListener, Mediator {
     }
 
     // 生成各个Colleague。
+    @Override
     public void createColleagues() {
         // 生成
         CheckboxGroup g = new CheckboxGroup();
@@ -69,6 +70,7 @@ public class LoginFrame extends Frame implements ActionListener, Mediator {
     }
 
     // 接收来自于Colleage的通知然后判断各Colleage的启用/禁用状态。
+    @Override
     public void colleagueChanged() {
         if (checkGuest.getState()) { // Guest mode
             textUser.setColleagueEnabled(false);

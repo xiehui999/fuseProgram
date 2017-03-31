@@ -1,5 +1,8 @@
 package comm.state;
 
+/**
+ *很多时候是用在方法中判断状态，而状态模式是用类来表示状态
+ */
 public class Main {
     public static void main(String[] args) {
         SafeFrame frame = new SafeFrame("State Sample");

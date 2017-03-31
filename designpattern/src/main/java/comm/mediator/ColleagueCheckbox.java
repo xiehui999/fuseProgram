@@ -10,9 +10,11 @@ public class ColleagueCheckbox extends Checkbox implements ItemListener, Colleag
     public ColleagueCheckbox(String caption, CheckboxGroup group, boolean state) {  // 构造函数 
         super(caption, group, state);
     }
+    @Override
     public void setMediator(Mediator mediator) {            // 保存Mediator
         this.mediator = mediator;
     }
+    @Override
     public void setColleagueEnabled(boolean enabled) {      // Mediator下达启用/禁用指示
         setEnabled(enabled);
     }

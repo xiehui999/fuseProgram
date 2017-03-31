@@ -10,9 +10,11 @@ public class ColleagueTextField extends TextField implements TextListener, Colle
     public ColleagueTextField(String text, int columns) {   // 构造函数
         super(text, columns);
     }
+    @Override
     public void setMediator(Mediator mediator) {            // 保存Mediator
         this.mediator = mediator;
     }
+    @Override
     public void setColleagueEnabled(boolean enabled) {      // Mediator下达启用/禁用的指示
         setEnabled(enabled);
         setBackground(enabled ? Color.white : Color.lightGray);
