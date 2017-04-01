@@ -41,6 +41,9 @@
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
 
+    <uses-permission android:name="Android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD"/>    <!-- 解锁屏幕需要 -->
+    <uses-permission android:name="android.permission.WAKE_LOCK"/><!--申请电源锁 -->
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -127,9 +130,26 @@
             android:theme="@style/AppTheme"></activity>
         <activity android:name=".rxjava.RxConnetActivity"></activity>
         <activity android:name=".rxjava.RxFilterActivity"></activity>
+        <activity
+            android:name=".alarm.AlarmMainActivity"
+            android:label="考勤提醒"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".alarm.AlarmRingingActivity"
+            android:label="闹铃"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:screenOrientation="portrait" />
         <service android:name="com.example.xh.uploadfile.UploadService"></service>
+        <receiver
+            android:name=".alarm.ringing.AlarmWakeReceiver"
+            android:enabled="true"
+            android:exported="false"/>
 
+        <service
+            android:name=".alarm.ringing.AlarmRingingService"
+            android:enabled="true"/>
     </application>
 
 </manifest>

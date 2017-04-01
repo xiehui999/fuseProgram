@@ -5,4 +5,8 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="drawer_padding">100dp</dimen>
     <dimen name="navigation_icon_size">199dp</dimen>
+    <dimen name="padding_Small">3dp</dimen>
+    <dimen name="listitem_height">40dp</dimen>
+    <dimen name="listitem_menu_height">60dp</dimen>
+    <dimen name="formitem_height">36dp</dimen>
 </resources>

@@ -21,19 +21,25 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.Poi;
 import com.example.xh.R;
+import com.example.xh.alarm.AlarmMainActivity;
+import com.example.xh.alarm.model.Alarm;
+import com.example.xh.alarm.ringing.AlarmNotificationManager;
+import com.example.xh.alarm.ringing.AlarmScheduler;
+import com.example.xh.db.DbUtil;
 import com.example.xh.utils.LocationService;
 
 /**
  * Created by xiehui on 2016/10/18.
  */
 
-public class BaiduLocationFragment extends Fragment implements View.OnClickListener{
+public class BaiduLocationFragment extends Fragment implements View.OnClickListener {
 
     private TextView tv_location;
 
-    private Button btn_getLocation,btn_batteryOption;
+    private Button btn_getLocation, btn_batteryOption, btn_alarm;
     private Context context;
     private LocationService locationService;
+
     @Override
     public void onDetach() {
         super.onDetach();
@@ -44,21 +50,23 @@ public class BaiduLocationFragment extends Fragment implements View.OnClickListe
         super.onActivityCreated(savedInstanceState);
         btn_getLocation.setOnClickListener(this);
         btn_batteryOption.setOnClickListener(this);
+        btn_alarm.setOnClickListener(this);
 
     }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        this.context=activity;
+        this.context = activity;
 
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        locationService=LocationService.getInstance(getContext());
+        locationService = LocationService.getInstance(getContext());
         locationService.registerListener(mListener);
+        openAlarmRing();
     }
 
     @Nullable
@@ -70,9 +78,10 @@ public class BaiduLocationFragment extends Fragment implements View.OnClickListe
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        tv_location=(TextView)view.findViewById(R.id.tv_location);
-        btn_getLocation=(Button)view.findViewById(R.id.btn_getLocation);
-        btn_batteryOption=(Button)view.findViewById(R.id.btn_batteryOption);
+        tv_location = (TextView) view.findViewById(R.id.tv_location);
+        btn_getLocation = (Button) view.findViewById(R.id.btn_getLocation);
+        btn_batteryOption = (Button) view.findViewById(R.id.btn_batteryOption);
+        btn_alarm = (Button) view.findViewById(R.id.btn_alarm);
     }
 
     @Override
@@ -91,28 +100,39 @@ public class BaiduLocationFragment extends Fragment implements View.OnClickListe
     @Override
     public void onClick(View v) {
 
-        String text=btn_getLocation.getText().toString();
+        String text = btn_getLocation.getText().toString();
         tv_location.setText("");
         switch (v.getId()) {
             case R.id.btn_getLocation:
-                if (text.equals("开始定位")){
+                if (text.equals("开始定位")) {
                     btn_getLocation.setText("停止定位");
                     locationService.registerListener(mListener);
                     locationService.start();
-                }else{
+                } else {
                     btn_getLocation.setText("开始定位");
                     locationService.stop();
                     locationService.unRegisterListener(mListener);
                 }
 
                 break;
-            case  R.id.btn_batteryOption:
+            case R.id.btn_batteryOption:
                 isIgnoreBatteryOption();
+                break;
+            case R.id.btn_alarm:
+                startActivity(new Intent(getActivity(), AlarmMainActivity.class));
                 break;
 
         }
     }
-    public  void isIgnoreBatteryOption() {
+
+    public void openAlarmRing() {
+        DbUtil.addAlarm(new Alarm(1));
+        DbUtil.addAlarm(new Alarm(2));
+        AlarmNotificationManager.get(getActivity()).handleNextAlarmNotificationStatus();
+        AlarmScheduler.scheduleAlarms(getActivity());
+    }
+
+    public void isIgnoreBatteryOption() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             try {
                 Intent intent = new Intent();
@@ -122,24 +142,24 @@ public class BaiduLocationFragment extends Fragment implements View.OnClickListe
                     intent.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
                     intent.setData(Uri.parse("package:" + packageName));
                     getActivity().startActivityForResult(intent, 1);
-                }else{
-                    Toast.makeText(getActivity(),"测试测试",Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getActivity(), "测试测试", Toast.LENGTH_LONG).show();
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
+
     /*****
      * 定位结果回调，重写onReceiveLocation方法
-     *
      */
     private BDLocationListener mListener = new BDLocationListener() {
 
         @Override
         public void onReceiveLocation(BDLocation location) {
             // TODO Auto-generated method stub
-            if (null != location ) {
+            if (null != location) {
                 StringBuffer sb = new StringBuffer(256);
                 sb.append("time : ");
                 /**
@@ -218,9 +238,9 @@ public class BaiduLocationFragment extends Fragment implements View.OnClickListe
                     sb.append("\ndescribe : ");
                     sb.append("无法获取有效定位依据导致定位失败，一般是由于手机的原因，处于飞行模式下一般会造成这种结果，可以试着重启手机");
                 }
-                tv_location.setText(sb+"\n定位结束");
+                tv_location.setText(sb + "\n定位结束");
                 locationService.stop();
-            }else{
+            } else {
                 tv_location.setText("\n定位失败");
             }
         }

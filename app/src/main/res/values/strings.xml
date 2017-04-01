@@ -4,7 +4,6 @@
     <string name="name">Code4Android</string>
     <string name="motto">年轻人不能没有梦，尽管过程有坎坷，但他们会坚持到底</string>
 
-    <!-- Strings related to login -->
     <string name="prompt_account">账户</string>
     <string name="prompt_password">密码</string>
     <string name="action_sign_in">登录</string>
@@ -15,4 +14,48 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing account
         completions."
     </string>
+    <string name="pref_snooze_duration_key">KEY_SNOOZE_DURATION</string>
+
+    <string name="pref_title_volume">Volume</string>
+    <string name="alarm_snooze_label">等一会儿</string>
+    <string name="default_ringtone_name">默认</string>
+    <string name="pref_title_ring_duration">Alarm duration</string>
+    <string name="pref_default_sign_remind_minutes_label">10 分钟</string>
+    <string name="pref_default_sign_remind_minutes_value">10</string>
+
+    <string-array name="pref_sign_remind_minutes_label">
+        <item>5 分钟</item>
+        <item>@string/pref_default_sign_remind_minutes_label</item>
+        <item>15 分钟</item>
+        <item>20 分钟</item>
+        <item>25 分钟</item>
+        <item>30 分钟</item>
+    </string-array>
+
+    <string-array name="pref_sign_remind_minutes_value">
+        <item>5</item>
+        <item>@string/pref_default_sign_remind_minutes_value</item>
+        <item>15</item>
+        <item>20</item>
+        <item>25</item>
+        <item>30</item>
+    </string-array>
+
+    <string name="pref_title_sign_remind">时间设置</string>
+
+    <string name="pref_time_key">KEY_ALARM_TIME</string>
+    <string name="pref_repeating_days_key">KEY_ALARM_REPEATING_DAYS</string>
+    <string name="pref_ringtone_key">KEY_ALARM_RINGTONE</string>
+    <string name="pref_vibrate_key">KEY_ALARM_VIBRATE</string>
+    <string name="pref_sign_remind_key">KEY_SIGN_REMIND</string>
+    <string name="pref_title_repeating">重复</string>
+
+    <string name="pref_title_new">新增</string>
+    <string name="pref_title_edit">编辑</string>
+    <string name="pref_title_ringtone">铃声</string>
+    <string name="pref_no_ringtone">静音</string>
+    <string name="pref_title_vibrate">震动</string>
+    <string name="pref_dialog_save_changes_message">你想保存你的更改吗?</string>
+    <string name="pref_dialog_save_changes_negative_button">取消</string>
+    <string name="pref_dialog_save_changes_positive_button">保存</string>
 </resources>

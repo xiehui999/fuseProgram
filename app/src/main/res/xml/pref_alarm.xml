@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <ListPreference
+        android:key="@string/pref_sign_remind_key"
+        android:defaultValue="@string/pref_default_sign_remind_minutes_value"
+        android:entries="@array/pref_sign_remind_minutes_label"
+        android:entryValues="@array/pref_sign_remind_minutes_value"
+        android:title="@string/pref_title_sign_remind"/>
+
+    <com.example.xh.alarm.setting.RepeatingDaysPreference
+        android:key="@string/pref_repeating_days_key"
+        android:layout="@layout/preference_repeatingdays"
+        android:title="@string/pref_title_repeating"/>
+
+
+    <com.example.xh.alarm.setting.RingtonePreference
+        android:key="@string/pref_ringtone_key"
+        android:title="@string/pref_title_ringtone" />
+    <com.example.xh.alarm.setting.VibratePreference
+        android:key="@string/pref_vibrate_key"
+        android:title="@string/pref_title_vibrate" />
+
+</PreferenceScreen>

@@ -19,7 +19,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="电量优化" />
-
+        <Button
+            android:id="@+id/btn_alarm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="考勤闹钟" />
         <TextView
             android:id="@+id/tv_location"
             android:paddingBottom="100dp"

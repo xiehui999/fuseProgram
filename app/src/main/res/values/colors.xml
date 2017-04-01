@@ -9,4 +9,6 @@
     <color name="btnnormal">#108EE9</color>
     <color name="white">#ffffff</color>
     <color name="btninvalid">#66ccf5</color>
+    <color name="black">#000000</color>
+    <color name="gray" >#888888</color>
 </resources>
