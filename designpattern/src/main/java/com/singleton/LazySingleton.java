@@ -47,7 +47,7 @@ public class LazySingleton{
      * volatile有防止指令重排序功能，所以为了防止指令重排序可以使用volatile修饰instance
      * @return
      */
-    public static synchronized  LazySingleton getInstance2() {
+    public static  LazySingleton getInstance2() {
         if(instance==null){
             synchronized (LazySingleton.class) {
                 if (instance == null) {
