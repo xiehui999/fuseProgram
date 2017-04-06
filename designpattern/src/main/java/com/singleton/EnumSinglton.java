@@ -2,7 +2,7 @@ package com.singleton;
 
 /**
  * Created by xiehui on 2017/3/10.
- * 默认枚举实例的创建是线程安全的
+ * 默认枚举实例的创建是线程安全的7
  */
 public enum EnumSinglton {
     INSTANCE;
