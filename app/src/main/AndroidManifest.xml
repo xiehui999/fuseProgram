@@ -28,17 +28,10 @@
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"></uses-permission>
     <!--百度用户统计相关-->
     <!-- 必须声明的权限 -->
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.GET_TASKS" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
 
     <uses-permission android:name="Android.permission.VIBRATE"/>
@@ -128,8 +121,9 @@
         <activity
             android:name=".rxjava.NormalRxActivity"
             android:theme="@style/AppTheme"></activity>
-        <activity android:name=".rxjava.RxConnetActivity"></activity>
-        <activity android:name=".rxjava.RxFilterActivity"></activity>
+        <activity android:name=".rxjava.RxConnetActivity"/>
+        <activity android:name=".rxjava.RxFilterActivity"/>
+        <activity android:name=".permission.PermissionTestActivity"/>
         <activity
             android:name=".alarm.AlarmMainActivity"
             android:label="考勤提醒"

@@ -27,5 +27,9 @@
             android:id="@+id/navigation_recycleview"
             android:icon="@drawable/drawer_icon_setting"
             android:title="RecycleView" />
+        <item
+            android:id="@+id/navigation_permission"
+            android:icon="@drawable/drawer_icon_setting"
+            android:title="Permission" />
     </group>
 </menu>

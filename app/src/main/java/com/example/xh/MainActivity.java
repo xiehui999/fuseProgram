@@ -1,5 +1,6 @@
 package com.example.xh;
 
+import android.content.Intent;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -12,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.xh.permission.PermissionTestActivity;
 import com.example.xh.ui.BaiduLocationFragment;
 import com.example.xh.ui.BaseActivity;
 import com.example.xh.ui.GreenDaoFragment;
@@ -91,6 +93,9 @@ public class MainActivity extends BaseActivity {
                     case R.id.navigation_recycleview:
                         selectNavigation(5);
                         break;
+                    case R.id.navigation_permission:
+                        startActivity(new Intent(MainActivity.this, PermissionTestActivity.class));
+                        break;
                 }
                 mDrawerLayout.closeDrawers();
                 return true;
@@ -99,34 +104,35 @@ public class MainActivity extends BaseActivity {
         selectNavigation(0);
     }
 
-    public void selectNavigation(int position){
-        Fragment fragment=null;
-        switch (position){
+    public void selectNavigation(int position) {
+        Fragment fragment = null;
+        switch (position) {
             case 0:
-                fragment=new UpLoadFileFragment();
+                fragment = new UpLoadFileFragment();
                 break;
             case 1:
-                fragment=new TestRxJavaFragment();
+                fragment = new TestRxJavaFragment();
                 break;
             case 2:
-                fragment=new RetrofitFragment();
+                fragment = new RetrofitFragment();
                 break;
             case 3:
-                fragment=new BaiduLocationFragment();
+                fragment = new BaiduLocationFragment();
                 break;
             case 4:
-                fragment=new GreenDaoFragment();
+                fragment = new GreenDaoFragment();
                 break;
             case 5:
-                fragment=new RecycleViewFragment();
+                fragment = new RecycleViewFragment();
                 break;
         }
-        if (fragment!=null){
-            FragmentManager fragmentManager=getSupportFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.frame_content,fragment).commit();
+        if (fragment != null) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.frame_content, fragment).commit();
             setTitle("文件上传");
         }
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

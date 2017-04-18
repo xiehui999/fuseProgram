@@ -1,6 +1,5 @@
 package com.example.xh;
 
-import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
@@ -10,11 +9,8 @@ import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -29,7 +25,6 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.baidu.mobstat.StatService;
 
@@ -77,7 +72,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener{
         passwordinput=(TextInputLayout) findViewById(R.id.passwordinput);
         mPasswordView=(EditText)findViewById(R.id.password);
         //accountinput.setHint("username");//和子EditText(给EditText通过.setHint("")设置hint时不能出现浮动标签，要在布局文件设置) hint同时使用，此有效
-        populateAutoComplete();
+        //populateAutoComplete();
         initBaiDuStatistics();
         //是在我们编辑完之后点击软键盘上的确定键键才会触发
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -88,7 +83,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener{
                     //inputMethodManager.showSoftInput(getWindow().getDecorView(),InputMethodManager.SHOW_FORCED);//显示
                     inputMethodManager.hideSoftInputFromWindow(getWindow().getDecorView().getWindowToken(),InputMethodManager.RESULT_UNCHANGED_SHOWN);
                     //attemptLogin();
-                    startLogin();
+                    attemptLogin();
                     return true;
                 }
                 return false;
@@ -170,12 +165,6 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener{
         StatService.setDebugOn(true);
     }
 
-    private void populateAutoComplete() {
-        if (!mayRequestContacts()) {
-            return;
-        }
-    }
-
     private boolean mayRequestContacts() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             return true;
@@ -198,36 +187,6 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener{
         return false;
     }
 
-    public void startLogin(){
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    REQUEST_WRITE_EXTERNAL_STORAGE);
-        }else{
-            attemptLogin();
-        }
-    }
-
-    /**
-     * Callback received when a permissions request has been completed.
-     */
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        if (requestCode == REQUEST_READ_CONTACTS) {
-            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                populateAutoComplete();
-            }
-        }else if(requestCode==REQUEST_WRITE_EXTERNAL_STORAGE){
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission Granted
-                attemptLogin();
-            } else {
-                // Permission Denied
-                Toast.makeText(LoginActivity.this, "禁用读写存储权限将导致应用不可用", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
 
 
     /**
@@ -334,7 +293,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener{
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.account_sign_in_button:
-                startLogin();
+                attemptLogin();
                 break;
         }
     }
