@@ -1,13 +1,16 @@
 package com.example.xh.ui;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -26,6 +29,8 @@ import com.example.xh.alarm.model.Alarm;
 import com.example.xh.alarm.ringing.AlarmNotificationManager;
 import com.example.xh.alarm.ringing.AlarmScheduler;
 import com.example.xh.db.DbUtil;
+import com.example.xh.permission.IPermissionRequest;
+import com.example.xh.permission.PermissionUtils;
 import com.example.xh.utils.LocationService;
 
 /**
@@ -39,7 +44,8 @@ public class BaiduLocationFragment extends Fragment implements View.OnClickListe
     private Button btn_getLocation, btn_batteryOption, btn_alarm;
     private Context context;
     private LocationService locationService;
-
+    private String[] permissions=new String[]{Manifest.permission.ACCESS_FINE_LOCATION};
+   private int requestCodeLocation=0x00010;
     @Override
     public void onDetach() {
         super.onDetach();
@@ -100,18 +106,13 @@ public class BaiduLocationFragment extends Fragment implements View.OnClickListe
     @Override
     public void onClick(View v) {
 
-        String text = btn_getLocation.getText().toString();
-        tv_location.setText("");
+
         switch (v.getId()) {
             case R.id.btn_getLocation:
-                if (text.equals("开始定位")) {
-                    btn_getLocation.setText("停止定位");
-                    locationService.registerListener(mListener);
-                    locationService.start();
-                } else {
-                    btn_getLocation.setText("开始定位");
-                    locationService.stop();
-                    locationService.unRegisterListener(mListener);
+                if(PermissionUtils.isHasPermissions(permissions)){
+                    startLocation();
+                }else{
+                    PermissionUtils.requestPermissions(this,requestCodeLocation,permissions);
                 }
 
                 break;
@@ -125,6 +126,19 @@ public class BaiduLocationFragment extends Fragment implements View.OnClickListe
         }
     }
 
+    public void startLocation(){
+        String text = btn_getLocation.getText().toString();
+        tv_location.setText("");
+        if (text.equals("开始定位")) {
+            btn_getLocation.setText("停止定位");
+            locationService.registerListener(mListener);
+            locationService.start();
+        } else {
+            btn_getLocation.setText("开始定位");
+            locationService.stop();
+            locationService.unRegisterListener(mListener);
+        }
+    }
     public void openAlarmRing() {
         DbUtil.addAlarm(new Alarm(1));
         DbUtil.addAlarm(new Alarm(2));
@@ -147,6 +161,34 @@ public class BaiduLocationFragment extends Fragment implements View.OnClickListe
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode==requestCodeLocation){
+            if (grantResults.length>0&&grantResults[0]== PackageManager.PERMISSION_GRANTED){
+                startLocation();
+            }else{
+                if (!PermissionUtils.shouldShowRequestPermissionRationale(this,this.permissions)){//选择了永不提醒时回调
+                    PermissionUtils.showDialog(getActivity(),"使用此功能需要定位权限！请前往设置",new IPermissionRequest(){
+                        @Override
+                        public void agree() {
+                            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                            Uri uri = Uri.fromParts("package", getActivity().getPackageName(), null);
+                            intent.setData(uri);
+                            startActivity(intent);
+                        }
+                        @Override
+                        public void refuse() {
+                            Toast.makeText(getActivity(), "不允许", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }else{
+                    Toast.makeText(getContext(),"请求定位权限失败",Toast.LENGTH_LONG).show();
+                }
             }
         }
     }

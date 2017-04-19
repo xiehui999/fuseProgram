@@ -60,7 +60,9 @@ public class PermissionUtils {
                     return true;
                 }
             } else if (object instanceof Fragment) {
-                ((Fragment) object).shouldShowRequestPermissionRationale(permission);
+                if(((Fragment) object).shouldShowRequestPermissionRationale(permission)){
+                    return true;
+                }
             } else {
                 throw new RuntimeException("the object must be Activity or Fragment");
             }
@@ -76,19 +78,22 @@ public class PermissionUtils {
      * @param activity
      * @param message
      * @param iPermissionRequest
+     * @see com.example.xh.ui.BaiduLocationFragment 可以查看该类onRequestPermissionsResult方法当选择永不提醒时的处理办法。
      */
     public static void showDialog(Activity activity, String message, final IPermissionRequest iPermissionRequest) {
         new AlertDialog.Builder(activity)
-                .setPositiveButton("允许", new DialogInterface.OnClickListener() {
+                .setPositiveButton("设置", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(@NonNull DialogInterface dialog, int which) {
                         iPermissionRequest.agree();
+                        dialog.dismiss();
                     }
                 })
-                .setNegativeButton("不允许", new DialogInterface.OnClickListener() {
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(@NonNull DialogInterface dialog, int which) {
                         iPermissionRequest.refuse();
+                        dialog.dismiss();
                     }
                 })
                 .setCancelable(false)
