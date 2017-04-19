@@ -17,4 +17,23 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:text="获取设备ID" />
+    <Button
+        android:id="@+id/request_alert_window"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="SYSTEM_ALERT_WINDOW权限" />
+    <Button
+        android:id="@+id/request_write_setting"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="WRITE_SETTINGS权限" />
+
+    <Button
+        android:id="@+id/open_permission_setting"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="打开权限设置界面" />
 </LinearLayout>
