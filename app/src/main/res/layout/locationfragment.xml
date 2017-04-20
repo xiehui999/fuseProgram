@@ -25,6 +25,20 @@
             android:layout_height="wrap_content"
             android:text="考勤闹钟" />
         <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_gravity="center"
+            android:text="测试shape"
+            android:background="@drawable/shape"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_gravity="center"
+            android:text="测试"
+            android:background="@drawable/layer_list"/>
+        <TextView
             android:id="@+id/tv_location"
             android:paddingBottom="100dp"
             android:layout_width="fill_parent"
