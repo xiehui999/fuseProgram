@@ -4,7 +4,7 @@ apply plugin: 'com.neenbedankt.android-apt'
 android {
     useLibrary 'org.apache.http.legacy'
     compileSdkVersion 24
-    buildToolsVersion "24.0.1"
+    buildToolsVersion '25.0.0'
 
     defaultConfig {
         applicationId "com.example.xh"
