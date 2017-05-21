@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.xh.R;
+import com.example.xh.activity.AnimationActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -57,7 +58,7 @@ public class PermissionTestActivity extends AppCompatActivity {
      * 测试请求WRITE_SETTINGS权限
      */
     @OnClick(R.id.request_write_setting)
-    @TargetApi(android.os.Build.VERSION_CODES.M)
+    @TargetApi(android.os.Build.VERSION_CODES.N)
     public void requestWriteSetting() {
         if (!Settings.System.canWrite(this)) {
             Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS,
@@ -72,7 +73,7 @@ public class PermissionTestActivity extends AppCompatActivity {
      * 测试请求SYSTEM_ALERT_WINDOW权限
      */
     @OnClick(R.id.request_alert_window)
-    @TargetApi(android.os.Build.VERSION_CODES.M)
+    @TargetApi(android.os.Build.VERSION_CODES.N)
     public void requestAlertWindow() {
         if (!Settings.canDrawOverlays(this)) {
             Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
@@ -94,7 +95,12 @@ public class PermissionTestActivity extends AppCompatActivity {
         intent.setData(uri1);
         startActivity(intent);
     }
-
+    @OnClick(R.id.open_animation)
+    public void startAnimationPage() {
+        Intent intent = new Intent(this, AnimationActivity.class);
+        startActivity(intent);
+        overridePendingTransition(R.anim.slide_in_left,R.anim.slide_in_right);
+    }
     private void executeReadDeviceId() {
         TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         String deviceId = telephonyManager.getDeviceId();

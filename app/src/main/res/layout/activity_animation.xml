@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ImageView
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="30dp"
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/red_circle"
+        android:layout_gravity="center_horizontal" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/start_frame"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="帧动画" />
+        <Button
+        android:id="@+id/start_tween"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tween动画" />
+        <Button
+            android:id="@+id/start_property"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="属性动画" />
+    </LinearLayout>
+</LinearLayout>

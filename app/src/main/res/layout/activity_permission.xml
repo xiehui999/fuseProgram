@@ -36,4 +36,10 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:text="打开权限设置界面" />
+    <Button
+        android:id="@+id/open_animation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="动画" />
 </LinearLayout>

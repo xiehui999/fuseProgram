@@ -30,6 +30,6 @@
         <item
             android:id="@+id/navigation_permission"
             android:icon="@drawable/drawer_icon_setting"
-            android:title="Permission" />
+            android:title="权限/动画" />
     </group>
 </menu>
