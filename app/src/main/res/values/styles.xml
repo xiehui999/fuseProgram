@@ -8,6 +8,16 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="CustomeActivityStyle" parent="AppTheme">
+        <item name="android:windowAnimationStyle">@style/AnimationStyle</item>
+    </style>
+    <style name="AnimationStyle">
+        <item name="android:activityCloseEnterAnimation">@anim/slide_in_left</item>
+        <item name="android:activityCloseExitAnimation">@anim/slide_out_right</item>
+        <item name="android:activityOpenEnterAnimation">@anim/slide_in_left</item>
+        <item name="android:activityOpenExitAnimation">@anim/slide_out_right</item>
+    </style>
+
     <style name="MenuTextStyle">
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textSize">22sp</item>
@@ -39,7 +49,7 @@
     <!--        <item name="colorControlNormal">@color/colorAccent</item>更改默更改默认颜色（下划线）
     colorControlActivated获得焦点时的颜色-->
     <style name="customEditText" parent="Theme.AppCompat.Light">
-     <item name="colorControlActivated">@color/drawerTextColor</item>
+        <item name="colorControlActivated">@color/drawerTextColor</item>
     </style>
 
     <style name="Theme.AppCompat.Light.NoActionBar" parent="@style/Theme.AppCompat.Light">
